@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\MailConfigService;
+use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    use RespondsWithError;
+
     /**
      * Valid setting groups.
      */
@@ -90,7 +93,7 @@ class SettingController extends Controller
                 }
             );
         } catch (\Throwable $e) {
-            return back()->with('error', 'Gagal mengirim email: '.$e->getMessage())->withInput();
+            return $this->respondError('Gagal mengirim email: '.$e->getMessage());
         }
 
         return back()->with('success', 'Test email berhasil dikirim ke '.$validated['email'].'. Periksa inbox (atau folder spam).');

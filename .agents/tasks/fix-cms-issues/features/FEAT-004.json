@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "refactor",
   "description": "Standardize error handling across controllers by creating a RespondsWithError trait and applying it to key admin controllers. Analysis report identified inconsistent error handling patterns: some use return back()->with('error'), some abort(), some throw exceptions. This feature creates a consistent API.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Create app/Traits/RespondsWithError.php with trait RespondsWithError. Include method: protected function respondError(string $message, int $status = 400) { if (request()->expectsJson()) { return response()->json(['error' => $message], $status); } return back()->with('error', $message)->withInput(); }. Add a second method: protected function respondSuccess(string $message, ?string $redirectRoute = null) { if (request()->expectsJson()) { return response()->json(['success' => $message]); } $redirect = $redirectRoute ? redirect()->route($redirectRoute) : back(); return $redirect->with('success', $message); }",
     "Update app/Http/Controllers/Admin/ContactSubmissionController.php to use the trait. Add 'use RespondsWithError;' at class level. Replace line 74 'return back()->with('error', ...)' with 'return $this->respondError(...)'. Replace line 106 'return back()->with('error', ...)' with 'return $this->respondError(...)'.",
@@ -25,5 +25,5 @@
     "Manual: Test with Accept: application/json header and verify JSON error responses work"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Successfully created RespondsWithError trait with respondError() and respondSuccess() methods that automatically detect JSON requests. Applied trait to ContactSubmissionController (lines 74, 106), FileManagerController (lines 103, 108, 113, 203), NewsletterCampaignController (lines 58, 64, 119), and SettingController (line 93). All error messages remain unchanged. PHPStan analysis passed with no errors. Code formatting fixed with Pint. Note: ContactSubmissionTest.php failures are pre-existing and unrelated to these changes - they test the frontend contact form controller, not the admin controllers modified in this feature."
 }

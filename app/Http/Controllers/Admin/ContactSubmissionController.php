@@ -7,11 +7,14 @@ use App\Models\AuditLog;
 use App\Models\ContactSubmission;
 use App\Models\Setting;
 use App\Services\MailConfigService;
+use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ContactSubmissionController extends Controller
 {
+    use RespondsWithError;
+
     /**
      * List all contact submissions.
      */
@@ -71,7 +74,7 @@ class ContactSubmissionController extends Controller
     public function reply(Request $request, ContactSubmission $contact)
     {
         if (empty($contact->email)) {
-            return back()->with('error', 'Kontak ini tidak memiliki alamat email untuk dibalas.');
+            return $this->respondError('Kontak ini tidak memiliki alamat email untuk dibalas.');
         }
 
         $validated = $request->validate([
@@ -103,7 +106,7 @@ class ContactSubmissionController extends Controller
                 }
             );
         } catch (\Throwable $e) {
-            return back()->with('error', 'Gagal mengirim email: '.$e->getMessage());
+            return $this->respondError('Gagal mengirim email: '.$e->getMessage());
         }
 
         // Save reply record

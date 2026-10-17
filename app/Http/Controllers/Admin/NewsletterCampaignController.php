@@ -8,11 +8,14 @@ use App\Models\NewsletterCampaign;
 use App\Models\NewsletterSubscriber;
 use App\Models\Setting;
 use App\Services\MailConfigService;
+use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class NewsletterCampaignController extends Controller
 {
+    use RespondsWithError;
+
     public function index()
     {
         $campaigns = NewsletterCampaign::with('user')
@@ -60,13 +63,13 @@ class NewsletterCampaignController extends Controller
     public function send(NewsletterCampaign $campaign)
     {
         if ($campaign->isSent()) {
-            return back()->with('error', 'Kampanye ini sudah pernah dikirim.');
+            return $this->respondError('Kampanye ini sudah pernah dikirim.');
         }
 
         $subscribers = NewsletterSubscriber::active()->get();
 
         if ($subscribers->isEmpty()) {
-            return back()->with('error', 'Tidak ada subscriber aktif untuk menerima newsletter.');
+            return $this->respondError('Tidak ada subscriber aktif untuk menerima newsletter.');
         }
 
         // Apply latest mail config
@@ -121,7 +124,7 @@ class NewsletterCampaignController extends Controller
     public function destroy(NewsletterCampaign $campaign)
     {
         if ($campaign->status === 'sending') {
-            return back()->with('error', 'Tidak bisa menghapus kampanye yang sedang dikirim.');
+            return $this->respondError('Tidak bisa menghapus kampanye yang sedang dikirim.');
         }
         $campaign->delete();
 

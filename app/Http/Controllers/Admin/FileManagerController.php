@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\Media;
 use App\Models\MediaFolder;
 use App\Models\Page;
+use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,8 @@ use Intervention\Image\ImageManager;
 
 class FileManagerController extends Controller
 {
+    use RespondsWithError;
+
     /**
      * Allowed file extensions for upload.
      */
@@ -100,17 +103,17 @@ class FileManagerController extends Controller
 
         // Additional MIME type validation (anti-spoof — actual content matches extension)
         if (! in_array($mimeType, $this->allowedMimeTypes)) {
-            return back()->with('error', 'Tipe file tidak diizinkan.');
+            return $this->respondError('Tipe file tidak diizinkan.');
         }
 
         // Verify image content for image extensions (catches polyglot/spoofed files)
         if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']) && @getimagesize($file->getRealPath()) === false) {
-            return back()->with('error', 'File gambar tidak valid atau rusak.');
+            return $this->respondError('File gambar tidak valid atau rusak.');
         }
 
         // Additional size validation
         if ($size > $this->maxFileSize) {
-            return back()->with('error', 'Ukuran file melebihi batas maksimal 10MB.');
+            return $this->respondError('Ukuran file melebihi batas maksimal 10MB.');
         }
 
         // Generate unique filename
@@ -200,7 +203,7 @@ class FileManagerController extends Controller
         if ($parentId) {
             $depth = $this->getFolderDepth($parentId);
             if ($depth >= 5) {
-                return back()->with('error', 'Kedalaman folder maksimal 5 level.');
+                return $this->respondError('Kedalaman folder maksimal 5 level.');
             }
         }
 
