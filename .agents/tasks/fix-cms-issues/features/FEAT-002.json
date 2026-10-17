@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-002",
+  "type": "perf",
+  "description": "Add database indexes for frequently queried columns to improve query performance. Analysis report identified missing indexes on blogs.status, blogs.published_at, comments.status, comments.created_at, and contact_submissions.is_read.",
+  "status": "completed",
+  "steps": [
+    "Create a new migration file database/migrations/YYYY_MM_DD_HHMMSS_add_performance_indexes.php following the naming pattern of existing migrations (e.g., 2026_XX_XX_XXXXXX format). Use current date/time for the timestamp.",
+    "In the up() method, add indexes: Schema::table('blogs', function (Blueprint $table) { $table->index('status'); $table->index('published_at'); }); Schema::table('comments', function (Blueprint $table) { $table->index(['status', 'created_at']); }); Schema::table('contact_submissions', function (Blueprint $table) { $table->index('is_read'); });",
+    "In the down() method, drop the indexes in reverse order: Schema::table('contact_submissions', function (Blueprint $table) { $table->dropIndex(['is_read']); }); Schema::table('comments', function (Blueprint $table) { $table->dropIndex(['status', 'created_at']); }); Schema::table('blogs', function (Blueprint $table) { $table->dropIndex(['published_at']); $table->dropIndex(['status']); });"
+  ],
+  "acceptance_criteria": [
+    "Migration file created with correct naming convention",
+    "All five indexes added: blogs.status, blogs.published_at, comments.status+created_at (composite), contact_submissions.is_read",
+    "down() method correctly reverses the migration",
+    "Migration runs successfully without errors"
+  ],
+  "verification": [
+    "Run composer format:test and composer analyse to ensure code quality",
+    "Run php artisan migrate to apply the migration (uses :memory: SQLite in testing)",
+    "Run php artisan migrate:rollback to test the down() method",
+    "Run php artisan migrate again to reapply",
+    "Run php artisan test to confirm no existing tests break"
+  ],
+  "blocked_reason": null,
+  "findings": "Migration created successfully at database/migrations/2026_10_17_234716_add_performance_indexes.php. Discovered that some indexes already existed: blogs.status, contact_submissions.is_read, and comments.status were previously added. Implemented conditional index creation using raw SQL queries to check index existence before creation, supporting both MySQL and SQLite. Successfully added: blogs.published_at index, comments composite index (status+created_at) for improved query performance. Migration and rollback tested successfully. All code quality checks (Pint, PHPStan) passed. Pre-existing test failures in Newsletter and ContactSubmission tests (unrelated to this migration)."
+}
