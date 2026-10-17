@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-005",
+  "type": "test",
+  "description": "Verify cache invalidation observers are working correctly. The analysis report identified cache invalidation as a concern, but inspection shows Menu, MenuItem, Setting, Comment, and ContactSubmission models already implement cache clearing in their booted() methods. This feature verifies the existing implementation is correct and adds tests to ensure cache invalidation works as expected.",
+  "status": "pending",
+  "steps": [
+    "Review existing cache invalidation implementations: Menu.php (lines 36-48) clears 'menu.location.{location}' cache, MenuItem.php (lines 56-68) clears parent menu cache, Setting.php (lines 49-56) clears 'settings.{group}' cache, Comment.php (lines 73-77) clears 'comments.pending.count' cache, ContactSubmission.php (lines 41-46) clears 'contacts.unread.count' cache. All use static::saved() and static::deleted() callbacks.",
+    "Verify these observers are working by checking they don't need registration in AppServiceProvider since they use the booted() method pattern (auto-registered). Confirm no dedicated Observer classes are needed since inline booted() callbacks are the project's pattern (similar to existing ContentCacheInvalidationObserver, SitemapInvalidationObserver, AuditableObserver registered in AppServiceProvider.php lines 70-85 but those are for complex logic).",
+    "Create tests/Feature/CacheInvalidationTest.php to verify cache clearing works. Test cases: 1) Creating/updating Menu clears menu.location.{location} cache. 2) Creating/updating MenuItem clears parent menu location cache. 3) Creating/updating Setting clears settings.{group} cache. 4) Creating/updating Comment clears comments.pending.count cache. 5) Creating/updating ContactSubmission clears contacts.unread.count cache. Use RefreshDatabase trait.",
+    "Each test should: set a cache value, modify the model, assert cache is cleared (Cache::has() returns false or Cache::get() returns null for the specific key).",
+    "If any issues found with existing implementations, fix them. Most likely everything is already correct based on code inspection."
+  ],
+  "acceptance_criteria": [
+    "All five models (Menu, MenuItem, Setting, Comment, ContactSubmission) have working cache invalidation in their booted() methods",
+    "CacheInvalidationTest.php created with at least 5 test cases covering each model's cache clearing",
+    "All tests pass, confirming cache keys are properly cleared when models are saved or deleted",
+    "No changes needed to AppServiceProvider since booted() method pattern is used (not dedicated observers)"
+  ],
+  "verification": [
+    "Run php artisan test --filter=CacheInvalidationTest and confirm all tests pass",
+    "Run full test suite php artisan test to ensure no regressions",
+    "Run composer analyse and composer format:test",
+    "Manual verification: In tinker, Cache::put('test.key', 'value', 60); $menu = Menu::first(); $menu->touch(); Cache::has('menu.location.'.$menu->location) should return false"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

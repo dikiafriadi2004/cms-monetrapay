@@ -1,0 +1,11 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - routes
+        - database/factories
+        - database/seeders
+    level: 2
+    treatPhpDocTypesAsCertain: false

@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-004",
+  "type": "refactor",
+  "description": "Standardize error handling across controllers by creating a RespondsWithError trait and applying it to key admin controllers. Analysis report identified inconsistent error handling patterns: some use return back()->with('error'), some abort(), some throw exceptions. This feature creates a consistent API.",
+  "status": "pending",
+  "steps": [
+    "Create app/Traits/RespondsWithError.php with trait RespondsWithError. Include method: protected function respondError(string $message, int $status = 400) { if (request()->expectsJson()) { return response()->json(['error' => $message], $status); } return back()->with('error', $message)->withInput(); }. Add a second method: protected function respondSuccess(string $message, ?string $redirectRoute = null) { if (request()->expectsJson()) { return response()->json(['success' => $message]); } $redirect = $redirectRoute ? redirect()->route($redirectRoute) : back(); return $redirect->with('success', $message); }",
+    "Update app/Http/Controllers/Admin/ContactSubmissionController.php to use the trait. Add 'use RespondsWithError;' at class level. Replace line 74 'return back()->with('error', ...)' with 'return $this->respondError(...)'. Replace line 106 'return back()->with('error', ...)' with 'return $this->respondError(...)'.",
+    "Update app/Http/Controllers/Admin/FileManagerController.php to use the trait. Add 'use RespondsWithError;'. Replace lines 103, 108, 113, 203 that use 'return back()->with('error', ...)' with 'return $this->respondError(...)'.",
+    "Update app/Http/Controllers/Admin/NewsletterCampaignController.php to use the trait. Add 'use RespondsWithError;'. Replace lines 58, 64, 119 that use 'return back()->with('error', ...)' with 'return $this->respondError(...)'.",
+    "Update app/Http/Controllers/Admin/SettingController.php to use the trait. Add 'use RespondsWithError;'. Replace line 93 'return back()->with('error', ...)' with 'return $this->respondError(...)'.",
+    "Add PHPDoc comments to the trait methods explaining usage: @param string $message, @param int $status (for respondError), @return \\Illuminate\\Http\\RedirectResponse|\\Illuminate\\Http\\JsonResponse"
+  ],
+  "acceptance_criteria": [
+    "RespondsWithError trait created with respondError and respondSuccess methods",
+    "Trait correctly detects JSON requests via request()->expectsJson() and returns appropriate response",
+    "All identified admin controllers (ContactSubmissionController, FileManagerController, NewsletterCampaignController, SettingController) use the trait",
+    "Error messages remain unchanged (same text as before)",
+    "Existing functionality preserved (redirects back with error message in session)"
+  ],
+  "verification": [
+    "Run composer analyse and composer format:test",
+    "Run php artisan test - specifically tests/Feature/ContactSubmissionTest.php and any other admin controller tests",
+    "Manual: Test error scenarios in admin panel (e.g., upload invalid file, reply to contact without email) and verify error messages still display correctly",
+    "Manual: Test with Accept: application/json header and verify JSON error responses work"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

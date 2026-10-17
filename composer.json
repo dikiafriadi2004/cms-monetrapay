@@ -1,0 +1,115 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "mudk/cms-monetrapay",
+    "type": "project",
+    "description": "CMS MonetraPay berbasis Laravel untuk mengelola konten, blog, halaman, media, iklan, newsletter, komentar, SEO, dan admin RBAC.",
+    "keywords": [
+        "laravel",
+        "cms",
+        "monetrapay",
+        "blog",
+        "seo"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "intervention/image": "^3.11",
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1",
+        "mews/purifier": "^3.4",
+        "pragmarx/google2fa-laravel": "^3.0",
+        "sentry/sentry-laravel": "^4.25",
+        "spatie/laravel-permission": "^6.25",
+        "spatie/laravel-sitemap": "^8.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "2.0",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.24",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npm run dev:all"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "analyse": [
+            "@php vendor/bin/phpstan analyse --memory-limit=512M"
+        ],
+        "format": [
+            "@php vendor/bin/pint"
+        ],
+        "format:test": [
+            "@php vendor/bin/pint --test"
+        ],
+        "quality": [
+            "@composer format:test",
+            "@composer analyse",
+            "@composer test"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

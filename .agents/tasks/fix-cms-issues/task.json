@@ -1,0 +1,7 @@
+{
+  "task_id": "fix-cms-issues",
+  "task_description": "Fix critical and high priority issues identified in the CMS Monetrapay analysis report",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}
