@@ -84,10 +84,12 @@ class MenuService
     protected function resolveUrl(MenuItem $item): string
     {
         return match ($item->type) {
-            'page' => $item->page ? route('page.show', $item->page->slug) : '#',
-            'blog-category' => $item->category ? route('category.show', $item->category->slug) : '#',
-            'custom-url' => $item->url ?? '#',
-            default => '#',
+            'page'     => $item->page ? route('page.show', $item->page->slug) : ($item->url ? url($item->url) : '#'),
+            'category' => $item->category ? route('category.show', $item->category->slug) : ($item->url ? url($item->url) : '#'),
+            'external' => $item->url ?? '#',
+            default    => !empty($item->url)
+                            ? (str_starts_with($item->url, 'http') ? $item->url : url($item->url))
+                            : '#',
         };
     }
 

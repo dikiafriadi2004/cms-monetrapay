@@ -27,19 +27,20 @@ class MenuSeeder extends Seeder
         ]);
 
         $headerItems = [
-            ['label' => 'Beranda', 'url' => '/', 'order' => 1],
-            ['label' => 'Layanan', 'url' => '/layanan', 'order' => 2],
-            ['label' => 'Blog', 'url' => '/blog', 'order' => 3],
-            ['label' => 'Tentang Kami', 'url' => '/tentang-kami', 'order' => 4],
-            ['label' => 'Kontak', 'url' => '/kontak', 'order' => 5],
+            ['label' => 'Beranda',      'url' => '/',             'type' => 'custom', 'order' => 1],
+            ['label' => 'Layanan',      'url' => '/layanan',      'type' => 'custom', 'order' => 2],
+            ['label' => 'Blog',         'url' => '/blog',         'type' => 'custom', 'order' => 3],
+            ['label' => 'Tentang Kami', 'url' => '/tentang-kami', 'type' => 'custom', 'order' => 4],
+            ['label' => 'Kontak',       'url' => '/kontak',       'type' => 'custom', 'order' => 5],
         ];
 
         foreach ($headerItems as $item) {
             MenuItem::create([
                 'menu_id' => $headerMenu->id,
-                'label' => $item['label'],
-                'url' => $item['url'],
-                'order' => $item['order'],
+                'label'   => $item['label'],
+                'url'     => $item['url'],
+                'type'    => $item['type'],
+                'order'   => $item['order'],
             ]);
         }
 
@@ -51,20 +52,21 @@ class MenuSeeder extends Seeder
         ]);
 
         $footerItems = [
-            ['label' => 'Tentang MonetraPay', 'url' => '/tentang-kami', 'order' => 1],
-            ['label' => 'Layanan Kami', 'url' => '/layanan', 'order' => 2],
-            ['label' => 'Blog & Artikel', 'url' => '/blog', 'order' => 3],
-            ['label' => 'Kontak Kami', 'url' => '/kontak', 'order' => 4],
-            ['label' => 'Syarat & Ketentuan', 'url' => '/syarat-ketentuan', 'order' => 5],
-            ['label' => 'Kebijakan Privasi', 'url' => '/kebijakan-privasi', 'order' => 6],
+            ['label' => 'Tentang MonetraPay', 'url' => '/tentang-kami',       'type' => 'custom', 'order' => 1],
+            ['label' => 'Layanan Kami',        'url' => '/layanan',            'type' => 'custom', 'order' => 2],
+            ['label' => 'Blog & Artikel',      'url' => '/blog',               'type' => 'custom', 'order' => 3],
+            ['label' => 'Kontak Kami',         'url' => '/kontak',             'type' => 'custom', 'order' => 4],
+            ['label' => 'Syarat & Ketentuan',  'url' => '/syarat-ketentuan',   'type' => 'custom', 'order' => 5],
+            ['label' => 'Kebijakan Privasi',   'url' => '/kebijakan-privasi',  'type' => 'custom', 'order' => 6],
         ];
 
         foreach ($footerItems as $item) {
             MenuItem::create([
                 'menu_id' => $footerMenu->id,
-                'label' => $item['label'],
-                'url' => $item['url'],
-                'order' => $item['order'],
+                'label'   => $item['label'],
+                'url'     => $item['url'],
+                'type'    => $item['type'],
+                'order'   => $item['order'],
             ]);
         }
 
@@ -76,19 +78,20 @@ class MenuSeeder extends Seeder
         ]);
 
         $socialItems = [
-            ['label' => 'Facebook', 'url' => 'https://facebook.com/monetrapay', 'order' => 1],
-            ['label' => 'Twitter', 'url' => 'https://twitter.com/monetrapay', 'order' => 2],
-            ['label' => 'Instagram', 'url' => 'https://instagram.com/monetrapay', 'order' => 3],
-            ['label' => 'LinkedIn', 'url' => 'https://linkedin.com/company/monetrapay', 'order' => 4],
-            ['label' => 'YouTube', 'url' => 'https://youtube.com/@monetrapay', 'order' => 5],
+            ['label' => 'Facebook',  'url' => 'https://facebook.com/monetrapay',         'type' => 'external', 'order' => 1],
+            ['label' => 'Twitter',   'url' => 'https://twitter.com/monetrapay',           'type' => 'external', 'order' => 2],
+            ['label' => 'Instagram', 'url' => 'https://instagram.com/monetrapay',         'type' => 'external', 'order' => 3],
+            ['label' => 'LinkedIn',  'url' => 'https://linkedin.com/company/monetrapay',  'type' => 'external', 'order' => 4],
+            ['label' => 'YouTube',   'url' => 'https://youtube.com/@monetrapay',          'type' => 'external', 'order' => 5],
         ];
 
         foreach ($socialItems as $item) {
             MenuItem::create([
                 'menu_id' => $socialMenu->id,
-                'label' => $item['label'],
-                'url' => $item['url'],
-                'order' => $item['order'],
+                'label'   => $item['label'],
+                'url'     => $item['url'],
+                'type'    => $item['type'],
+                'order'   => $item['order'],
             ]);
         }
 

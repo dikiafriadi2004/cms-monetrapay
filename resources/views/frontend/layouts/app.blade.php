@@ -96,18 +96,10 @@
     
     // Use MenuService for dynamic menus (instead of hardcoded)
     $menuService = app(\App\Services\MenuService::class);
-    $primaryMenu = $menuService->getMenuByLocation('primary') ?? [];
+    // location 'header' matches MenuSeeder
+    $primaryMenu = $menuService->getMenuByLocation('header') ?? [];
     $footerMenuItems = $menuService->getMenuByLocation('footer') ?? [];
     $socialMenuItems = $menuService->getMenuByLocation('social') ?? [];
-    
-    // Fallback hardcoded menu (only if no menu in database)
-    $navLinks = [
-        ['label' => 'Beranda',      'href' => url('/'),             'active' => $currentPath === '/'],
-        ['label' => 'Layanan',      'href' => url('/layanan'),      'active' => $currentPath === 'layanan'],
-        ['label' => 'Blog',         'href' => url('/blog'),         'active' => $isBlog],
-        ['label' => 'Tentang Kami', 'href' => url('/tentang-kami'), 'active' => $currentPath === 'tentang-kami'],
-        ['label' => 'Kontak',       'href' => url('/kontak'),       'active' => $currentPath === 'kontak'],
-    ];
 @endphp
 <body class="min-h-screen bg-white flex flex-col font-sans text-slate-700 antialiased"
       x-data="{ mobileMenuOpen: false, scrolled: false }"
@@ -150,16 +142,6 @@
                         <span class="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-primary transition-all duration-300 {{ $active ? 'w-5' : 'w-0 group-hover:w-5' }}"></span>
                     </a>
                     @endforeach
-                @else
-                    @foreach($navLinks as $link)
-                    <a href="{{ $link['href'] }}"
-                       class="relative px-3.5 py-2 text-sm font-semibold rounded-lg transition-all duration-200 group
-                              {{ $link['active'] ? 'text-primary' : 'text-slate-600 hover:text-primary hover:bg-primary-light/60' }}">
-                        {{ $link['label'] }}
-                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-primary transition-all duration-300 {{ $link['active'] ? 'w-5' : 'w-0 group-hover:w-5' }}"></span>
-                    </a>
-                    @endforeach
-                @endif
             </nav>
             {{-- Right: Search + CTA + Hamburger --}}
             <div class="flex items-center gap-2">
@@ -249,14 +231,6 @@
                    class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 {{ $ma ? 'bg-primary-light text-primary' : 'text-slate-600 hover:bg-slate-50 hover:text-primary' }}">
                     <span class="w-1.5 h-1.5 rounded-full {{ $ma ? 'bg-primary' : 'bg-slate-300' }} shrink-0"></span>
                     {{ $item['label'] ?? '' }}
-                </a>
-                @endforeach
-            @else
-                @foreach($navLinks as $link)
-                <a href="{{ $link['href'] }}" @click="mobileMenuOpen = false"
-                   class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 {{ $link['active'] ? 'bg-primary-light text-primary' : 'text-slate-600 hover:bg-slate-50 hover:text-primary' }}">
-                    <span class="w-1.5 h-1.5 rounded-full {{ $link['active'] ? 'bg-primary' : 'bg-slate-300' }} shrink-0"></span>
-                    {{ $link['label'] }}
                 </a>
                 @endforeach
             @endif
@@ -350,30 +324,20 @@
                 </div>
                 <div class="md:col-span-6 lg:col-span-4">
                     @php
-                        $defaultFooterLinks = [
-                            ['label' => 'Beranda', 'url' => url('/')],
-                            ['label' => 'Layanan', 'url' => url('/layanan')],
-                            ['label' => 'Blog', 'url' => url('/blog')],
-                            ['label' => 'Tentang Kami', 'url' => url('/tentang-kami')],
-                            ['label' => 'Kontak', 'url' => url('/kontak')],
-                        ];
-                        $seenFooterPaths = collect($defaultFooterLinks)->map(fn($link) => trim(parse_url($link['url'], PHP_URL_PATH) ?? '/', '/'))->merge(['kebijakan-privasi', 'syarat-ketentuan', 'faq'])->all();
+                        // Merge any extra footer items from database that aren't already shown
+                        $shownFooterPaths = ['kebijakan-privasi', 'syarat-ketentuan', 'faq'];
                     @endphp
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div>
                             <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-5">Navigasi</h4>
                             <ul class="space-y-3">
-                                @foreach($defaultFooterLinks as $link)
-                                    <li><a href="{{ $link['url'] }}" class="text-sm text-slate-400 hover:text-primary transition-colors">{{ $link['label'] }}</a></li>
-                                @endforeach
-                                @if(!empty($footerMenu))
-                                    @foreach($footerMenu as $item)
-                                        @php $itemPath = trim(parse_url($item['url'] ?? '#', PHP_URL_PATH) ?? '#', '/'); @endphp
-                                        @if(!in_array($itemPath, $seenFooterPaths, true))
-                                            <li><a href="{{ $item['url'] ?? '#' }}" class="text-sm text-slate-400 hover:text-primary transition-colors">{{ $item['label'] ?? '' }}</a></li>
-                                        @endif
-                                    @endforeach
-                                @endif
+                                @forelse($footerMenuItems as $item)
+                                    <li><a href="{{ $item['url'] ?? '#' }}" class="text-sm text-slate-400 hover:text-primary transition-colors">{{ $item['label'] ?? '' }}</a></li>
+                                @empty
+                                    {{-- Minimal fallback if footer menu empty in DB --}}
+                                    <li><a href="{{ url('/') }}" class="text-sm text-slate-400 hover:text-primary transition-colors">Beranda</a></li>
+                                    <li><a href="{{ url('/blog') }}" class="text-sm text-slate-400 hover:text-primary transition-colors">Blog</a></li>
+                                @endforelse
                             </ul>
                         </div>
                         <div>
