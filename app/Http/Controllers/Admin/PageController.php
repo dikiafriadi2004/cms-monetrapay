@@ -349,10 +349,12 @@ class PageController extends Controller
     protected function getAvailableTemplates(): array
     {
         return [
-            'default' => 'Default',
-            'full-width' => 'Full Width',
-            'sidebar-left' => 'Sidebar Kiri',
-            'sidebar-right' => 'Sidebar Kanan',
+            'default'        => '📄 Default — Artikel standar dengan lebar sedang',
+            'full-width'     => '🖥️ Full Width — Lebar penuh tanpa padding samping',
+            'sidebar-right'  => '📰 Sidebar Kanan — Konten + widget di kanan',
+            'sidebar-left'   => '📰 Sidebar Kiri — Widget di kiri + konten',
+            'landing'        => '🚀 Landing Page — Fokus konversi, tanpa distraksi',
+            'docs'           => '📚 Dokumentasi — TOC sidebar + konten panjang',
         ];
     }
 }

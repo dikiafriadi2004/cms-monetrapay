@@ -75,4 +75,26 @@
             </div>
         </div>
     </div>
+
+    {{-- Section: Navbar CTA --}}
+    <div class="pt-5 border-t border-slate-100">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tombol CTA Navbar</h3>
+        <p class="text-[11px] text-slate-400 mb-3">Tombol di pojok kanan navbar yang tampil di semua halaman. Kosongkan untuk menyembunyikan tombol.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="navbar_cta_text" class="block text-xs font-semibold text-slate-700 mb-1.5">Teks Tombol</label>
+                <input type="text" name="navbar_cta_text" id="navbar_cta_text"
+                       value="{{ old('navbar_cta_text', $settings['navbar_cta_text'] ?? 'Daftar Jadi Agen') }}"
+                       maxlength="50" placeholder="Daftar Jadi Agen">
+                @error('navbar_cta_text') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label for="navbar_cta_url" class="block text-xs font-semibold text-slate-700 mb-1.5">Link Tombol</label>
+                <input type="text" name="navbar_cta_url" id="navbar_cta_url"
+                       value="{{ old('navbar_cta_url', $settings['navbar_cta_url'] ?? '/kontak') }}"
+                       maxlength="255" placeholder="/kontak atau https://...">
+                @error('navbar_cta_url') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+        </div>
+    </div>
 </div>

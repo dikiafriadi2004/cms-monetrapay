@@ -43,9 +43,14 @@ class PageFrontController extends Controller
 
         // Choose template based on page template field
         $templateMap = [
-            'layanan' => 'frontend.page.layanan',
+            'layanan'      => 'frontend.page.layanan',
             'tentang-kami' => 'frontend.page.tentang-kami',
-            'kontak' => 'frontend.page.kontak',
+            'kontak'       => 'frontend.page.kontak',
+            'full-width'   => 'frontend.page.template-full-width',
+            'sidebar-right'=> 'frontend.page.template-sidebar-right',
+            'sidebar-left' => 'frontend.page.template-sidebar-left',
+            'landing'      => 'frontend.page.template-landing',
+            'docs'         => 'frontend.page.template-docs',
         ];
 
         $viewName = $templateMap[$page->template] ?? 'frontend.page.show';

@@ -18,7 +18,31 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {{-- Load Google Fonts dynamically based on active theme --}}
+    @php
+        try {
+            $activeThemeFonts = app(\App\Services\ThemeService::class)->getActiveTheme();
+            $fontHeading = $activeThemeFonts?->config['font_heading'] ?? 'Plus Jakarta Sans';
+            $fontBody    = $activeThemeFonts?->config['font_body']    ?? 'Plus Jakarta Sans';
+            // Fonts that don't need external loading (system/web-safe)
+            $systemFonts = ['Georgia','Times New Roman','Arial','Helvetica','Verdana','Tahoma','system-ui'];
+            $needGoogleFonts = !in_array($fontHeading, $systemFonts) || !in_array($fontBody, $systemFonts);
+            // Build Google Fonts URL
+            $fontsToLoad = collect([$fontHeading, $fontBody])
+                ->unique()
+                ->filter(fn($f) => !in_array($f, $systemFonts))
+                ->map(fn($f) => urlencode($f) . ':wght@300;400;500;600;700;800')
+                ->implode('&family=');
+        } catch (\Throwable $e) {
+            $needGoogleFonts = true;
+            $fontsToLoad = 'Plus+Jakarta+Sans:wght@300;400;500;600;700;800';
+        }
+    @endphp
+    @if($needGoogleFonts && $fontsToLoad)
+    <link href="https://fonts.googleapis.com/css2?family={{ $fontsToLoad }}&display=swap" rel="stylesheet">
+    @else
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    @endif
     {{-- Preload critical assets --}}
     @php $logoPreload = \App\Models\Setting::get('logo', 'general'); @endphp
     @if($logoPreload)
@@ -107,13 +131,16 @@
 @php
     $currentPath = request()->path();
     $isBlog = str_starts_with($currentPath, 'blog');
-    
-    // Use MenuService for dynamic menus (instead of hardcoded)
-    $menuService = app(\App\Services\MenuService::class);
-    // location 'header' matches MenuSeeder
-    $primaryMenu = $menuService->getMenuByLocation('header') ?? [];
+
+    // Use MenuService for dynamic menus
+    $menuService     = app(\App\Services\MenuService::class);
+    $primaryMenu     = $menuService->getMenuByLocation('header') ?? [];
     $footerMenuItems = $menuService->getMenuByLocation('footer') ?? [];
     $socialMenuItems = $menuService->getMenuByLocation('social') ?? [];
+
+    // CTA button from Settings (fallback to defaults)
+    $ctaText = \App\Models\Setting::get('navbar_cta_text', 'general') ?: 'Daftar Jadi Agen';
+    $ctaUrl  = \App\Models\Setting::get('navbar_cta_url',  'general') ?: url('/kontak');
 @endphp
 <body class="min-h-screen bg-white flex flex-col font-sans text-slate-700 antialiased theme-{{ $themeSlug }}"
       x-data="{ mobileMenuOpen: false, scrolled: false }"
@@ -191,11 +218,13 @@
                     </div>
                 </div>
                 {{-- CTA --}}
-                <a href="{{ url('/kontak') }}"
+                @if(!empty($ctaText))
+                <a href="{{ $ctaUrl }}"
                    class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 bg-secondary text-white text-sm font-bold rounded-xl hover:bg-secondary-dark transition-all duration-200 shadow-md shadow-secondary/25 hover:-translate-y-0.5">
-                    Daftar Jadi Agen
+                    {{ $ctaText }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
+                @endif
                 {{-- Hamburger --}}
                 <button @click="mobileMenuOpen = true"
                         class="lg:hidden flex items-center justify-center w-9 h-9 text-slate-600 hover:text-primary rounded-xl hover:bg-slate-100 transition-colors"
@@ -248,13 +277,15 @@
                 @endforeach
             @endif
         </div>
+        @if(!empty($ctaText))
         <div class="px-5 py-5 border-t border-slate-100">
-            <a href="{{ url('/kontak') }}" @click="mobileMenuOpen = false"
+            <a href="{{ $ctaUrl }}" @click="mobileMenuOpen = false"
                class="flex items-center justify-center gap-2 w-full px-5 py-3.5 bg-secondary text-white text-sm font-bold rounded-xl hover:bg-secondary-dark transition-all duration-200 shadow-md shadow-secondary/25">
-                Daftar Jadi Agen Sekarang
+                {{ $ctaText }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
         </div>
+        @endif
     </nav>
 </header>
 
