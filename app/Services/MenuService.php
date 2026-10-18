@@ -117,4 +117,46 @@ class MenuService
         
         return $currentUrl === $menuUrl || str_starts_with($currentUrl, rtrim($menuUrl, '/') . '/');
     }
+
+    /**
+     * Validate menu structure (max 50 items, max depth 5)
+     */
+    public function validateStructure(array $items, int $depth = 0): bool
+    {
+        // Max 50 total items
+        if ($this->countItems($items) > 50) {
+            return false;
+        }
+
+        // Max depth 5
+        if ($depth > 5) {
+            return false;
+        }
+
+        foreach ($items as $item) {
+            if (isset($item['children']) && !empty($item['children'])) {
+                if (!$this->validateStructure($item['children'], $depth + 1)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Count total items in menu tree
+     */
+    protected function countItems(array $items): int
+    {
+        $count = count($items);
+
+        foreach ($items as $item) {
+            if (isset($item['children']) && !empty($item['children'])) {
+                $count += $this->countItems($item['children']);
+            }
+        }
+
+        return $count;
+    }
 }

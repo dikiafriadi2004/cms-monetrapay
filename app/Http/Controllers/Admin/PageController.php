@@ -94,6 +94,7 @@ class PageController extends Controller
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'meta_keywords' => $validated['meta_keywords'] ?? null,
+            'use_page_builder' => $request->has('use_page_builder') ? true : false,
         ]);
 
         return redirect()->route('admin.pages.index')
@@ -167,6 +168,7 @@ class PageController extends Controller
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'meta_keywords' => $validated['meta_keywords'] ?? null,
+            'use_page_builder' => $request->has('use_page_builder') ? true : false,
         ]);
 
         return redirect()->route('admin.pages.index')
