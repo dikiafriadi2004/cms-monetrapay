@@ -23,6 +23,11 @@ class PageFrontController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
 
+        // Check if page uses page builder
+        if ($page->use_page_builder) {
+            return $this->showWithPageBuilder($page);
+        }
+
         // Enhance content (lazy images, secure external links)
         $page->content = $this->contentEnhancer->enhance($page->content);
 
@@ -51,6 +56,35 @@ class PageFrontController extends Controller
         }
 
         return view($viewName, compact(
+            'page',
+            'breadcrumbs',
+            'canonicalUrl',
+            'metaTags',
+            'ogTags',
+            'twitterTags',
+            'structuredData',
+        ));
+    }
+
+    /**
+     * Show page with page builder components
+     */
+    protected function showWithPageBuilder(Page $page)
+    {
+        // Load visible components ordered
+        $page->load('visibleComponents');
+
+        // SEO data
+        $canonicalUrl = $this->seoService->getCanonicalUrl($page);
+        $metaTags = $this->seoService->getMetaTags($page);
+        $ogTags = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+        $twitterTags = $this->seoService->getTwitterCardTags($page);
+        $structuredData = $this->seoService->getStructuredData($page);
+
+        // Build breadcrumb
+        $breadcrumbs = $this->buildBreadcrumbs($page);
+
+        return view('frontend.page.builder', compact(
             'page',
             'breadcrumbs',
             'canonicalUrl',
