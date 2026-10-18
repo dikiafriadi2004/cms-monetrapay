@@ -93,6 +93,14 @@
 @php
     $currentPath = request()->path();
     $isBlog = str_starts_with($currentPath, 'blog');
+    
+    // Use MenuService for dynamic menus (instead of hardcoded)
+    $menuService = app(\App\Services\MenuService::class);
+    $primaryMenu = $menuService->getMenuByLocation('primary') ?? [];
+    $footerMenuItems = $menuService->getMenuByLocation('footer') ?? [];
+    $socialMenuItems = $menuService->getMenuByLocation('social') ?? [];
+    
+    // Fallback hardcoded menu (only if no menu in database)
     $navLinks = [
         ['label' => 'Beranda',      'href' => url('/'),             'active' => $currentPath === '/'],
         ['label' => 'Layanan',      'href' => url('/layanan'),      'active' => $currentPath === 'layanan'],
@@ -117,20 +125,20 @@
                 @php $logo = \App\Models\Setting::get('logo', 'general'); @endphp
                 @if($logo)
                     <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-10 lg:h-12 w-auto max-w-[200px] object-contain transition-transform group-hover:scale-105">
+                         class="h-14 lg:h-16 w-auto max-w-[250px] object-contain transition-transform group-hover:scale-105">
                 @elseif(file_exists(public_path('assets/images/logo.png')))
                     <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-10 lg:h-12 w-auto max-w-[200px] object-contain transition-transform group-hover:scale-105">
+                         class="h-14 lg:h-16 w-auto max-w-[250px] object-contain transition-transform group-hover:scale-105">
                 @else
                     <span class="text-xl lg:text-2xl font-extrabold tracking-tight">
                         <span class="text-primary">Monetra</span><span class="text-secondary">Pay</span>
                     </span>
                 @endif
             </a>
-            {{-- Desktop Nav --}}
+            {{-- Desktop Nav - Use MenuService (dynamic from database) --}}
             <nav class="hidden lg:flex items-center gap-0.5" role="navigation" aria-label="Main navigation">
-                @if(!empty($headerMenu))
-                    @foreach($headerMenu as $item)
+                @if(!empty($primaryMenu))
+                    @foreach($primaryMenu as $item)
                     @php
                         $p = ltrim(parse_url($item['url'] ?? '/', PHP_URL_PATH) ?? '/', '/');
                         $active = ($p === '' && $currentPath === '/') || ($p !== '' && str_starts_with($currentPath, $p));
@@ -234,8 +242,8 @@
             </form>
         </div>
         <div class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-            @if(!empty($headerMenu))
-                @foreach($headerMenu as $item)
+            @if(!empty($primaryMenu))
+                @foreach($primaryMenu as $item)
                 @php $p = ltrim(parse_url($item['url'] ?? '/', PHP_URL_PATH) ?? '/', '/'); $ma = ($p === '' && $currentPath === '/') || ($p !== '' && str_starts_with($currentPath, $p)); @endphp
                 <a href="{{ $item['url'] ?? '#' }}" @click="mobileMenuOpen = false"
                    class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 {{ $ma ? 'bg-primary-light text-primary' : 'text-slate-600 hover:bg-slate-50 hover:text-primary' }}">

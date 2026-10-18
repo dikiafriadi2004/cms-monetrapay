@@ -37,6 +37,14 @@ class PageBuilderController extends Controller
     ];
 
     /**
+     * Show page builder index (list of pages using page builder)
+     */
+    public function index(): View
+    {
+        return view('admin.page-builder.index');
+    }
+
+    /**
      * Show page builder editor
      */
     public function edit(Page $page): View

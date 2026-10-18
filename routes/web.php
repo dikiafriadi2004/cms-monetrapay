@@ -411,6 +411,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Page Builder
     Route::middleware('check.permission:page.edit')->group(function () {
+        Route::get('page-builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'index'])->name('page-builder.index');
         Route::get('pages/{page}/builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'edit'])->name('page-builder.edit');
         Route::post('pages/{page}/builder/save', [\App\Http\Controllers\Admin\PageBuilderController::class, 'save'])->name('page-builder.save');
         Route::get('pages/{page}/builder/preview', [\App\Http\Controllers\Admin\PageBuilderController::class, 'preview'])->name('page-builder.preview');

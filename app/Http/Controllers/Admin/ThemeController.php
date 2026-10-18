@@ -36,11 +36,8 @@ class ThemeController extends Controller
      */
     public function preview(Theme $theme): View
     {
-        // Store temporary theme in session for preview
-        session(['preview_theme' => $theme->id]);
-        
-        // Redirect to actual frontend with preview mode
-        return redirect()->to('/?theme_preview=' . $theme->id);
+        // Return view with iframe showing real frontend
+        return view('admin.themes.preview', compact('theme'));
     }
 
     /**
