@@ -166,8 +166,27 @@
                     </div>
                 </div>
 
-                {{-- Template --}}
+                {{-- Page Builder Toggle --}}
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-lg font-semibold text-slate-800">Page Builder</h2>
+
+                    <div class="flex items-center justify-between">
+                        <label for="use_page_builder" class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" name="use_page_builder" id="use_page_builder" value="1"
+                                       {{ old('use_page_builder') ? 'checked' : '' }}
+                                       class="sr-only peer"
+                                       onchange="togglePageBuilder()">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-slate-700">Gunakan Page Builder</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-slate-500">Aktifkan untuk membuat halaman dengan drag & drop components. Jika diaktifkan, konten di editor TinyMCE akan diabaikan.</p>
+                </div>
+
+                {{-- Template --}}
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4" id="template-section">
                     <h2 class="text-lg font-semibold text-slate-800">Template</h2>
 
                     <div>
@@ -227,5 +246,30 @@
             img.src = '';
         }
     }
+
+    function togglePageBuilder() {
+        const checkbox = document.getElementById('use_page_builder');
+        const contentSection = document.querySelector('[for="content"]').closest('.bg-white');
+        const templateSection = document.getElementById('template-section');
+
+        if (checkbox.checked) {
+            // Hide content editor when page builder is enabled
+            contentSection.style.opacity = '0.5';
+            contentSection.style.pointerEvents = 'none';
+            // Show template selection (page builder uses templates)
+            templateSection.classList.remove('hidden');
+        } else {
+            // Show content editor when page builder is disabled
+            contentSection.style.opacity = '1';
+            contentSection.style.pointerEvents = 'auto';
+            // Still show template (can use both)
+            templateSection.classList.remove('hidden');
+        }
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePageBuilder();
+    });
 </script>
 @endsection

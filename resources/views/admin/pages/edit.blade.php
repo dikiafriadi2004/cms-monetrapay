@@ -167,8 +167,40 @@
                     </div>
                 </div>
 
-                {{-- Template --}}
+                {{-- Page Builder Toggle --}}
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h2 class="text-lg font-semibold text-slate-800">Page Builder</h2>
+
+                    <div class="flex items-center justify-between">
+                        <label for="use_page_builder" class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" name="use_page_builder" id="use_page_builder" value="1"
+                                       {{ old('use_page_builder', $page->use_page_builder) ? 'checked' : '' }}
+                                       class="sr-only peer"
+                                       onchange="togglePageBuilder()">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-slate-700">Gunakan Page Builder</span>
+                        </label>
+                    </div>
+
+                    @if($page->use_page_builder)
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <p class="text-sm text-blue-800">
+                                <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                                Page Builder aktif. 
+                                <a href="{{ route('admin.page-builder.edit', $page) }}" class="font-semibold underline">Edit Komponen →</a>
+                            </p>
+                        </div>
+                    @endif
+
+                    <p class="text-xs text-slate-500">Aktifkan untuk membuat halaman dengan drag & drop components. Jika diaktifkan, konten di editor TinyMCE akan diabaikan.</p>
+                </div>
+
+                {{-- Template --}}
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4" id="template-section">
                     <h2 class="text-lg font-semibold text-slate-800">Template</h2>
 
                     <div>
@@ -249,5 +281,28 @@
             img.src = '';
         }
     }
+
+    function togglePageBuilder() {
+        const checkbox = document.getElementById('use_page_builder');
+        const contentSection = document.querySelector('[for="content"]').closest('.bg-white');
+        const templateSection = document.getElementById('template-section');
+
+        if (checkbox.checked) {
+            // Dim content editor when page builder is enabled
+            contentSection.style.opacity = '0.5';
+            contentSection.style.pointerEvents = 'none';
+            templateSection.classList.remove('hidden');
+        } else {
+            // Enable content editor when page builder is disabled
+            contentSection.style.opacity = '1';
+            contentSection.style.pointerEvents = 'auto';
+            templateSection.classList.remove('hidden');
+        }
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePageBuilder();
+    });
 </script>
 @endsection
