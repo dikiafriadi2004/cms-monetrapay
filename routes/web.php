@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\FileManagerController;
 use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\NewsletterCampaignController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
@@ -418,6 +419,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('page-builder/components', [\App\Http\Controllers\Admin\PageBuilderController::class, 'components'])->name('page-builder.components');
         Route::delete('page-builder/components/{component}', [\App\Http\Controllers\Admin\PageBuilderController::class, 'deleteComponent'])->name('page-builder.delete-component');
     });
+
+    // Notifications (AJAX endpoint - needs session/web middleware, not API)
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 /*

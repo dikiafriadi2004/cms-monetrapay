@@ -16,10 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadNotifications() {
         try {
-            const response = await fetch('/api/admin/notifications', {
+            const response = await fetch('/admin/notifications', {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                 }
             });
 
