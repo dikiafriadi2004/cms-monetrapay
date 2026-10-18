@@ -16,6 +16,7 @@ use App\Observers\SitemapInvalidationObserver;
 use App\Services\MailConfigService;
 use App\Support\RetryingFilesystem;
 use App\View\Composers\FrontendComposer;
+use App\View\Composers\NotificationComposer;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -94,5 +95,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Share common data with all frontend layout views
         View::composer('frontend.layouts.app', FrontendComposer::class);
+        
+        // Share notifications with admin layout
+        View::composer('admin.layouts.app', NotificationComposer::class);
     }
 }

@@ -33,7 +33,7 @@
         </div>
 
         {{-- Login Card --}}
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" x-data="{ showPassword: false }">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
             <div class="h-1 bg-gradient-to-r from-primary to-secondary"></div>
             <div class="p-8">
                 @if ($errors->any())
@@ -66,15 +66,15 @@
                             <a href="{{ route('password.request') }}" class="text-xs text-primary hover:text-primary-dark font-semibold">Lupa password?</a>
                         </div>
                         <div class="relative">
-                            <input type="password" x-bind:type="showPassword ? 'text' : 'password'" id="password" name="password"
+                            <input type="password" id="password" name="password"
                                    required autocomplete="current-password"
                                    placeholder="••••••••"
                                    class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all text-sm">
-                            <button type="button" @click="showPassword = !showPassword"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-primary"
-                                    :aria-label="showPassword ? 'Sembunyikan password' : 'Tampilkan password'">
-                                <span x-show="!showPassword">Show</span>
-                                <span x-show="showPassword" x-cloak>Hide</span>
+                            <button type="button" id="togglePassword"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-primary transition-colors"
+                                    aria-label="Tampilkan password">
+                                <span id="showText">Show</span>
+                                <span id="hideText" class="hidden">Hide</span>
                             </button>
                         </div>
                     </div>
@@ -92,6 +92,37 @@
                 </form>
             </div>
         </div>
+
+        <script>
+            // Toggle password visibility
+            document.addEventListener('DOMContentLoaded', function() {
+                const togglePassword = document.getElementById('togglePassword');
+                const passwordInput = document.getElementById('password');
+                const showText = document.getElementById('showText');
+                const hideText = document.getElementById('hideText');
+
+                if (togglePassword && passwordInput) {
+                    togglePassword.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Toggle the type attribute
+                        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        passwordInput.setAttribute('type', type);
+                        
+                        // Toggle the button text
+                        if (type === 'text') {
+                            showText.classList.add('hidden');
+                            hideText.classList.remove('hidden');
+                            togglePassword.setAttribute('aria-label', 'Sembunyikan password');
+                        } else {
+                            showText.classList.remove('hidden');
+                            hideText.classList.add('hidden');
+                            togglePassword.setAttribute('aria-label', 'Tampilkan password');
+                        }
+                    });
+                }
+            });
+        </script>
 
         <div class="text-center mt-6 space-y-2">
             <a href="{{ url('/') }}" class="inline-flex items-center text-xs font-semibold text-primary hover:text-secondary transition-colors">← Kembali ke website</a>
