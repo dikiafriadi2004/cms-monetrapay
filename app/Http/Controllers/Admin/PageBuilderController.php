@@ -49,6 +49,12 @@ class PageBuilderController extends Controller
      */
     public function edit(Page $page): View
     {
+        // Check if page exists
+        if (!$page || !$page->exists) {
+            abort(404, 'Page not found');
+        }
+
+        // Load components relationship
         $page->load('components');
 
         return view('admin.page-builder.edit', compact('page'));
