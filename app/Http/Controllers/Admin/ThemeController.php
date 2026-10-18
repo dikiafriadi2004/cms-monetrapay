@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Theme;
 use App\Services\ThemeService;
 use App\Traits\RespondsWithError;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 class ThemeController extends Controller
 {
-    use RespondsWithError;
+    use RespondsWithError, AuthorizesRequests;
 
     public function __construct(
         protected ThemeService $themeService
@@ -24,8 +25,6 @@ class ThemeController extends Controller
      */
     public function index(): View
     {
-        $this->authorize('setting.view');
-
         $themes = $this->themeService->getAllThemes();
         $activeTheme = $this->themeService->getActiveTheme();
 
@@ -37,8 +36,6 @@ class ThemeController extends Controller
      */
     public function preview(Theme $theme): View
     {
-        $this->authorize('setting.view');
-
         return view('admin.themes.preview', compact('theme'));
     }
 
@@ -47,8 +44,6 @@ class ThemeController extends Controller
      */
     public function activate(Request $request, Theme $theme): JsonResponse|RedirectResponse
     {
-        $this->authorize('setting.edit');
-
         try {
             $this->themeService->activateTheme($theme->id);
 
@@ -66,8 +61,6 @@ class ThemeController extends Controller
      */
     public function customize(Theme $theme): View
     {
-        $this->authorize('setting.edit');
-
         return view('admin.themes.customize', compact('theme'));
     }
 
@@ -76,8 +69,6 @@ class ThemeController extends Controller
      */
     public function update(Request $request, Theme $theme): JsonResponse|RedirectResponse
     {
-        $this->authorize('setting.edit');
-
         $validated = $request->validate([
             'config' => 'required|array',
             'config.primary_color' => 'required|string',

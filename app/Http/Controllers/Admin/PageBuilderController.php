@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\PageComponent;
 use App\Traits\RespondsWithError;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PageBuilderController extends Controller
 {
-    use RespondsWithError;
+    use RespondsWithError, AuthorizesRequests;
 
     /**
      * Available component types
@@ -40,8 +41,6 @@ class PageBuilderController extends Controller
      */
     public function edit(Page $page): View
     {
-        $this->authorize('page.edit');
-
         $page->load('components');
 
         return view('admin.page-builder.edit', compact('page'));
@@ -63,8 +62,6 @@ class PageBuilderController extends Controller
      */
     public function save(Request $request, Page $page): JsonResponse
     {
-        $this->authorize('page.edit');
-
         $validated = $request->validate([
             'components' => 'required|array',
             'components.*.component_type' => 'required|string',
@@ -97,8 +94,6 @@ class PageBuilderController extends Controller
      */
     public function preview(Page $page): View
     {
-        $this->authorize('page.view');
-
         $page->load('visibleComponents');
 
         return view('admin.page-builder.preview', compact('page'));
@@ -109,8 +104,6 @@ class PageBuilderController extends Controller
      */
     public function deleteComponent(PageComponent $component): JsonResponse
     {
-        $this->authorize('page.edit');
-
         try {
             $component->delete();
 
