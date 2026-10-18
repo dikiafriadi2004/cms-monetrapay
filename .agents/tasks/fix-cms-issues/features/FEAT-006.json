@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-006",
+  "type": "fix",
+  "description": "Fix ThemeService CSS variable output: app.blade.php never outputs theme CSS variables, and the @push('head') in builder.blade.php is silently dropped because app.blade.php has no @stack('head'). Fix both: add @stack('head') to app.blade.php and inject theme CSS variables directly into the layout head.",
+  "status": "pending",
+  "steps": [
+    "Open resources/views/frontend/layouts/app.blade.php. Locate the line `@vite(['resources/css/app.css', 'resources/js/app.js'])`. Immediately before that line, add a @php block that calls `app(\\App\\Services\\ThemeService::class)->applyThemeStyles()` and outputs it inside a <style> tag if non-empty: `@php $themeStyles = app(\\App\\Services\\ThemeService::class)->applyThemeStyles(); @endphp @if($themeStyles)<style>{!! $themeStyles !!}</style>@endif`.",
+    "In the same file resources/views/frontend/layouts/app.blade.php, find the closing `</head>` tag. Immediately before it, add `@stack('head')` so that pages using @push('head') (like builder.blade.php) can add extra head content.",
+    "Open resources/views/frontend/page/builder.blade.php. The existing @push('head') block already calls ThemeService. Remove ONLY the ThemeService call from that @push block (since the layout now handles it globally) but keep the canonical/og/twitter/structureddata meta tags. This prevents duplicate theme CSS injection.",
+    "Verify ThemeService::applyThemeStyles() does not crash when no active theme exists (it returns '' — confirm via code review of the method, no change needed)."
+  ],
+  "acceptance_criteria": [
+    "Visiting any frontend page (/, /blog, /any-slug) shows `<style>:root { --theme-primary:` in the page source <head>",
+    "@stack('head') appears in app.blade.php before </head>",
+    "builder.blade.php no longer calls ThemeService (layout handles it), but still pushes canonical/og/twitter meta",
+    "php artisan view:clear completes without errors",
+    "No 500 errors on frontend pages when no active theme is set (ThemeService returns empty string)"
+  ],
+  "verification": [
+    "php artisan view:clear && php artisan config:clear",
+    "php artisan test (confirm no regressions)",
+    "Open browser to any frontend page, view source, search for '--theme-primary' in <head> section"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

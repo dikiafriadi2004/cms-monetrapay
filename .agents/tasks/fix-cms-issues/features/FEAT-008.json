@@ -1,0 +1,42 @@
+{
+  "id": "FEAT-008",
+  "type": "feat",
+  "description": "Rebuild all 15 builder components in resources/views/components/builder/ with professional Tailwind CSS design. Current components use generic gray styling and lack the visual polish of the rest of the site. Each component must use the site's existing color tokens (text-primary, bg-primary, text-secondary, etc.), match the design language of the frontend layout (rounded-2xl, shadow-xl, gradient overlays, badge labels), and be completely responsive.",
+  "status": "pending",
+  "steps": [
+    "Rebuild resources/views/components/builder/hero.blade.php: Full-width section with `min-h-[70vh]` by default (small=50vh, medium=65vh, large=85vh). Background: either bg-image with overlay or `bg-gradient-to-br from-slate-900 via-primary/80 to-secondary/60`. Content centered with animated floating-shape decorations (3 floating-shape divs as in app.css). Dual CTA: primary white button + optional secondary ghost button (`$content['button2_text']` and `$content['button2_link']`). Badge label above title (`$content['badge']`). Subtitle with max-w-2xl mx-auto. Uses animate-on-scroll class on h1 and p. Preserves existing @php data extraction pattern.",
+    "Rebuild resources/views/components/builder/text.blade.php: Use `.prose-enhanced` wrapper class (already defined in app.css) instead of generic `.prose`. Add section heading with gradient-text support (`$settings['heading_gradient']` bool). Support `{!! $text !!}` to allow HTML content (since content comes from admin — add a note that content must be trusted). Add optional subtitle (`$content['subtitle']`) below heading.",
+    "Rebuild resources/views/components/builder/features.blade.php: Section badge label + large heading + subtitle trio at top. Cards use hover-lift class + bg-white + border border-slate-100 + shadow-sm. Icon container uses gradient background (from primary/20 to secondary/20) with the emoji/icon centered. Add `animate-on-scroll delay-{100*index}` on each card for staggered entry. Support optional `$content['description']` (section subtitle).",
+    "Rebuild resources/views/components/builder/cta.blade.php: For gradient style, use `bg-gradient-to-br from-primary to-secondary`. Add particles decoration (8 x `.particle` divs) already styled in app.css. Large bold heading (text-4xl md:text-5xl font-extrabold). Dual button support: primary white button + secondary ghost button. For solid style, use bg-dark with white text. For outline style, white bg with primary border.",
+    "Rebuild resources/views/components/builder/testimonials.blade.php: Cards with glass-card-hover class on hover. Star rating uses filled/unfilled SVG stars (yellow-400). Avatar uses image if provided, else initials circle with gradient bg. Add quote icon (large SVG `) above testimonial text. Section heading with badge. Support `$settings['bg_color']` (light/dark/gradient) for section background.",
+    "Rebuild resources/views/components/builder/pricing.blade.php: Featured plan has `ring-2 ring-primary shadow-2xl scale-105` relative to others. All plans have `rounded-3xl border border-slate-200`. Price display: large font size (text-6xl font-black) for the amount. Feature list items use green check SVG. Popular badge floats above featured card. Add a section comparison note (`$content['note']`) below the grid.",
+    "Rebuild resources/views/components/builder/team.blade.php: Photo in `aspect-square rounded-3xl object-cover` with overflow-hidden + group-hover:scale-110. Role badge uses `bg-primary/10 text-primary` pill. Bio text is truncated at 2 lines (line-clamp-2 via Tailwind). Social icons row uses platform-specific brand colors on hover (LinkedIn blue, Twitter black, Instagram gradient).",
+    "Rebuild resources/views/components/builder/gallery.blade.php: Grid layout with `gap-4`. Each image in `aspect-[4/3]` container with group-hover zoom. Caption overlay slides up on hover (translate-y-full → translate-y-0 transition). Masonry layout option: use CSS columns (columns-2 md:columns-3 gap-4) when `$settings['layout'] === 'masonry'`. Add `data-lightbox` attribute on each image link for future lightbox support.",
+    "Rebuild resources/views/components/builder/faq.blade.php: Remove x-collapse (not available from CDN Alpine by default — use x-show with transition instead: `x-transition:enter='transition ease-out duration-200' x-transition:enter-start='opacity-0 -translate-y-2' x-transition:enter-end='opacity-100 translate-y-0'`). Open item has `border-primary` border (border-2 border-primary). Question text uses font-semibold. Answer uses text-slate-600 leading-relaxed. Add numbering badge (01, 02...) to each question.",
+    "Rebuild resources/views/components/builder/contact-form.blade.php: This component is already well-built. Make minor improvements: ensure section uses the same bg-gradient-to-br from-slate-50 to-white pattern, confirm all fields map to ContactController validation (name required, phone required, email optional, city optional, message optional). No structural changes needed — this component is production-quality.",
+    "Rebuild resources/views/components/builder/video.blade.php: Support YouTube, Vimeo, and direct MP4 URLs. Detect URL type from `$content['url']`: if contains 'youtube.com' or 'youtu.be' convert to embed URL (replace watch?v= with embed/, handle youtu.be short URLs). If Vimeo, use player.vimeo.com/video/{id}. Wrap iframe in `aspect-video rounded-2xl overflow-hidden shadow-2xl`. Add heading and caption above/below. Iframe gets `loading=lazy title='$heading'` for accessibility.",
+    "Rebuild resources/views/components/builder/map.blade.php: Wrap iframe in `rounded-2xl overflow-hidden shadow-xl aspect-video`. Add an address overlay card (absolute bottom-4 left-4) with white bg, shadow, address text, and optional 'Get Directions' link. Support `$content['embed_url']` (full Google Maps embed URL), `$content['address']`, `$content['directions_url']`.",
+    "Rebuild resources/views/components/builder/social.blade.php: Platform-specific icon SVGs (Facebook, Instagram, Twitter/X, LinkedIn, YouTube, TikTok, WhatsApp). Each icon in a rounded button with hover state colored per platform (Facebook=blue-600, Instagram=pink-500, Twitter=slate-900, LinkedIn=blue-700, YouTube=red-600, TikTok=slate-900, WhatsApp=green-500). Support both grid layout and horizontal strip. Add follower count (`$link['followers']`) display below each.",
+    "Rebuild resources/views/components/builder/newsletter.blade.php: Large heading + subtitle. Email input + submit button inline (flex row). Use route('newsletter.subscribe') as form action (POST). Include CSRF token. Add privacy note below form. Use primary gradient background for the section. Match the newsletter form pattern already used in app.blade.php footer.",
+    "Rebuild resources/views/components/builder/html.blade.php: Keep the passthrough `{!! $content['html'] ?? '' !!}` but add a wrapper div with class `prose-enhanced mx-auto` and max-width controlled by `$settings['max_width']` (same options as text component). This ensures HTML output gets proper typography styling."
+  ],
+  "acceptance_criteria": [
+    "All 15 component files updated with professional Tailwind design",
+    "Hero component renders full-width with gradient overlay and dual CTA buttons",
+    "Features component cards have hover-lift effect and gradient icon containers",
+    "FAQ accordion works with Alpine.js x-show transitions (no x-collapse dependency)",
+    "Video component correctly converts YouTube watch URLs to embed URLs",
+    "Newsletter component posts to route('newsletter.subscribe') with CSRF",
+    "Contact form maps to ContactController fields (name, phone required; email, city, message optional)",
+    "All components use text-primary, bg-primary, text-secondary Tailwind classes (not hardcoded hex colors)",
+    "php artisan view:clear && php artisan test — no regressions"
+  ],
+  "verification": [
+    "php artisan view:clear",
+    "php artisan test (no regressions)",
+    "Create a test page with use_page_builder=true. Add at least hero, features, cta, faq, pricing components via database (or admin UI). Visit page in browser — confirm professional rendering without PHP errors.",
+    "npm run build (must succeed — Tailwind must process all new classes)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

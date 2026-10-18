@@ -89,6 +89,20 @@
         });
     </script>
     @endif
+    {{-- Active Theme CSS Variables --}}
+    @php
+        try {
+            $themeService = app(\App\Services\ThemeService::class);
+            $themeStyles  = $themeService->applyThemeStyles();
+            $themeSlug    = $themeService->getActiveTheme()?->slug ?? 'modern-corporate';
+        } catch (\Throwable $e) {
+            $themeStyles = '';
+            $themeSlug   = 'modern-corporate';
+        }
+    @endphp
+    @if(!empty($themeStyles))
+    <style id="theme-vars">{!! $themeStyles !!}</style>
+    @endif
 </head>
 @php
     $currentPath = request()->path();
@@ -101,7 +115,7 @@
     $footerMenuItems = $menuService->getMenuByLocation('footer') ?? [];
     $socialMenuItems = $menuService->getMenuByLocation('social') ?? [];
 @endphp
-<body class="min-h-screen bg-white flex flex-col font-sans text-slate-700 antialiased"
+<body class="min-h-screen bg-white flex flex-col font-sans text-slate-700 antialiased theme-{{ $themeSlug }}"
       x-data="{ mobileMenuOpen: false, scrolled: false }"
       x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 }, { passive: true })">
 

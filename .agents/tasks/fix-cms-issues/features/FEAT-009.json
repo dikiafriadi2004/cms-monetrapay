@@ -1,0 +1,44 @@
+{
+  "id": "FEAT-009",
+  "type": "feat",
+  "description": "Rebuild admin page builder editor (resources/views/admin/page-builder/edit.blade.php) into a WordPress-like two-panel UI with SortableJS drag-drop (CDN), Alpine.js component state management, per-type inline editing forms, and AJAX auto-save. The existing save route (POST admin/pages/{page}/builder/save, named admin.page-builder.save) accepts components[] array and is kept unchanged.",
+  "status": "pending",
+  "steps": [
+    "Load SortableJS from CDN in the edit.blade.php @section('scripts'): `<script src='https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js'></script>`. This is the only new dependency. Do NOT add it to package.json.",
+    "Replace the entire content of resources/views/admin/page-builder/edit.blade.php with a new two-panel layout using Alpine.js x-data for state management. The top-level Alpine component `pageBuilder` holds: `components` (array, initialized from PHP-rendered JSON of existing components), `saving` (bool), `lastSaved` (string), `addComponent(type)`, `removeComponent(index)`, `toggleVisibility(index)`, `editingIndex` (int or null), `saveAll()` async method.",
+    "Left panel (lg:col-span-8): Header row with page title + breadcrumb. Canvas area: a `<div id='sortable-canvas'>` containing one card per component. Each card shows: drag handle (≡ icon), component type badge, preview of first content field (truncated 50 chars), visibility toggle (eye icon Alpine x-model), edit button, delete button. Below the edit button, an inline accordion (x-show='editingIndex === index') renders the per-type form fields (see step 5).",
+    "Right panel (lg:col-span-4): Sticky card with section 'Add Component' listing all 15 component types as buttons (emoji icon + name + category badge). Clicking a type calls addComponent(type) which pushes a new component object with default content into the components array and sets editingIndex to the new index. Below the picker: 'Save All' button that calls saveAll(), shows saving spinner, displays last-saved timestamp. Also show page status (published/draft), slug, and link to preview.",
+    "Implement per-type inline form fields as a Blade @switch block inside the accordion. Each case renders labeled inputs/textareas that use `x-model='components[editingIndex].content.fieldname'` (Alpine.js). Forms use nested object binding. For repeating items (features list, testimonials, pricing plans, team members, gallery images, FAQ, social links), use `x-for` loops with add/remove row buttons. Default content values for each type: hero={title:'Hero Section',subtitle:'Tagline here',button_text:'Mulai Sekarang',button_link:'#',badge:'',height:'large',text_align:'center'}; text={heading:'',text:'',text_align:'left',max_width:'medium'}; features={heading:'Fitur Unggulan',description:'',columns:3,features:[{icon:'⚡',title:'Fitur 1',description:'Deskripsi'}]}; cta={heading:'Siap Bergabung?',text:'Daftar sekarang dan rasakan manfaatnya.',button_text:'Mulai Sekarang',button_link:'/kontak',style:'gradient'}; testimonials={heading:'Testimoni',columns:3,testimonials:[{name:'',position:'',text:'',rating:5,photo:''}]}; pricing={heading:'Harga',plans:[{name:'',description:'',price:'0',currency:'Rp',period:'bulan',featured:false,button_text:'Pilih',button_link:'#',features:['']}]}; team={heading:'Tim Kami',columns:4,members:[{name:'',position:'',bio:'',photo:''}]}; gallery={heading:'Galeri',columns:3,layout:'grid',images:[{url:'',alt:'',caption:''}]}; faq={heading:'FAQ',faqs:[{question:'',answer:''}]}; contact-form={title:'Hubungi Kami',subtitle:'',button_text:'Kirim Pesan',show_city:false,show_subject:false}; video={heading:'',url:'',caption:''}; map={heading:'Lokasi',embed_url:'',address:'',directions_url:''}; social={heading:'Ikuti Kami',links:[{platform:'instagram',url:''}]}; newsletter={heading:'Newsletter',subtitle:'',placeholder:'Email Anda',button_text:'Berlangganan'}; html={html:'<!-- Tulis HTML Anda di sini -->'}.",
+    "Implement saveAll() as an Alpine.js method: builds the POST body as JSON with `components` array (each item: component_type, content, settings, sort_order from array index, is_visible). Uses fetch() with method POST, Content-Type application/json, X-CSRF-TOKEN header (from meta tag). On success shows toast via window.showToast (already defined in admin.js). On error shows error toast. Updates lastSaved timestamp.",
+    "Initialize SortableJS after the DOM is ready using Alpine.js `x-init` or a `@script` block. `new Sortable(document.getElementById('sortable-canvas'), { handle: '.drag-handle', animation: 150, onEnd(evt) { const comp = pageBuilder.components.splice(evt.oldIndex, 1)[0]; pageBuilder.components.splice(evt.newIndex, 0, comp); } })`. Note: `pageBuilder` must be accessible from the Sortable callback — use Alpine.store or pass it via closure.",
+    "Auto-save: Set an interval in the x-init that calls saveAll() every 60 seconds if `components.length > 0`. Also call saveAll() when Alpine detects `components` change using a debounced `$watch('components', ...)` (500ms debounce). This mirrors WordPress auto-draft behavior.",
+    "Add a 'Preview' button in the header row that opens `{{ route('admin.page-builder.preview', $page) }}` in a new tab.",
+    "Ensure the form gracefully handles the case where $page->components is empty (new page builder page) — initialize components array as `[]` in that case.",
+    "The Blade template renders initial component data using: `x-data=\"pageBuilder({{ json_encode($page->components->map(fn($c) => ['id' => $c->id, 'component_type' => $c->component_type, 'content' => $c->content, 'settings' => $c->settings ?? [], 'sort_order' => $c->sort_order, 'is_visible' => $c->is_visible])->values()->toJson() }})\"`. Define `pageBuilder(initialComponents)` as a global JS function (in a @push('scripts') block) that returns the Alpine component object.",
+    "Style notes: Canvas cards use bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow. Drag handle (.drag-handle) uses cursor-grab text-slate-400. Component type badge uses colored variants (hero=purple, text=blue, features=green, cta=orange, etc.) for quick visual identification. Right panel is `sticky top-6`. The two-panel grid: `class='grid grid-cols-1 lg:grid-cols-12 gap-6'` with left=lg:col-span-8 and right=lg:col-span-4`."
+  ],
+  "acceptance_criteria": [
+    "Visiting /admin/pages/{id}/builder shows a two-panel layout: canvas (left) + component picker (right)",
+    "Clicking any component type in the right panel appends a new component card to the canvas",
+    "Clicking Edit on a card expands an inline form with pre-filled fields for that component type",
+    "Dragging and dropping cards reorders them (SortableJS working)",
+    "Clicking Save All posts to admin.page-builder.save route and shows success toast",
+    "Reloading the page shows previously saved components in their saved order",
+    "Visibility toggle (eye icon) toggles is_visible on the component object",
+    "Auto-save triggers every 60 seconds if components exist",
+    "npm run build succeeds (no new npm packages added)",
+    "php artisan test — no regressions"
+  ],
+  "verification": [
+    "php artisan view:clear",
+    "php artisan test (no regressions)",
+    "npm run build (must complete without errors)",
+    "Navigate to /admin/pages/{id}/builder where {id} is a page with use_page_builder=true",
+    "Add a hero component, fill in title and subtitle fields, click Save All",
+    "Reload page — confirm hero component appears with the saved values",
+    "Add a features component, drag it above hero, save, reload — confirm new order",
+    "Visit frontend page URL — confirm hero and features components render on the page"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
