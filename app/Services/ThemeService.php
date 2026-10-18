@@ -25,6 +25,20 @@ class ThemeService
     }
 
     /**
+     * Get the layout view name for the active theme.
+     * If a theme-specific layout exists, use it; otherwise fall back to default.
+     */
+    public function getLayoutView(): string
+    {
+        $theme = $this->getActiveTheme();
+        if (!$theme) {
+            return 'frontend.layouts.app';
+        }
+        $themed = 'frontend.themes.' . $theme->slug . '.layout';
+        return View::exists($themed) ? $themed : 'frontend.layouts.app';
+    }
+
+    /**
      * Generate CSS variables from theme config
      */
     public function applyThemeStyles(): string
