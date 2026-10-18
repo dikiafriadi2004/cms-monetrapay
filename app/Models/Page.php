@@ -33,6 +33,8 @@ class Page extends Model
         'title',
         'slug',
         'content',
+        'use_page_builder',
+        'layout_type',
         'featured_image',
         'template',
         'status',
@@ -40,12 +42,14 @@ class Page extends Model
         'meta_description',
         'meta_keywords',
         'order',
+        'user_id',
     ];
 
     protected function casts(): array
     {
         return [
             'order' => 'integer',
+            'use_page_builder' => 'boolean',
         ];
     }
 
@@ -57,5 +61,29 @@ class Page extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Page::class, 'parent_id');
+    }
+
+    /**
+     * Get the author of the page
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the components for the page
+     */
+    public function components()
+    {
+        return $this->hasMany(PageComponent::class)->ordered();
+    }
+
+    /**
+     * Get visible components only
+     */
+    public function visibleComponents()
+    {
+        return $this->hasMany(PageComponent::class)->visible()->ordered();
     }
 }

@@ -397,6 +397,26 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('tools/export/download', [\App\Http\Controllers\Admin\ExportImportController::class, 'download'])->name('tools.export.download');
         Route::delete('tools/export/delete', [\App\Http\Controllers\Admin\ExportImportController::class, 'deleteExport'])->name('tools.export.delete');
     });
+
+    // Theme Management
+    Route::middleware('check.permission:setting.view')->group(function () {
+        Route::get('themes', [\App\Http\Controllers\Admin\ThemeController::class, 'index'])->name('themes.index');
+        Route::get('themes/{theme}/preview', [\App\Http\Controllers\Admin\ThemeController::class, 'preview'])->name('themes.preview');
+    });
+    Route::middleware('check.permission:setting.edit')->group(function () {
+        Route::post('themes/{theme}/activate', [\App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
+        Route::get('themes/{theme}/customize', [\App\Http\Controllers\Admin\ThemeController::class, 'customize'])->name('themes.customize');
+        Route::put('themes/{theme}', [\App\Http\Controllers\Admin\ThemeController::class, 'update'])->name('themes.update');
+    });
+
+    // Page Builder
+    Route::middleware('check.permission:page.edit')->group(function () {
+        Route::get('pages/{page}/builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'edit'])->name('page-builder.edit');
+        Route::post('pages/{page}/builder/save', [\App\Http\Controllers\Admin\PageBuilderController::class, 'save'])->name('page-builder.save');
+        Route::get('pages/{page}/builder/preview', [\App\Http\Controllers\Admin\PageBuilderController::class, 'preview'])->name('page-builder.preview');
+        Route::get('page-builder/components', [\App\Http\Controllers\Admin\PageBuilderController::class, 'components'])->name('page-builder.components');
+        Route::delete('page-builder/components/{component}', [\App\Http\Controllers\Admin\PageBuilderController::class, 'deleteComponent'])->name('page-builder.delete-component');
+    });
 });
 
 /*
