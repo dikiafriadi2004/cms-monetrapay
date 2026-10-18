@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="/assets/images/favico.png" type="image/png">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @hasSection('uses-editor')
     <meta name="file-picker-url" content="{{ route('admin.files.picker') }}">
@@ -273,7 +273,7 @@
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
             <span class="flex-1">Komentar</span>
             @if(isset($notifications) && $notifications['pending_comments'] > 0)
-                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-amber-500 rounded-full">{{ $notifications['pending_comments'] > 99 ? '99+' : $notifications['pending_comments'] }}</span>
+                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-amber-500 rounded-full" data-notification-badge="pending_comments">{{ $notifications['pending_comments'] > 99 ? '99+' : $notifications['pending_comments'] }}</span>
             @endif
         </a>
         @endcan
@@ -329,7 +329,7 @@
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             <span class="flex-1">Kontak</span>
             @if(isset($notifications) && $notifications['unread_contacts'] > 0)
-                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-secondary rounded-full">{{ $notifications['unread_contacts'] > 99 ? '99+' : $notifications['unread_contacts'] }}</span>
+                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-secondary rounded-full" data-notification-badge="unread_contacts">{{ $notifications['unread_contacts'] > 99 ? '99+' : $notifications['unread_contacts'] }}</span>
             @endif
         </a>
 
@@ -418,7 +418,7 @@
                 <button @click="open = !open" @click.outside="open = false"
                         class="relative p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full flex items-center justify-center">{{ $notifications['total'] > 9 ? '9+' : $notifications['total'] }}</span>
+                    <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full flex items-center justify-center" data-notification-badge="total">{{ $notifications['total'] > 9 ? '9+' : $notifications['total'] }}</span>
                 </button>
                 <div x-show="open" x-cloak x-transition
                      class="absolute right-0 top-10 w-64 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
