@@ -82,34 +82,65 @@ class PageBuilderController extends Controller
     }
 
     /**
-     * Save page components
+     * Save page components.
+     * Accepts two formats:
+     *  - JSON bulk: { components: [{component_type, content, settings, sort_order, is_visible}] }
+     *  - Form single: component_type, content (JSON string), sort_order, is_visible
      */
-    public function save(Request $request, Page $page): JsonResponse
+    public function save(Request $request, Page $page): JsonResponse|RedirectResponse
     {
-        $validated = $request->validate([
-            'components' => 'required|array',
-            'components.*.component_type' => 'required|string',
-            'components.*.content' => 'required|array',
-            'components.*.settings' => 'nullable|array',
-            'components.*.sort_order' => 'required|integer',
-            'components.*.is_visible' => 'required|boolean',
-        ]);
-
         try {
-            // Delete existing components
-            $page->components()->delete();
+            // --- Format 1: JSON bulk save (future drag-drop UI) ---
+            if ($request->has('components') && is_array($request->input('components'))) {
+                $validated = $request->validate([
+                    'components'                  => 'required|array',
+                    'components.*.component_type' => 'required|string',
+                    'components.*.content'        => 'required|array',
+                    'components.*.settings'       => 'nullable|array',
+                    'components.*.sort_order'     => 'required|integer',
+                    'components.*.is_visible'     => 'required|boolean',
+                ]);
 
-            // Create new components
-            foreach ($validated['components'] as $componentData) {
-                $page->components()->create($componentData);
+                $page->components()->delete();
+
+                foreach ($validated['components'] as $componentData) {
+                    $page->components()->create($componentData);
+                }
+
+                $page->update(['use_page_builder' => true]);
+
+                return $this->successResponse('Komponen berhasil disimpan!');
             }
 
-            // Enable page builder for this page
+            // --- Format 2: Single component from admin form ---
+            $validated = $request->validate([
+                'component_type' => 'required|string|in:' . implode(',', array_keys($this->componentTypes)),
+                'content'        => 'required|string',   // JSON string from textarea
+                'sort_order'     => 'nullable|integer',
+                'is_visible'     => 'nullable',
+            ]);
+
+            // Decode content JSON
+            $contentDecoded = json_decode($validated['content'], true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return back()->withErrors(['content' => 'Format JSON tidak valid: ' . json_last_error_msg()]);
+            }
+
+            $page->components()->create([
+                'component_type' => $validated['component_type'],
+                'content'        => $contentDecoded,
+                'settings'       => [],
+                'sort_order'     => $validated['sort_order'] ?? ($page->components()->max('sort_order') + 1),
+                'is_visible'     => $request->boolean('is_visible', true),
+            ]);
+
             $page->update(['use_page_builder' => true]);
 
-            return $this->successResponse('Page components saved successfully!');
+            return redirect()->route('admin.page-builder.edit', $page)
+                ->with('success', 'Komponen berhasil ditambahkan!');
+
         } catch (\Throwable $e) {
-            return $this->handleError($e, 'Failed to save page components.');
+            return $this->handleError($e, 'Gagal menyimpan komponen.');
         }
     }
 
