@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'throttle:60,1'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'api.rate:60'])->prefix('admin')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications');
 });
