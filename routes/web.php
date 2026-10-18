@@ -386,6 +386,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('newsletter/{subscriber}', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])
         ->middleware('check.permission:setting.delete')
         ->name('newsletter.destroy');
+
+    // Export/Import Tools
+    Route::middleware('check.permission:setting.edit')->group(function () {
+        Route::get('tools/export-import', [\App\Http\Controllers\Admin\ExportImportController::class, 'index'])->name('tools.export-import');
+        Route::post('tools/export/blogs', [\App\Http\Controllers\Admin\ExportImportController::class, 'exportBlogs'])->name('tools.export.blogs');
+        Route::post('tools/export/pages', [\App\Http\Controllers\Admin\ExportImportController::class, 'exportPages'])->name('tools.export.pages');
+        Route::post('tools/import/blogs', [\App\Http\Controllers\Admin\ExportImportController::class, 'importBlogs'])->name('tools.import.blogs');
+        Route::post('tools/import/pages', [\App\Http\Controllers\Admin\ExportImportController::class, 'importPages'])->name('tools.import.pages');
+        Route::get('tools/export/download', [\App\Http\Controllers\Admin\ExportImportController::class, 'download'])->name('tools.export.download');
+        Route::delete('tools/export/delete', [\App\Http\Controllers\Admin\ExportImportController::class, 'deleteExport'])->name('tools.export.delete');
+    });
 });
 
 /*
