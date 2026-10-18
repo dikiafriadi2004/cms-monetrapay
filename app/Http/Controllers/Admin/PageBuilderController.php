@@ -47,17 +47,27 @@ class PageBuilderController extends Controller
     /**
      * Show page builder editor
      */
-    public function edit(Page $page): View
+    public function edit(Page $page)
     {
         // Check if page exists
         if (!$page || !$page->exists) {
-            abort(404, 'Page not found');
+            return redirect()->route('admin.pages.index')
+                ->with('error', 'Page not found. Please select a valid page.');
+        }
+
+        // Check if page builder is enabled for this page
+        if (!$page->use_page_builder) {
+            return redirect()->route('admin.pages.edit', $page->id)
+                ->with('warning', 'Page Builder is not enabled for this page. Please enable "Use Page Builder" toggle first.');
         }
 
         // Load components relationship
         $page->load('components');
 
-        return view('admin.page-builder.edit', compact('page'));
+        return view('admin.page-builder.edit', [
+            'page' => $page,
+            'componentTypes' => $this->componentTypes,
+        ]);
     }
 
     /**
