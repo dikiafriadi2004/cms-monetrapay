@@ -117,12 +117,12 @@
                 @php $logo = \App\Models\Setting::get('logo', 'general'); @endphp
                 @if($logo)
                     <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-9 lg:h-10 w-auto max-w-[165px] object-contain">
+                         class="h-10 lg:h-12 w-auto max-w-[200px] object-contain transition-transform group-hover:scale-105">
                 @elseif(file_exists(public_path('assets/images/logo.png')))
                     <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-9 lg:h-10 w-auto max-w-[165px] object-contain">
+                         class="h-10 lg:h-12 w-auto max-w-[200px] object-contain transition-transform group-hover:scale-105">
                 @else
-                    <span class="text-xl font-extrabold tracking-tight">
+                    <span class="text-xl lg:text-2xl font-extrabold tracking-tight">
                         <span class="text-primary">Monetra</span><span class="text-secondary">Pay</span>
                     </span>
                 @endif

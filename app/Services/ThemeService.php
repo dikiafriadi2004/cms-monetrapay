@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\View;
 class ThemeService
 {
     /**
-     * Get the active theme
+     * Get the active theme (or preview theme if in preview mode)
      */
     public function getActiveTheme(): ?Theme
     {
+        // Check if we're in preview mode
+        if (request()->has('theme_preview') && request()->user()) {
+            $previewId = request()->get('theme_preview');
+            return Theme::find($previewId);
+        }
+
         return Cache::remember('active_theme', 3600, function () {
             return Theme::active();
         });
