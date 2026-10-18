@@ -284,19 +284,36 @@
 
     function togglePageBuilder() {
         const checkbox = document.getElementById('use_page_builder');
-        const contentSection = document.querySelector('[for="content"]').closest('.bg-white');
+        const contentSection = document.querySelector('[for="content"]');
         const templateSection = document.getElementById('template-section');
 
+        if (!checkbox || !contentSection) {
+            console.error('Page Builder elements not found');
+            return;
+        }
+
+        const contentBox = contentSection.closest('.bg-white');
+        
         if (checkbox.checked) {
             // Dim content editor when page builder is enabled
-            contentSection.style.opacity = '0.5';
-            contentSection.style.pointerEvents = 'none';
-            templateSection.classList.remove('hidden');
+            if (contentBox) {
+                contentBox.style.opacity = '0.5';
+                contentBox.style.pointerEvents = 'none';
+            }
+            // Show template selection
+            if (templateSection) {
+                templateSection.classList.remove('hidden');
+            }
         } else {
             // Enable content editor when page builder is disabled
-            contentSection.style.opacity = '1';
-            contentSection.style.pointerEvents = 'auto';
-            templateSection.classList.remove('hidden');
+            if (contentBox) {
+                contentBox.style.opacity = '1';
+                contentBox.style.pointerEvents = 'auto';
+            }
+            // Still show template
+            if (templateSection) {
+                templateSection.classList.remove('hidden');
+            }
         }
     }
 
