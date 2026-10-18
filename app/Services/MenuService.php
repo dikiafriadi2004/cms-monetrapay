@@ -23,7 +23,6 @@ class MenuService
             }
 
             $items = MenuItem::where('menu_id', $menu->id)
-                ->where('is_active', true)
                 ->whereNull('parent_id')
                 ->orderBy('order')
                 ->get();
@@ -38,7 +37,6 @@ class MenuService
     public function buildTree(int $menuId): array
     {
         $items = MenuItem::where('menu_id', $menuId)
-            ->where('is_active', true)
             ->whereNull('parent_id')
             ->orderBy('order')
             ->get();
@@ -67,7 +65,6 @@ class MenuService
             // Get children
             $children = MenuItem::where('menu_id', $menuId ?? $item->menu_id)
                 ->where('parent_id', $item->id)
-                ->where('is_active', true)
                 ->orderBy('order')
                 ->get();
 
