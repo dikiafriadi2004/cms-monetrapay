@@ -1,4 +1,4 @@
-@extends(\$themeLayout ?? 'frontend.layouts.app')
+﻿@extends($themeLayout ?? 'frontend.layouts.app')
 
 @section('title', $page->title)
 

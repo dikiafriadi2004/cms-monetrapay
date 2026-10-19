@@ -1,5 +1,5 @@
-{{-- Template: Sidebar Kiri — sidebar 1/3 di kiri, konten 2/3 --}}
-@extends(\$themeLayout ?? 'frontend.layouts.app')
+﻿{{-- Template: Sidebar Kiri — sidebar 1/3 di kiri, konten 2/3 --}}
+@extends($themeLayout ?? 'frontend.layouts.app')
 @section('title', $page->meta_title ?: $page->title)
 @section('seo')
 <x-seo-meta :title="$metaTags['title']" :description="$metaTags['description']" :keywords="$metaTags['keywords']" :canonicalUrl="$canonicalUrl" :ogTags="$ogTags" :twitterTags="$twitterTags" :structuredData="$structuredData"/>
