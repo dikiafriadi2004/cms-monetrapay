@@ -44,6 +44,9 @@
 
 @section('content')
 
+@if(isset($themeSlug) && View::exists('frontend.home-themes.' . $themeSlug))
+    @include('frontend.home-themes.' . $themeSlug)
+@else
 {{-- ═══════════════ HERO SECTION ═══════════════ --}}
 <section class="relative overflow-hidden bg-primary-light">
     {{-- Subtle background shapes --}}
@@ -450,5 +453,7 @@
         </div>
     </div>
 </section>
+@endif
+{{-- End theme check --}}
 @endif
 @endsection
