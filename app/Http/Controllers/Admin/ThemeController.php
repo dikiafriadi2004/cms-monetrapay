@@ -36,8 +36,9 @@ class ThemeController extends Controller
      */
     public function preview(Theme $theme): View
     {
-        // Return view with iframe showing real frontend
-        return view('admin.themes.preview', compact('theme'));
+        $themeService = $this->themeService;
+        $previewUrl   = $themeService->previewUrl($theme, '/');
+        return view('admin.themes.preview', compact('theme', 'previewUrl'));
     }
 
     /**

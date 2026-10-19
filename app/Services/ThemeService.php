@@ -9,19 +9,42 @@ use Illuminate\Support\Facades\View;
 class ThemeService
 {
     /**
-     * Get the active theme (or preview theme if in preview mode)
+     * Get the active theme (or preview theme if in preview mode).
+     * Preview is identified by a signed token in ?theme_preview=id&_token=...
+     * so it works inside iframes without session/auth.
      */
     public function getActiveTheme(): ?Theme
     {
-        // Check if we're in preview mode
-        if (request()->has('theme_preview') && request()->user()) {
-            $previewId = request()->get('theme_preview');
-            return Theme::find($previewId);
+        $request = request();
+
+        if ($request->has('theme_preview')) {
+            $id    = (int) $request->get('theme_preview');
+            $token = $request->get('_preview_token', '');
+
+            // Validate HMAC token: sha256(id . app_key)
+            $expected = substr(hash_hmac('sha256', (string)$id, config('app.key')), 0, 16);
+
+            if (hash_equals($expected, $token)) {
+                $theme = Theme::find($id);
+                if ($theme) {
+                    return $theme;
+                }
+            }
         }
 
         return Cache::remember('active_theme', 3600, function () {
             return Theme::active();
         });
+    }
+
+    /**
+     * Generate a signed preview URL for a theme.
+     */
+    public function previewUrl(Theme $theme, string $path = '/'): string
+    {
+        $token = substr(hash_hmac('sha256', (string)$theme->id, config('app.key')), 0, 16);
+        $separator = str_contains($path, '?') ? '&' : '?';
+        return url($path) . $separator . 'theme_preview=' . $theme->id . '&_preview_token=' . $token;
     }
 
     /**
