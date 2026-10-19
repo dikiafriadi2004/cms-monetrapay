@@ -1,4 +1,4 @@
-{{-- Tech Startup Navbar: gradient border-bottom, Space Grotesk --}}
+﻿{{-- Tech Startup Navbar: gradient border-bottom, Space Grotesk --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50 transition-all duration-300"
         :style="scrolled ? 'box-shadow:0 2px 24px rgba(102,126,234,0.12)' : ''"
@@ -11,7 +11,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="px-4 py-2 rounded-xl text-sm font-medium transition-all"
                    style="{{ $active ? 'background:rgba(102,126,234,0.1);color:var(--theme-primary,#667EEA);font-weight:600' : 'color:#4B5563' }}">
                     {{ $item['label'] }}

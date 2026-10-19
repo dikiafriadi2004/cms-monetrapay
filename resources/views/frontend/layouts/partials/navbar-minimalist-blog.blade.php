@@ -1,4 +1,4 @@
-{{-- Minimalist Blog Navbar: ultra minimal, thin border, no decoration --}}
+﻿{{-- Minimalist Blog Navbar: ultra minimal, thin border, no decoration --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50" style="background:#fffef9;border-bottom:1px solid #e8e0d0">
     <div class="max-w-3xl mx-auto px-6">
@@ -9,7 +9,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-6">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="text-sm transition-colors" style="color:{{ $active ? 'var(--theme-secondary,#E74C3C)' : '#555' }};font-weight:{{ $active ? '600' : '400' }}">{{ $item['label'] }}</a>
                 @endforeach
             </nav>

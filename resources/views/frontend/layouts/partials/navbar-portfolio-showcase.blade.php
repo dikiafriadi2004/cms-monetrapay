@@ -1,4 +1,4 @@
-{{-- Portfolio Showcase Navbar: black bg, gold accents, Oswald uppercase --}}
+﻿{{-- Portfolio Showcase Navbar: black bg, gold accents, Oswald uppercase --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50 transition-all" :style="scrolled ? 'box-shadow:0 2px 32px rgba(0,0,0,0.8)' : ''"
         style="background:#000;border-bottom:1px solid rgba(255,215,0,0.2)">
@@ -10,7 +10,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-6">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="text-xs font-bold uppercase tracking-widest transition-colors relative"
                    style="color:{{ $active ? '#FFD700' : 'rgba(255,255,255,0.6)' }}">
                     {{ $item['label'] }}

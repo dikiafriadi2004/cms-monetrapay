@@ -1,4 +1,4 @@
-{{-- Classic Business Navbar: 3-row traditional (topbar + logo + green nav) --}}
+﻿{{-- Classic Business Navbar: 3-row traditional (topbar + logo + green nav) --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 
 {{-- Top info bar --}}
@@ -36,7 +36,7 @@
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <nav class="hidden lg:flex items-center">
             @foreach($primaryMenu as $item)
-            @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+            @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
             <a href="{{ $item['url'] }}" class="px-5 py-3 text-xs font-bold uppercase tracking-wider transition-colors"
                style="{{ $active ? 'background:rgba(255,255,255,0.15);color:white' : 'color:rgba(255,255,255,0.75)' }}">
                 {{ $item['label'] }}

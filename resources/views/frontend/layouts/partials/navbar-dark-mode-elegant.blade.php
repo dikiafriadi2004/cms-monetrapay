@@ -1,4 +1,4 @@
-{{-- Dark Mode Elegant Navbar: full glassmorphism, dark bg --}}
+﻿{{-- Dark Mode Elegant Navbar: full glassmorphism, dark bg --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50 transition-all duration-300"
         :style="scrolled ? 'background:rgba(8,8,16,0.95);box-shadow:0 4px 32px rgba(0,0,0,0.6)' : 'background:rgba(8,8,16,0.7)'"
@@ -11,7 +11,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="px-4 py-2 rounded-xl text-sm font-medium transition-all"
                    style="{{ $active ? 'background:rgba(159,122,234,0.15);color:var(--theme-primary,#9F7AEA)' : 'color:rgba(226,232,240,0.7)' }}">
                     {{ $item['label'] }}

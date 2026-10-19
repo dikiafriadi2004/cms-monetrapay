@@ -1,4 +1,4 @@
-{{-- E-commerce Navbar: topbar + compact nav tabs --}}
+﻿{{-- E-commerce Navbar: topbar + compact nav tabs --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 {{-- Promo topbar --}}
 <div style="background:var(--theme-primary,#27AE60)">
@@ -18,7 +18,7 @@
             {{-- Tab-style nav --}}
             <nav class="hidden lg:flex items-center gap-0 border rounded-lg overflow-hidden" style="border-color:#e5e7eb">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="px-4 py-2 text-xs font-bold uppercase tracking-wide border-r last:border-r-0 transition-colors"
                    style="{{ $active ? 'background:var(--theme-primary,#27AE60);color:white' : 'color:#4B5563;border-color:#e5e7eb' }}">
                     {{ $item['label'] }}

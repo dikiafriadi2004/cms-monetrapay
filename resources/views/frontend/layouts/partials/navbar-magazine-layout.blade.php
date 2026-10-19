@@ -1,4 +1,4 @@
-{{-- Magazine Layout Navbar: 3-row (topbar + masthead + nav) --}}
+﻿{{-- Magazine Layout Navbar: 3-row (topbar + masthead + nav) --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 
 {{-- Top utility bar --}}
@@ -27,7 +27,7 @@
     <div class="max-w-7xl mx-auto px-6">
         <nav class="hidden lg:flex items-center">
             @foreach($primaryMenu as $item)
-            @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+            @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
             <a href="{{ $item['url'] }}"
                class="px-5 py-3 text-xs font-bold uppercase tracking-wider border-r transition-colors"
                style="{{ $active ? 'background:var(--theme-primary,#C0392B);color:white' : 'color:#1a1a1a;border-color:#e0e0e0' }}">

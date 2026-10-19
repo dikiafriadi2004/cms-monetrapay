@@ -1,4 +1,4 @@
-{{-- Landing Page Navbar: FIXED transparent, turns solid on scroll --}}
+﻿{{-- Landing Page Navbar: FIXED transparent, turns solid on scroll --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="fixed top-0 w-full z-50 transition-all duration-300"
         :style="scrolled ? 'background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(255,87,34,0.12)' : 'background:transparent'">
@@ -14,7 +14,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}" class="px-4 py-2 rounded-lg text-sm font-bold transition-all"
                    :style="scrolled ? '{{ $active ? 'color:var(--theme-primary,#FF5722)' : 'color:#374151' }}' : 'color:rgba(255,255,255,0.9)'">
                     {{ $item['label'] }}

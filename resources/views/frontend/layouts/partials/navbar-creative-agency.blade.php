@@ -1,4 +1,4 @@
-{{-- Creative Agency Navbar: pill nav, gradient CTA, color border bottom --}}
+﻿{{-- Creative Agency Navbar: pill nav, gradient CTA, color border bottom --}}
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50 bg-white" style="border-bottom:3px solid var(--theme-primary,#FF6B6B)">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -11,7 +11,7 @@
             {{-- Pill nav --}}
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
-                @php $p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/',$cp=request()->path());$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
+                @php $cp=request()->path();$p=ltrim(parse_url($item['url']??'/',PHP_URL_PATH)??'/','/');$p=ltrim($p,'/');$active=($p===''&&$cp==='/')||($p!==''&&str_starts_with($cp,$p)); @endphp
                 <a href="{{ $item['url'] }}"
                    class="px-4 py-2 rounded-full text-sm font-bold transition-all"
                    style="{{ $active ? 'background:var(--theme-primary,#FF6B6B);color:white' : 'color:#374151' }}">
