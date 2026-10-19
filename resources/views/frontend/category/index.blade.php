@@ -1,5 +1,4 @@
-﻿@include('frontend.theme-layout')
-@extends($themeLayout)
+﻿@extends('frontend.layouts.app')
 
 @section('title', 'Kategori')
 
