@@ -1,126 +1,166 @@
 {{--
-    Classic Business Home
-    Layout: Traditional corporate, formal structure,
-    serif typography, trustworthy feel
+    Classic Business Home – bg-[#FAFAF7], dark green #14532D, dark brown #7C2D12, NO gradients
 --}}
 
-{{-- HERO: Traditional split, warm bg --}}
-<section style="background:#fdfdf8;border-bottom:2px solid #e8e0d0">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div>
-                <p class="text-sm font-bold uppercase tracking-widest mb-4" style="color:#8B4513">Platform Transaksi Digital</p>
-                <h1 class="leading-tight mb-6" style="font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:clamp(2rem,4vw,3.25rem);color:#1A5C38">
-                    {{ $homepage['hero_title'] ?? 'Mitra Terpercaya untuk Bisnis Digital Anda' }}
-                </h1>
-                <div style="width:4rem;height:3px;background:#8B4513;margin-bottom:1.5rem"></div>
-                <p class="text-lg leading-relaxed mb-8" style="color:#555;font-family:'Lato',sans-serif;line-height:1.8">
-                    {{ $homepage['hero_subtitle']??'Bergabung dengan pulsa, PPOB, game, dan e-wallet. Solusi lengkap untuk agen digital modern.' }}
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="{{ $homepage['hero_cta_url']??url('/kontak') }}"
-                       class="px-8 py-3 font-bold text-white text-sm uppercase tracking-wider transition-all"
-                       style="background:#1A5C38;font-family:'Lato',sans-serif"
-                       onmouseover="this.style.background='#145030'" onmouseout="this.style.background='#1A5C38'">
-                        {{ $homepage['hero_cta_text']??'Daftar Menjadi Agen' }}
-                    </a>
-                    <a href="{{ url('/layanan') }}" class="px-8 py-3 font-bold text-sm uppercase tracking-wider transition-all"
-                       style="border:2px solid #1A5C38;color:#1A5C38;font-family:'Lato',sans-serif">
-                        Lihat Layanan
-                    </a>
-                </div>
-            </div>
-            {{-- Stats in formal boxes --}}
-            <div class="grid grid-cols-2 gap-4">
-                @foreach([['100K+','Mitra Aktif'],['500+','Produk Digital'],['99.9%','Tingkat Uptime'],['Sejak 2020','Berpengalaman']] as $s)
-                <div class="p-6 text-center" style="border:2px solid #e8e0d0;background:white">
-                    <p class="font-black text-2xl mb-1" style="font-family:'Merriweather',serif;color:#1A5C38">{{ $s[0] }}</p>
-                    <p class="text-xs uppercase tracking-wider" style="color:#888;font-family:'Lato',sans-serif">{{ $s[1] }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</section>
-
-{{-- SERVICES: formal cards --}}
-<section class="py-20 px-4" style="background:#f5f2eb">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-14">
-            <h2 class="mb-3" style="font-family:'Merriweather',serif;font-weight:900;font-size:2rem;color:#1A5C38">Layanan Kami</h2>
-            <div style="width:3rem;height:2px;background:#8B4513;margin:0 auto"></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            @foreach([
-                [$homepage['service_1_title']??'Pulsa All Operator',$homepage['service_1_description']??'Semua operator, proses instan.','📱'],
-                [$homepage['service_2_title']??'PPOB & Tagihan',$homepage['service_2_description']??'PLN, PDAM, BPJS dan lainnya.','🏠'],
-                [$homepage['service_3_title']??'Top-Up Game',$homepage['service_3_description']??'100+ game populer tersedia.','🎮'],
-                [$homepage['service_4_title']??'E-Money & E-Wallet',$homepage['service_4_description']??'GoPay, OVO, DANA.','💳'],
-            ] as $s)
-            <div class="p-6 bg-white" style="border-top:4px solid #1A5C38;border:1px solid #e8e0d0;border-top:4px solid #1A5C38">
-                <div class="text-4xl mb-4">{{ $s[2] }}</div>
-                <h3 class="font-bold mb-2" style="font-family:'Merriweather',serif;font-size:1rem;color:#1A5C38">{{ $s[0] }}</h3>
-                <p class="text-sm leading-relaxed" style="color:#666;font-family:'Lato',sans-serif">{{ $s[1] }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- HOW IT WORKS: formal numbered --}}
-<section class="py-20 px-4 bg-white">
-    <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-14">
-            <h2 class="mb-3" style="font-family:'Merriweather',serif;font-weight:900;font-size:2rem;color:#1A5C38">Langkah Memulai</h2>
-            <div style="width:3rem;height:2px;background:#8B4513;margin:0 auto"></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach([['I','Pendaftaran','Isi formulir pendaftaran secara gratis dan akun langsung aktif.'],['II','Pengisian Saldo','Transfer saldo minimal Rp10.000 melalui bank atau e-wallet.'],['III','Memulai Bisnis','Akses semua produk dan mulai bertransaksi menghasilkan keuntungan.']] as $s)
-            <div class="text-center">
-                <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-black text-xl mx-auto mb-5" style="background:#1A5C38;font-family:'Merriweather',serif">{{ $s[0] }}</div>
-                <h3 class="font-bold text-lg mb-3" style="font-family:'Merriweather',serif;color:#1A5C38">{{ $s[1] }}</h3>
-                <p class="text-sm leading-relaxed" style="color:#666;font-family:'Lato',sans-serif">{{ $s[2] }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- CTA: formal banner --}}
-<section class="py-16 px-4" style="background:#1A5C38;border-top:4px solid #8B4513">
-    <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-black text-white mb-4" style="font-family:'Merriweather',serif">{{ $homepage['cta_title']??'Bergabung Bersama Kami' }}</h2>
-        <p class="text-lg mb-8" style="color:rgba(255,255,255,0.7);font-family:'Lato',sans-serif">{{ $homepage['cta_description']??'Lebih dari 100.000 mitra telah mempercayai kami.' }}</p>
-        <a href="{{ $homepage['cta_button_url']??url('/kontak') }}"
-           class="inline-block px-10 py-4 font-bold uppercase tracking-wider text-sm"
-           style="background:#8B4513;color:white;font-family:'Lato',sans-serif"
-           onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-            {{ $homepage['cta_button_text']??'Daftar Menjadi Mitra' }}
+{{-- 1. NAV --}}
+<nav class="bg-[#FAFAF7] border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
+        <a href="{{ url('/') }}" class="text-[#14532D] font-bold text-xl tracking-tight">
+            {{ $siteSettings['site_name'] ?? config('app.name') }}
         </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a href="{{ url('/layanan') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Layanan</a>
+            <a href="{{ url('/tentang-kami') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Tentang Kami</a>
+            <a href="{{ route('blog.index') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Blog</a>
+            <a href="{{ url('/kontak') }}"
+               class="border-2 border-[#14532D] text-[#14532D] text-sm px-5 py-2 font-medium hover:bg-[#14532D] hover:text-white transition-colors">
+                Hubungi Kami
+            </a>
+            <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
+               class="bg-[#14532D] text-white text-sm px-5 py-2 font-medium hover:bg-[#0F3D1F] transition-colors">
+                {{ $homepage['hero_cta_text'] ?? 'Daftar Sekarang' }}
+            </a>
+        </div>
+    </div>
+</nav>
+
+{{-- 2. HERO — traditional 3-row structure --}}
+<section class="bg-[#FAFAF7] py-24">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        {{-- ROW 1: Small tagline --}}
+        <p class="text-[#7C2D12] uppercase tracking-widest text-sm font-semibold mb-6">
+            {{ $homepage['hero_subtitle'] ?? 'Platform Transaksi Digital Terpercaya di Indonesia' }}
+        </p>
+
+        {{-- ROW 2: Large heading --}}
+        <h1 class="text-5xl font-black text-[#14532D] leading-tight mb-8">
+            {{ $homepage['hero_title'] ?? 'Mitra Terpercaya untuk Bisnis Digital Anda' }}
+        </h1>
+
+        {{-- Decorative divider --}}
+        <div class="w-16 h-1 bg-[#7C2D12] mx-auto mb-8"></div>
+
+        <p class="text-gray-600 text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+            Mulai bisnis pulsa, PPOB, game, dan e-wallet dengan modal kecil. Lebih dari 1.000 agen aktif
+            telah mempercayai kami sebagai platform transaksi digital andalan mereka.
+        </p>
+
+        {{-- ROW 3: Button row --}}
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
+               class="bg-[#14532D] text-white px-8 py-3 font-medium text-sm hover:bg-[#0F3D1F] transition-colors">
+                {{ $homepage['hero_cta_text'] ?? 'Daftar Menjadi Agen' }}
+            </a>
+            <a href="{{ url('/kontak') }}"
+               class="border-2 border-[#14532D] text-[#14532D] px-8 py-3 font-medium text-sm bg-transparent hover:bg-[#14532D] hover:text-white transition-colors">
+                Hubungi Kami
+            </a>
+        </div>
     </div>
 </section>
 
+{{-- 3. SERVICES — 4-column icon grid --}}
+<section class="py-20 bg-[#FAFAF7] border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="text-3xl font-black text-[#14532D] mb-3">Layanan Profesional</h2>
+            <div class="w-12 h-1 bg-[#7C2D12] mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            @foreach([
+                ['📱', $homepage['service_1_title'] ?? 'Pulsa All Operator', $homepage['service_1_description'] ?? 'Semua operator nasional tersedia. Proses instan, tanpa antrian, refund otomatis jika gagal.'],
+                ['🏠', $homepage['service_2_title'] ?? 'PPOB & Tagihan', $homepage['service_2_description'] ?? 'PLN, PDAM, BPJS, internet, TV kabel, dan ratusan tagihan lainnya dalam satu platform.'],
+                ['🎮', $homepage['service_3_title'] ?? 'Top-Up Game', $homepage['service_3_description'] ?? 'Lebih dari 100 game populer. Mobile Legends, PUBG, Genshin Impact, Free Fire, dan lainnya.'],
+                ['💳', $homepage['service_4_title'] ?? 'E-Money & E-Wallet', $homepage['service_4_description'] ?? 'Top-up GoPay, OVO, DANA, ShopeePay dengan kurs terbaik dan proses instan.'],
+            ] as $service)
+            <div class="text-center">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-[#14532D] text-white text-xl mx-auto mb-4">
+                    {{ $service[0] }}
+                </div>
+                <h3 class="font-bold text-[#14532D] text-base mb-2">{{ $service[1] }}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">{{ $service[2] }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- 4. TESTIMONIALS --}}
+<section class="py-20 bg-white border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="text-3xl font-black text-[#14532D] mb-3">Apa Kata Klien</h2>
+            <div class="w-12 h-1 bg-[#7C2D12] mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach([
+                ['"Platform ini benar-benar membantu bisnis saya berkembang. Transaksi selalu lancar dan margin keuntungannya sangat kompetitif."', 'Ahmad Reza', 'Agen Jakarta Selatan'],
+                ['"Saya sudah coba beberapa platform lain, tapi yang ini yang terbaik. Support 24 jam sangat membantu saat ada kendala."', 'Siti Nurhaliza', 'Agen Bandung'],
+                ['"Produk top-up game lengkap sekali. Pelanggan saya puas karena prosesnya cepat dan tidak pernah gagal."', 'Budi Santoso', 'Agen Surabaya'],
+            ] as $testimonial)
+            <div class="border border-gray-200 p-8">
+                <p class="italic text-gray-600 leading-relaxed mb-6 text-sm">
+                    {{ $testimonial[0] }}
+                </p>
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-bold text-[#14532D] text-sm">{{ $testimonial[1] }}</p>
+                    <p class="text-gray-500 text-xs mt-1">{{ $testimonial[2] }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- 5. STATS --}}
+<section class="bg-[#14532D] text-white py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            @foreach([
+                ['1.000+', 'Agen Aktif'],
+                ['500+', 'Produk Digital'],
+                ['99.9%', 'Uptime Sistem'],
+                ['24/7', 'Layanan Support'],
+            ] as $stat)
+            <div>
+                <p class="text-4xl font-black text-white mb-2">{{ $stat[0] }}</p>
+                <p class="text-white/70 text-sm uppercase tracking-wide">{{ $stat[1] }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- BLOG --}}
 @if($latestBlogs->isNotEmpty())
-<section class="py-16 px-4" style="background:#f5f2eb">
-    <div class="max-w-7xl mx-auto">
+<section class="py-16 bg-[#FAFAF7] border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex items-center justify-between mb-10">
             <div>
-                <h2 class="font-black text-2xl" style="font-family:'Merriweather',serif;color:#1A5C38">Berita & Artikel</h2>
-                <div style="width:2.5rem;height:2px;background:#8B4513;margin-top:.5rem"></div>
+                <h2 class="text-2xl font-black text-[#14532D]">Berita & Artikel</h2>
+                <div class="w-10 h-1 bg-[#7C2D12] mt-2"></div>
             </div>
-            <a href="{{ route('blog.index') }}" class="text-sm font-bold uppercase tracking-wider" style="color:#1A5C38">Selengkapnya →</a>
+            <a href="{{ route('blog.index') }}" class="text-[#14532D] font-medium text-sm hover:text-[#0F3D1F] transition-colors">
+                Selengkapnya →
+            </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @foreach($latestBlogs as $blog)
-            <a href="{{ route('blog.show',$blog->slug) }}" class="block bg-white group" style="border:1px solid #e8e0d0">
+            <a href="{{ route('blog.show', $blog->slug) }}" class="block border border-gray-200 bg-white hover:border-[#14532D] transition-colors group">
                 @if($blog->featured_image)
                 <img src="{{ Storage::url($blog->featured_image) }}" class="w-full h-44 object-cover" alt="{{ $blog->title }}">
                 @else
-                <div class="w-full h-44" style="background:#e8e0d0"></div>
+                <div class="w-full h-44 bg-gray-100 flex items-center justify-center">
+                    <span class="text-4xl text-gray-300">📰</span>
+                </div>
                 @endif
-                <div class="p-5" style="border-top:3px solid #1A5C38">
-                    <p class="text-xs uppercase tracking-widest mb-2" style="color:#8B4513;font-family:'Lato',sans-serif">{{ $blog->published_at?->format('d F Y') }}</p>
-                    <h3 class="font-bold line-clamp-2 group-hover:text-green-800 transition-colors" style="font-family:'Merriweather',serif;color:#1a1a1a">{{ $blog->title }}</h3>
+                <div class="p-6 border-t-4 border-[#14532D]">
+                    <p class="text-[#7C2D12] text-xs uppercase tracking-widest mb-2 font-medium">
+                        {{ $blog->published_at?->format('d F Y') }}
+                    </p>
+                    <h3 class="font-bold text-gray-900 line-clamp-2 group-hover:text-[#14532D] transition-colors text-sm leading-snug">
+                        {{ $blog->title }}
+                    </h3>
                 </div>
             </a>
             @endforeach
@@ -128,3 +168,63 @@
     </div>
 </section>
 @endif
+
+{{-- 6. CTA --}}
+<section class="bg-[#14532D] text-white py-24">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+        <h2 class="text-5xl font-black text-white leading-tight mb-4">
+            {{ $homepage['cta_title'] ?? 'Bergabung Bersama Kami' }}
+        </h2>
+        <p class="text-white/70 text-lg mb-10">
+            {{ $homepage['cta_description'] ?? 'Lebih dari 1.000 mitra telah mempercayai kami. Daftar gratis dan mulai hasilkan dari transaksi digital.' }}
+        </p>
+        <a href="{{ $homepage['cta_button_url'] ?? url('/kontak') }}"
+           class="inline-block border-2 border-white text-white bg-transparent px-10 py-4 font-bold text-sm uppercase tracking-wider hover:bg-white hover:text-[#14532D] transition-colors">
+            {{ $homepage['cta_button_text'] ?? 'Daftar Menjadi Mitra' }}
+        </a>
+    </div>
+</section>
+
+{{-- 7. FOOTER --}}
+<footer class="bg-[#0F3D1F] text-white py-10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-8">
+            <div>
+                <p class="font-bold text-white text-lg mb-3">{{ $siteSettings['site_name'] ?? config('app.name') }}</p>
+                <p class="text-white/60 text-sm leading-relaxed">
+                    {{ $siteSettings['site_description'] ?? 'Platform transaksi digital terpercaya untuk agen dan mitra bisnis di seluruh Indonesia.' }}
+                </p>
+            </div>
+            <div>
+                <p class="font-bold text-white text-sm uppercase tracking-wider mb-4">Navigasi</p>
+                <ul class="space-y-2">
+                    <li><a href="{{ url('/layanan') }}" class="text-white/60 hover:text-white text-sm transition-colors">Layanan</a></li>
+                    <li><a href="{{ url('/tentang-kami') }}" class="text-white/60 hover:text-white text-sm transition-colors">Tentang Kami</a></li>
+                    <li><a href="{{ url('/kontak') }}" class="text-white/60 hover:text-white text-sm transition-colors">Kontak</a></li>
+                    <li><a href="{{ route('blog.index') }}" class="text-white/60 hover:text-white text-sm transition-colors">Blog</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="font-bold text-white text-sm uppercase tracking-wider mb-4">Informasi Kontak</p>
+                <ul class="space-y-2 text-white/60 text-sm">
+                    @if(!empty($footerSettings['contact_email']))
+                    <li>📧 {{ $footerSettings['contact_email'] }}</li>
+                    @endif
+                    @if(!empty($footerSettings['contact_phone']))
+                    <li>📞 {{ $footerSettings['contact_phone'] }}</li>
+                    @endif
+                    @if(!empty($footerSettings['contact_address']))
+                    <li>📍 {{ $footerSettings['contact_address'] }}</li>
+                    @endif
+                    @if(empty($footerSettings['contact_email']) && empty($footerSettings['contact_phone']))
+                    <li>📧 info@monetrapay.com</li>
+                    <li>📞 +62 800-0000-0000</li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-6 text-center text-white/40 text-sm">
+            &copy; {{ date('Y') }} {{ $siteSettings['site_name'] ?? config('app.name') }}. Semua hak dilindungi.
+        </div>
+    </div>
+</footer>
