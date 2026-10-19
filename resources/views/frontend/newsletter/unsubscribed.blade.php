@@ -1,4 +1,5 @@
-﻿@extends($themeLayout ?? 'frontend.layouts.app')
+﻿@include('frontend.theme-layout')
+@extends($themeLayout)
 @section('title', 'Unsubscribed')
 @section('seo')
 <meta name="robots" content="noindex,nofollow">

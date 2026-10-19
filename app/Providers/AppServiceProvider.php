@@ -97,18 +97,6 @@ class AppServiceProvider extends ServiceProvider
         View::composer('frontend.layouts.app', FrontendComposer::class);
         // Also share with all theme-specific layouts
         View::composer('frontend.themes.*', FrontendComposer::class);
-
-        // Share themeLayout variable to ALL frontend views
-        // so any view can use @extends($themeLayout ?? 'frontend.layouts.app')
-        View::composer('frontend.*', function ($view) {
-            try {
-                $themeService = app(\App\Services\ThemeService::class);
-                $themeLayout  = $themeService->getLayoutView();
-            } catch (\Throwable $e) {
-                $themeLayout = 'frontend.layouts.app';
-            }
-            $view->with('themeLayout', $themeLayout);
-        });
         
         // Share notifications with admin layout
         View::composer('admin.layouts.app', NotificationComposer::class);
