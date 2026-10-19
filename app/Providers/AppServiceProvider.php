@@ -95,8 +95,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Share common data with all frontend layout views
         View::composer('frontend.layouts.app', FrontendComposer::class);
-        // Also share with all theme-specific layouts
+        // Also share with all theme-specific layouts and partials
         View::composer('frontend.themes.*', FrontendComposer::class);
+        View::composer('frontend.layouts.partials.*', FrontendComposer::class);
         
         // Share notifications with admin layout
         View::composer('admin.layouts.app', NotificationComposer::class);
