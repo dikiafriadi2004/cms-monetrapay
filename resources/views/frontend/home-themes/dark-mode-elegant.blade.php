@@ -1,23 +1,4 @@
-{{--
-    Dark Mode Elegant Home
-    Colors: bg-[#0A0A0A] background, white text, silver/gray accent.
-    NO gradients, NO purple/blue, NO glow effects.
-    Layout: Stark dark, minimal, typographic hierarchy.
---}}
-
-{{-- NAV --}}
-<nav class="bg-[#0A0A0A] border-b border-white/10 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-        <span class="text-lg font-bold text-white tracking-tight">{{ $siteName ?? 'MonetraPay' }}</span>
-        <div class="flex items-center gap-8">
-            <a href="{{ url('/') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Beranda</a>
-            <a href="{{ url('/layanan') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Layanan</a>
-            <a href="{{ url('/kontak') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Kontak</a>
-        </div>
-    </div>
-</nav>
-
-{{-- HERO --}}
+﻿{{-- HERO --}}
 <section class="bg-[#0A0A0A] min-h-screen flex items-center justify-center text-center px-6">
     <div class="max-w-3xl">
         <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-8">Platform Transaksi Digital</p>
@@ -130,32 +111,3 @@
 </section>
 
 {{-- FOOTER --}}
-<footer class="bg-[#050505] border-t border-white/10 py-10 px-6">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-            <p class="font-bold text-white text-base mb-3">{{ $siteName ?? 'MonetraPay' }}</p>
-            <p class="text-sm text-gray-500 leading-relaxed">{{ $footerSettings['tagline'] ?? 'Platform transaksi digital yang andal dan efisien.' }}</p>
-        </div>
-        <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-4">Navigasi</h4>
-            <ul class="space-y-2">
-                <li><a href="{{ url('/') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Beranda</a></li>
-                <li><a href="{{ url('/layanan') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Layanan</a></li>
-                <li><a href="{{ route('blog.index') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Blog</a></li>
-                <li><a href="{{ url('/kontak') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Kontak</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-4">Kontak</h4>
-            @if(!empty($footerSettings['contact_email']))
-            <p class="text-sm text-gray-500 mb-2">✉ {{ $footerSettings['contact_email'] }}</p>
-            @endif
-            @if(!empty($footerSettings['contact_phone']))
-            <p class="text-sm text-gray-500">📞 {{ $footerSettings['contact_phone'] }}</p>
-            @endif
-        </div>
-    </div>
-    <div class="max-w-7xl mx-auto border-t border-white/10 mt-8 pt-6">
-        <p class="text-xs text-gray-700 text-center">{{ $footerSettings['copyright_text'] ?? '© ' . date('Y') . ' ' . ($siteName ?? 'MonetraPay') . '. All rights reserved.' }}</p>
-    </div>
-</footer>

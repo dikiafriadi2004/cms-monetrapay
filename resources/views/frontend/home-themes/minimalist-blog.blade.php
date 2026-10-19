@@ -1,22 +1,4 @@
-{{--
-    Minimalist Blog Home
-    Colors: Black #111111, gray accents ONLY. No color, no gradients.
-    Layout: Ultra-narrow centered, typography-first, editorial feel.
---}}
-
-{{-- NAV --}}
-<nav class="border-b border-gray-200 bg-white sticky top-0 z-50">
-    <div class="max-w-xl mx-auto px-6 flex items-center justify-between h-14">
-        <span class="text-sm font-black uppercase tracking-widest text-gray-900">{{ $siteName ?? 'MonetraPay' }}</span>
-        <div class="flex items-center gap-6">
-            <a href="{{ url('/') }}" class="text-xs text-gray-600 hover:text-gray-900 hover:underline transition-colors">Beranda</a>
-            <a href="{{ url('/layanan') }}" class="text-xs text-gray-600 hover:text-gray-900 hover:underline transition-colors">Layanan</a>
-            <a href="{{ url('/kontak') }}" class="text-xs text-gray-600 hover:text-gray-900 hover:underline transition-colors">Kontak</a>
-        </div>
-    </div>
-</nav>
-
-{{-- HERO --}}
+﻿{{-- HERO --}}
 <section class="max-w-xl mx-auto px-6 py-24">
     <h1 class="text-5xl font-bold leading-tight tracking-tight text-gray-900 mb-0" style="font-family:Georgia,serif">
         {{ $homepage['hero_title'] ?? 'Bisnis Digital yang Lebih Sederhana' }}
@@ -83,12 +65,3 @@
 </section>
 
 {{-- FOOTER --}}
-<footer class="max-w-xl mx-auto px-6 border-t border-gray-200 py-10">
-    <p class="text-sm text-gray-500 mb-2">{{ $footerSettings['tagline'] ?? 'Solusi transaksi digital terpercaya.' }}</p>
-    @if(!empty($footerSettings['contact_email']))
-    <a href="mailto:{{ $footerSettings['contact_email'] }}" class="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-900 transition-colors">
-        {{ $footerSettings['contact_email'] }}
-    </a>
-    @endif
-    <p class="text-xs text-gray-400 mt-6">{{ $footerSettings['copyright_text'] ?? '© ' . date('Y') . ' ' . ($siteName ?? 'MonetraPay') }}</p>
-</footer>

@@ -1,30 +1,4 @@
-{{--
-    Classic Business Home – bg-[#FAFAF7], dark green #14532D, dark brown #7C2D12, NO gradients
---}}
-
-{{-- 1. NAV --}}
-<nav class="bg-[#FAFAF7] border-b border-gray-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-        <a href="{{ url('/') }}" class="text-[#14532D] font-bold text-xl tracking-tight">
-            {{ $siteSettings['site_name'] ?? config('app.name') }}
-        </a>
-        <div class="hidden md:flex items-center gap-8">
-            <a href="{{ url('/layanan') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Layanan</a>
-            <a href="{{ url('/tentang-kami') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Tentang Kami</a>
-            <a href="{{ route('blog.index') }}" class="text-gray-700 hover:text-[#14532D] text-sm transition-colors">Blog</a>
-            <a href="{{ url('/kontak') }}"
-               class="border-2 border-[#14532D] text-[#14532D] text-sm px-5 py-2 font-medium hover:bg-[#14532D] hover:text-white transition-colors">
-                Hubungi Kami
-            </a>
-            <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
-               class="bg-[#14532D] text-white text-sm px-5 py-2 font-medium hover:bg-[#0F3D1F] transition-colors">
-                {{ $homepage['hero_cta_text'] ?? 'Daftar Sekarang' }}
-            </a>
-        </div>
-    </div>
-</nav>
-
-{{-- 2. HERO — traditional 3-row structure --}}
+﻿{{-- 2. HERO — traditional 3-row structure --}}
 <section class="bg-[#FAFAF7] py-24">
     <div class="max-w-4xl mx-auto px-6 text-center">
         {{-- ROW 1: Small tagline --}}
@@ -186,45 +160,3 @@
 </section>
 
 {{-- 7. FOOTER --}}
-<footer class="bg-[#0F3D1F] text-white py-10">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-8">
-            <div>
-                <p class="font-bold text-white text-lg mb-3">{{ $siteSettings['site_name'] ?? config('app.name') }}</p>
-                <p class="text-white/60 text-sm leading-relaxed">
-                    {{ $siteSettings['site_description'] ?? 'Platform transaksi digital terpercaya untuk agen dan mitra bisnis di seluruh Indonesia.' }}
-                </p>
-            </div>
-            <div>
-                <p class="font-bold text-white text-sm uppercase tracking-wider mb-4">Navigasi</p>
-                <ul class="space-y-2">
-                    <li><a href="{{ url('/layanan') }}" class="text-white/60 hover:text-white text-sm transition-colors">Layanan</a></li>
-                    <li><a href="{{ url('/tentang-kami') }}" class="text-white/60 hover:text-white text-sm transition-colors">Tentang Kami</a></li>
-                    <li><a href="{{ url('/kontak') }}" class="text-white/60 hover:text-white text-sm transition-colors">Kontak</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-white/60 hover:text-white text-sm transition-colors">Blog</a></li>
-                </ul>
-            </div>
-            <div>
-                <p class="font-bold text-white text-sm uppercase tracking-wider mb-4">Informasi Kontak</p>
-                <ul class="space-y-2 text-white/60 text-sm">
-                    @if(!empty($footerSettings['contact_email']))
-                    <li>📧 {{ $footerSettings['contact_email'] }}</li>
-                    @endif
-                    @if(!empty($footerSettings['contact_phone']))
-                    <li>📞 {{ $footerSettings['contact_phone'] }}</li>
-                    @endif
-                    @if(!empty($footerSettings['contact_address']))
-                    <li>📍 {{ $footerSettings['contact_address'] }}</li>
-                    @endif
-                    @if(empty($footerSettings['contact_email']) && empty($footerSettings['contact_phone']))
-                    <li>📧 info@monetrapay.com</li>
-                    <li>📞 +62 800-0000-0000</li>
-                    @endif
-                </ul>
-            </div>
-        </div>
-        <div class="border-t border-white/10 pt-6 text-center text-white/40 text-sm">
-            &copy; {{ date('Y') }} {{ $siteSettings['site_name'] ?? config('app.name') }}. Semua hak dilindungi.
-        </div>
-    </div>
-</footer>

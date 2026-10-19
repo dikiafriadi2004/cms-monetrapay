@@ -1,42 +1,7 @@
-{{--
-    E-Commerce Style Home — Product Catalog / Marketplace Style
-    Colors: White bg, Green #15803D, Orange #D97706
-    NO gradients. All sections self-contained.
---}}
-
-{{-- ═══════════════════════════════════════════════════════════
-     1. ANNOUNCEMENT BAR — bg-green-700 text-white text-center
-     ═══════════════════════════════════════════════════════════ --}}
+﻿{{-- Announcement Bar --}}
 <div class="bg-green-700 text-white text-center text-sm py-2 px-4">
-    🎉 Selamat datang di <strong>{{ $siteName ?? config('app.name') }}</strong> — Layanan Terbaik untuk Anda
+    🎉 Selamat datang di <strong>{{ $siteName ?? config('app.name') }}</strong> — Transaksi Digital Terpercaya
 </div>
-
-{{-- ═══════════════════════════════════════════════════════════
-     2. NAV — White bg border-b, site name bold green, orange CTA
-     ═══════════════════════════════════════════════════════════ --}}
-<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="flex items-center justify-between py-4">
-            {{-- Site Name --}}
-            <a href="{{ url('/') }}" class="text-xl font-bold text-green-700">
-                {{ $siteName ?? config('app.name') }}
-            </a>
-
-            {{-- Nav links --}}
-            <div class="hidden md:flex items-center gap-8">
-                <a href="{{ url('/') }}" class="text-sm font-semibold text-gray-700 hover:text-green-700">Beranda</a>
-                <a href="{{ url('/layanan') }}" class="text-sm font-semibold text-gray-700 hover:text-green-700">Layanan</a>
-                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-gray-700 hover:text-green-700">Artikel</a>
-                <a href="{{ url('/kontak') }}" class="text-sm font-semibold text-gray-700 hover:text-green-700">Kontak</a>
-            </div>
-
-            {{-- Orange CTA --}}
-            <a href="{{ url('/kontak') }}" class="bg-orange-600 text-white font-bold px-5 py-2 text-sm hover:bg-orange-700">
-                🛒 Daftar Agen
-            </a>
-        </div>
-    </div>
-</nav>
 
 {{-- ═══════════════════════════════════════════════════════════
      3. HERO — py-16, two-column layout
@@ -271,8 +236,8 @@
             @foreach($latestBlogs as $blog)
             <article class="bg-white shadow-sm hover:shadow-md transition-shadow">
                 {{-- Image or solid green placeholder --}}
-                @if($blog->thumbnail)
-                <img src="{{ \Storage::url($blog->thumbnail) }}" alt="{{ $blog->title }}"
+                @if($blog->featured_image)
+                <img src="{{ \Storage::url($blog->featured_image) }}" alt="{{ $blog->title }}"
                      class="w-full h-44 object-cover">
                 @else
                 <div class="w-full h-44 bg-green-700 flex items-center justify-center">
@@ -324,47 +289,3 @@
 {{-- ═══════════════════════════════════════════════════════════
      8. FOOTER — Dark bg, 3-column grid, green accent links
      ═══════════════════════════════════════════════════════════ --}}
-<footer class="bg-gray-900 text-white py-14">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-            {{-- Col 1: Brand --}}
-            <div>
-                <p class="text-xl font-black text-white mb-3">{{ $siteName ?? config('app.name') }}</p>
-                <p class="text-sm text-gray-400 leading-relaxed mb-4">
-                    Platform transaksi digital terpercaya untuk agen se-Indonesia. Mulai bisnis Anda sekarang.
-                </p>
-                <div class="flex gap-3">
-                    <span class="text-2xl cursor-pointer hover:opacity-75">📱</span>
-                    <span class="text-2xl cursor-pointer hover:opacity-75">💬</span>
-                    <span class="text-2xl cursor-pointer hover:opacity-75">📧</span>
-                </div>
-            </div>
-
-            {{-- Col 2: Navigasi --}}
-            <div>
-                <p class="text-xs font-bold uppercase tracking-widest text-green-500 mb-4 pb-2 border-b border-gray-800">Navigasi</p>
-                <ul class="space-y-2">
-                    <li><a href="{{ url('/') }}" class="text-sm text-gray-400 hover:text-green-400">Beranda</a></li>
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-gray-400 hover:text-green-400">Layanan</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-sm text-gray-400 hover:text-green-400">Artikel</a></li>
-                    <li><a href="{{ url('/kontak') }}" class="text-sm text-gray-400 hover:text-green-400">Kontak</a></li>
-                </ul>
-            </div>
-
-            {{-- Col 3: Kontak --}}
-            <div>
-                <p class="text-xs font-bold uppercase tracking-widest text-green-500 mb-4 pb-2 border-b border-gray-800">Hubungi Kami</p>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li>📧 {{ $homepage['contact_email'] ?? 'info@example.com' }}</li>
-                    <li>📞 {{ $homepage['contact_phone'] ?? '+62 800 0000 0000' }}</li>
-                    <li>📍 {{ $homepage['contact_address'] ?? 'Indonesia' }}</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-2">
-            <p class="text-xs text-gray-500">&copy; {{ date('Y') }} {{ $siteName ?? config('app.name') }}. Hak cipta dilindungi.</p>
-            <p class="text-xs text-gray-600">Dibuat dengan ❤️ untuk agen Indonesia</p>
-        </div>
-    </div>
-</footer>

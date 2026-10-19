@@ -1,35 +1,4 @@
-{{--
-    Magazine Layout Home — Newspaper / Editorial Style
-    Colors: White bg, Black text, Red accent #C53030
-    NO gradients. All sections self-contained.
---}}
-
-{{-- ═══════════════════════════════════════════════════════════
-     1. NAV — Newspaper masthead style
-     ═══════════════════════════════════════════════════════════ --}}
-<nav class="border-t-4 border-red-700 bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="flex items-center justify-between py-3">
-            {{-- Site Name --}}
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tight text-gray-900 uppercase" style="font-family:Georgia,serif;letter-spacing:-0.02em">
-                {{ $siteName ?? config('app.name') }}
-            </a>
-            {{-- Date center --}}
-            <span class="hidden md:block text-xs text-gray-500 uppercase tracking-widest font-medium">
-                {{ date('d F Y') }}
-            </span>
-            {{-- Nav links --}}
-            <div class="flex items-center gap-6">
-                <a href="{{ url('/') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Beranda</a>
-                <a href="{{ url('/layanan') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Layanan</a>
-                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Artikel</a>
-                <a href="{{ url('/kontak') }}" class="text-sm font-bold bg-red-700 text-white px-4 py-2 uppercase tracking-wide hover:bg-red-800">Kontak</a>
-            </div>
-        </div>
-    </div>
-</nav>
-
-{{-- ═══════════════════════════════════════════════════════════
+﻿{{-- ═══════════════════════════════════════════════════════════
      2. HERO — Full-width newspaper front page style
      ═══════════════════════════════════════════════════════════ --}}
 <section class="bg-white py-12 border-t-4 border-red-700">
@@ -173,8 +142,8 @@
             @foreach($latestBlogs as $blog)
             <article class="border-r border-gray-200 last:border-r-0">
                 {{-- Image or solid red placeholder --}}
-                @if($blog->thumbnail)
-                <img src="{{ \Storage::url($blog->thumbnail) }}" alt="{{ $blog->title }}"
+                @if($blog->featured_image)
+                <img src="{{ \Storage::url($blog->featured_image) }}" alt="{{ $blog->title }}"
                      class="w-full h-44 object-cover">
                 @else
                 <div class="w-full h-44 bg-red-700 flex items-center justify-center">
@@ -231,44 +200,3 @@
 {{-- ═══════════════════════════════════════════════════════════
      7. FOOTER — Black bg, white text, 3-column grid
      ═══════════════════════════════════════════════════════════ --}}
-<footer class="bg-gray-900 text-white py-14 border-t-4 border-red-700">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-            {{-- Col 1: Brand --}}
-            <div>
-                <p class="text-xl font-black uppercase tracking-tight mb-3" style="font-family:Georgia,serif">
-                    {{ $siteName ?? config('app.name') }}
-                </p>
-                <p class="text-sm text-gray-400 leading-relaxed">
-                    Platform transaksi digital terpercaya untuk agen se-Indonesia. Pulsa, PPOB, Game, dan E-Money dalam satu platform.
-                </p>
-            </div>
-
-            {{-- Col 2: Navigation --}}
-            <div>
-                <p class="text-xs font-black uppercase tracking-widest text-red-500 mb-4 pb-2 border-b border-gray-700">Navigasi</p>
-                <ul class="space-y-2">
-                    <li><a href="{{ url('/') }}" class="text-sm text-gray-400 hover:text-white">Beranda</a></li>
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-gray-400 hover:text-white">Layanan</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-sm text-gray-400 hover:text-white">Artikel</a></li>
-                    <li><a href="{{ url('/kontak') }}" class="text-sm text-gray-400 hover:text-white">Kontak</a></li>
-                </ul>
-            </div>
-
-            {{-- Col 3: Contact --}}
-            <div>
-                <p class="text-xs font-black uppercase tracking-widest text-red-500 mb-4 pb-2 border-b border-gray-700">Hubungi Kami</p>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li>📧 {{ $homepage['contact_email'] ?? 'info@example.com' }}</li>
-                    <li>📞 {{ $homepage['contact_phone'] ?? '+62 800 0000 0000' }}</li>
-                    <li>📍 {{ $homepage['contact_address'] ?? 'Indonesia' }}</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-2">
-            <p class="text-xs text-gray-500">&copy; {{ date('Y') }} {{ $siteName ?? config('app.name') }}. Hak cipta dilindungi.</p>
-            <p class="text-xs text-gray-600">Edisi {{ date('d F Y') }}</p>
-        </div>
-    </div>
-</footer>

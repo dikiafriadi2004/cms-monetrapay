@@ -1,26 +1,4 @@
-{{--
-    Landing Page Home – Conversion-focused, black/yellow, NO gradients
---}}
-
-{{-- 1. NAV --}}
-<nav class="bg-black border-b border-white/10 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-        <a href="{{ url('/') }}" class="text-white font-black text-xl tracking-tight">
-            {{ $siteSettings['site_name'] ?? config('app.name') }}
-        </a>
-        <div class="hidden md:flex items-center gap-8">
-            <a href="{{ url('/layanan') }}" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Layanan</a>
-            <a href="{{ url('/tentang-kami') }}" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Tentang</a>
-            <a href="{{ route('blog.index') }}" class="text-gray-400 hover:text-yellow-400 text-sm transition-colors">Blog</a>
-            <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
-               class="bg-yellow-400 text-black font-black text-sm px-5 py-2 hover:bg-yellow-300 transition-colors">
-                {{ $homepage['hero_cta_text'] ?? 'Mulai Sekarang' }}
-            </a>
-        </div>
-    </div>
-</nav>
-
-{{-- 2. HERO --}}
+﻿{{-- 2. HERO --}}
 <section class="bg-black min-h-screen flex items-center">
     <div class="max-w-5xl mx-auto px-6 lg:px-8 py-24 w-full">
         <div class="mb-4">
@@ -208,41 +186,3 @@
 </section>
 
 {{-- 7. FOOTER --}}
-<footer class="bg-black border-t border-white/10 py-12">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-                <p class="text-white font-black text-lg mb-3">{{ $siteSettings['site_name'] ?? config('app.name') }}</p>
-                <p class="text-gray-500 text-sm leading-relaxed">
-                    {{ $siteSettings['site_description'] ?? 'Platform transaksi digital terpercaya untuk agen dan mitra bisnis.' }}
-                </p>
-            </div>
-            <div>
-                <p class="text-yellow-400 font-bold text-sm uppercase tracking-widest mb-4">Navigasi</p>
-                <ul class="space-y-2">
-                    <li><a href="{{ url('/layanan') }}" class="text-gray-500 hover:text-yellow-400 text-sm transition-colors">Layanan</a></li>
-                    <li><a href="{{ url('/tentang-kami') }}" class="text-gray-500 hover:text-yellow-400 text-sm transition-colors">Tentang Kami</a></li>
-                    <li><a href="{{ url('/kontak') }}" class="text-gray-500 hover:text-yellow-400 text-sm transition-colors">Kontak</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-gray-500 hover:text-yellow-400 text-sm transition-colors">Blog</a></li>
-                </ul>
-            </div>
-            <div>
-                <p class="text-yellow-400 font-bold text-sm uppercase tracking-widest mb-4">Kontak</p>
-                <ul class="space-y-2 text-gray-500 text-sm">
-                    @if(!empty($footerSettings['contact_email']))
-                    <li>📧 {{ $footerSettings['contact_email'] }}</li>
-                    @endif
-                    @if(!empty($footerSettings['contact_phone']))
-                    <li>📞 {{ $footerSettings['contact_phone'] }}</li>
-                    @endif
-                    @if(!empty($footerSettings['contact_address']))
-                    <li>📍 {{ $footerSettings['contact_address'] }}</li>
-                    @endif
-                </ul>
-            </div>
-        </div>
-        <div class="border-t border-white/10 pt-8 text-center text-gray-600 text-sm">
-            &copy; {{ date('Y') }} {{ $siteSettings['site_name'] ?? config('app.name') }}. Semua hak dilindungi.
-        </div>
-    </div>
-</footer>

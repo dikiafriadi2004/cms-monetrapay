@@ -1,26 +1,4 @@
-{{--
-    Portfolio Showcase Home – bg-[#F5F5F0], black text, gold #B7860D, NO gradients
---}}
-
-{{-- 1. NAV --}}
-<nav class="bg-[#F5F5F0] border-b border-gray-300 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-        <a href="{{ url('/') }}" class="text-black font-black text-xl tracking-tight">
-            {{ $siteSettings['site_name'] ?? config('app.name') }}
-        </a>
-        <div class="hidden md:flex items-center gap-8">
-            <a href="{{ url('/layanan') }}" class="text-gray-600 hover:text-black text-sm transition-colors">Layanan</a>
-            <a href="{{ url('/tentang-kami') }}" class="text-gray-600 hover:text-black text-sm transition-colors">Tentang</a>
-            <a href="{{ route('blog.index') }}" class="text-gray-600 hover:text-black text-sm transition-colors">Blog</a>
-            <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
-               class="text-[#B7860D] font-bold text-sm hover:text-[#8B6309] transition-colors">
-                Mulai Sekarang →
-            </a>
-        </div>
-    </div>
-</nav>
-
-{{-- 2. HERO — asymmetric layout --}}
+﻿{{-- 2. HERO — asymmetric layout --}}
 <section class="bg-[#F5F5F0] min-h-screen flex items-center">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 py-24 w-full">
         <div class="flex items-center gap-0">
@@ -212,22 +190,3 @@
 </section>
 
 {{-- 8. FOOTER --}}
-<footer class="bg-[#F5F5F0] border-t border-gray-300 py-10">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div>
-                <p class="font-black text-black text-lg">{{ $siteSettings['site_name'] ?? config('app.name') }}</p>
-                <p class="text-gray-500 text-sm mt-1">{{ $siteSettings['site_description'] ?? 'Platform transaksi digital terpercaya.' }}</p>
-            </div>
-            <div class="flex gap-8">
-                <a href="{{ url('/layanan') }}" class="text-gray-600 hover:text-[#B7860D] text-sm transition-colors">Layanan</a>
-                <a href="{{ url('/tentang-kami') }}" class="text-gray-600 hover:text-[#B7860D] text-sm transition-colors">Tentang</a>
-                <a href="{{ url('/kontak') }}" class="text-gray-600 hover:text-[#B7860D] text-sm transition-colors">Kontak</a>
-                <a href="{{ route('blog.index') }}" class="text-gray-600 hover:text-[#B7860D] text-sm transition-colors">Blog</a>
-            </div>
-        </div>
-        <div class="border-t border-gray-300 mt-8 pt-6 text-gray-500 text-sm text-center">
-            &copy; {{ date('Y') }} {{ $siteSettings['site_name'] ?? config('app.name') }}. Semua hak dilindungi.
-        </div>
-    </div>
-</footer>

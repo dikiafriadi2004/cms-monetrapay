@@ -1,37 +1,4 @@
-{{--
-    Tech Startup Home — SaaS / B2B Platform Style
-    Colors: White bg, Navy #1E3A5F, Blue accent #3B82F6
-    NO gradients. All sections self-contained.
---}}
-
-{{-- ═══════════════════════════════════════════════════════════
-     1. NAV — White bg shadow-sm, navy text, blue CTA button
-     ═══════════════════════════════════════════════════════════ --}}
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="flex items-center justify-between py-4">
-            {{-- Logo / Site Name --}}
-            <a href="{{ url('/') }}" class="text-xl font-bold text-[#1E3A5F]">
-                {{ $siteName ?? config('app.name') }}
-            </a>
-
-            {{-- Nav links --}}
-            <div class="hidden md:flex items-center gap-8">
-                <a href="{{ url('/') }}" class="text-sm font-semibold text-[#1E3A5F] hover:text-blue-600">Beranda</a>
-                <a href="{{ url('/layanan') }}" class="text-sm font-semibold text-[#1E3A5F] hover:text-blue-600">Layanan</a>
-                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-[#1E3A5F] hover:text-blue-600">Artikel</a>
-                <a href="{{ url('/kontak') }}" class="text-sm font-semibold text-[#1E3A5F] hover:text-blue-600">Tentang</a>
-            </div>
-
-            {{-- CTA Nav Button --}}
-            <a href="{{ url('/kontak') }}" class="bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700">
-                Mulai Sekarang
-            </a>
-        </div>
-    </div>
-</nav>
-
-{{-- ═══════════════════════════════════════════════════════════
+﻿{{-- ═══════════════════════════════════════════════════════════
      2. HERO — min-h-screen, two-column layout
      ═══════════════════════════════════════════════════════════ --}}
 <section class="min-h-screen flex items-center bg-white">
@@ -191,8 +158,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @foreach($latestBlogs as $blog)
             <article class="bg-white border-t-4 border-blue-600 shadow-sm hover:shadow-md transition-shadow">
-                @if($blog->thumbnail)
-                <img src="{{ \Storage::url($blog->thumbnail) }}" alt="{{ $blog->title }}"
+                @if($blog->featured_image)
+                <img src="{{ \Storage::url($blog->featured_image) }}" alt="{{ $blog->title }}"
                      class="w-full h-44 object-cover">
                 @else
                 <div class="w-full h-44 bg-blue-50 flex items-center justify-center">
@@ -239,41 +206,3 @@
 {{-- ═══════════════════════════════════════════════════════════
      8. FOOTER — bg-[#1E3A5F], white text, 3-column
      ═══════════════════════════════════════════════════════════ --}}
-<footer class="bg-[#1E3A5F] text-white py-10 border-t border-blue-800">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {{-- Col 1: Brand --}}
-            <div>
-                <p class="text-lg font-bold text-white mb-3">{{ $siteName ?? config('app.name') }}</p>
-                <p class="text-sm text-blue-200 leading-relaxed">
-                    Platform transaksi digital terpercaya dengan teknologi real-time untuk semua kebutuhan agen digital Anda.
-                </p>
-            </div>
-
-            {{-- Col 2: Layanan --}}
-            <div>
-                <p class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">Layanan</p>
-                <ul class="space-y-2">
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-blue-200 hover:text-white">Pulsa & Data</a></li>
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-blue-200 hover:text-white">PPOB & Tagihan</a></li>
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-blue-200 hover:text-white">Top-Up Game</a></li>
-                    <li><a href="{{ url('/layanan') }}" class="text-sm text-blue-200 hover:text-white">E-Money</a></li>
-                </ul>
-            </div>
-
-            {{-- Col 3: Kontak --}}
-            <div>
-                <p class="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">Kontak</p>
-                <ul class="space-y-2 text-sm text-blue-200">
-                    <li>📧 {{ $homepage['contact_email'] ?? 'info@example.com' }}</li>
-                    <li>📞 {{ $homepage['contact_phone'] ?? '+62 800 0000 0000' }}</li>
-                    <li>📍 {{ $homepage['contact_address'] ?? 'Indonesia' }}</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="border-t border-blue-800 pt-6 text-center">
-            <p class="text-xs text-blue-400">&copy; {{ date('Y') }} {{ $siteName ?? config('app.name') }}. Hak cipta dilindungi.</p>
-        </div>
-    </div>
-</footer>
