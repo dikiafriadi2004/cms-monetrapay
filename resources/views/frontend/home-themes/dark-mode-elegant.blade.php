@@ -1,90 +1,57 @@
 {{--
     Dark Mode Elegant Home
-    Layout: Dark bg throughout, glassmorphism cards,
-    purple/blue glow effects, luxury feel
+    Colors: bg-[#0A0A0A] background, white text, silver/gray accent.
+    NO gradients, NO purple/blue, NO glow effects.
+    Layout: Stark dark, minimal, typographic hierarchy.
 --}}
 
-{{-- HERO: Split layout, dark with glow --}}
-<section class="min-h-screen flex items-center relative overflow-hidden" style="background:#080810">
-    <div class="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-30" style="background:#9F7AEA"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-20" style="background:#63B3ED"></div>
+{{-- NAV --}}
+<nav class="bg-[#0A0A0A] border-b border-white/10 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
+        <span class="text-lg font-bold text-white tracking-tight">{{ $siteName ?? 'MonetraPay' }}</span>
+        <div class="flex items-center gap-8">
+            <a href="{{ url('/') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Beranda</a>
+            <a href="{{ url('/layanan') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Layanan</a>
+            <a href="{{ url('/kontak') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Kontak</a>
+        </div>
+    </div>
+</nav>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 text-sm font-semibold"
-                     style="background:rgba(159,122,234,0.15);border:1px solid rgba(159,122,234,0.3);color:#9F7AEA">
-                    <span class="w-2 h-2 rounded-full animate-pulse" style="background:#9F7AEA"></span>
-                    Platform Terpercaya
-                </div>
-                <h1 class="font-bold leading-tight mb-6" style="font-family:'Poppins',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);color:#f0f4ff">
-                    {{ $homepage['hero_title'] ?? 'Solusi Transaksi Digital Terlengkap' }}
-                </h1>
-                <p class="text-lg mb-8 leading-relaxed" style="color:rgba(226,232,240,0.7)">
-                    {{ $homepage['hero_subtitle'] ?? 'Pulsa, PPOB, Game & E-Wallet dengan transaksi real-time.' }}
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="{{ $homepage['hero_cta_url']??url('/kontak') }}"
-                       class="px-8 py-4 rounded-xl font-bold text-white transition-all hover:-translate-y-1"
-                       style="background:linear-gradient(135deg,#9F7AEA,#63B3ED);box-shadow:0 0 32px rgba(159,122,234,0.4)">
-                        {{ $homepage['hero_cta_text']??'Mulai Sekarang' }}
-                    </a>
-                    <a href="{{ url('/layanan') }}"
-                       class="px-8 py-4 rounded-xl font-bold transition-all"
-                       style="border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75)">
-                        Pelajari Lebih
-                    </a>
-                </div>
-            </div>
-            {{-- Stats cards --}}
-            <div class="grid grid-cols-2 gap-4">
-                @foreach([['100K+','Pengguna','#9F7AEA'],['500+','Produk','#63B3ED'],['99.9%','Uptime','#9F7AEA'],['24/7','Support','#63B3ED']] as $s)
-                <div class="p-6 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
-                    <p class="text-3xl font-bold mb-1" style="color:{{ $s[2] }}">{{ $s[0] }}</p>
-                    <p class="text-sm" style="color:rgba(255,255,255,0.5)">{{ $s[1] }}</p>
-                </div>
-                @endforeach
-            </div>
+{{-- HERO --}}
+<section class="bg-[#0A0A0A] min-h-screen flex items-center justify-center text-center px-6">
+    <div class="max-w-3xl">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-8">Platform Transaksi Digital</p>
+        <h1 class="text-6xl font-bold text-white leading-tight mb-0" style="letter-spacing:-0.04em">
+            {{ $homepage['hero_title'] ?? 'Transaksi Digital Tanpa Batas' }}
+        </h1>
+        <div class="border-t border-gray-600 w-24 mx-auto my-8"></div>
+        <p class="text-gray-400 text-xl leading-relaxed mb-12 max-w-xl mx-auto">
+            {{ $homepage['hero_subtitle'] ?? 'Pulsa, PPOB, game, dan e-wallet dalam satu platform yang andal dan efisien.' }}
+        </p>
+        <div class="flex items-center justify-center gap-10">
+            <a href="{{ url('/layanan') }}" class="text-white underline underline-offset-4 text-sm font-medium hover:text-gray-300 transition-colors">→ Lihat Layanan</a>
+            <a href="{{ url('/kontak') }}" class="text-white underline underline-offset-4 text-sm font-medium hover:text-gray-300 transition-colors">→ Hubungi Kami</a>
         </div>
     </div>
 </section>
 
-{{-- SERVICES: glassmorphism cards on dark --}}
-<section class="py-24 px-4" style="background:#0e0e1a">
-    <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4" style="font-family:'Poppins',sans-serif;color:#f0f4ff">Layanan Kami</h2>
-            <p style="color:rgba(226,232,240,0.55)">Semua kebutuhan transaksi digital dalam satu tempat</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+{{-- SERVICES: Single column list --}}
+<section class="bg-[#111111] py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">Yang Kami Tawarkan</p>
+        <h2 class="text-3xl font-bold text-white mb-12">Layanan Kami</h2>
+        <div class="space-y-0">
             @foreach([
-                ['📱',$homepage['service_1_title']??'Pulsa',$homepage['service_1_description']??'All operator','rgba(159,122,234,0.8)'],
-                ['🏠',$homepage['service_2_title']??'PPOB',$homepage['service_2_description']??'Bayar tagihan','rgba(99,179,237,0.8)'],
-                ['🎮',$homepage['service_3_title']??'Top-Up Game',$homepage['service_3_description']??'100+ game','rgba(159,122,234,0.8)'],
-                ['💳',$homepage['service_4_title']??'E-Wallet',$homepage['service_4_description']??'GoPay OVO DANA','rgba(99,179,237,0.8)'],
-            ] as $s)
-            <div class="p-6 rounded-2xl group hover:-translate-y-2 transition-all duration-300" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
-                <div class="text-4xl mb-4">{{ $s[0] }}</div>
-                <h3 class="text-base font-bold mb-2" style="color:#f0f4ff">{{ $s[1] }}</h3>
-                <p class="text-sm" style="color:rgba(226,232,240,0.5)">{{ $s[2] }}</p>
-                <div class="mt-4 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style="background:linear-gradient(90deg,{{ $s[3] }},transparent)"></div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- HOW IT WORKS --}}
-<section class="py-24 px-4" style="background:#080810">
-    <div class="max-w-5xl mx-auto">
-        <h2 class="text-4xl font-bold text-center mb-16" style="font-family:'Poppins',sans-serif;color:#f0f4ff">Cara Kerja</h2>
-        <div class="space-y-6">
-            @foreach([['01','Daftar Akun','Buat akun gratis dengan email dan nomor telepon.'],['02','Isi Saldo','Top-up via transfer bank, e-wallet, atau QRIS.'],['03','Bertransaksi','Jual pulsa, bayar tagihan, top-up game sekarang.']] as $s)
-            <div class="flex items-start gap-6 p-6 rounded-2xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
-                <span class="text-4xl font-black shrink-0" style="font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#9F7AEA,#63B3ED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ $s[0] }}</span>
+                ['📱', $homepage['service_1_title'] ?? 'Pulsa All Operator', $homepage['service_1_description'] ?? 'Semua operator tersedia dengan harga kompetitif dan proses instan tanpa hambatan.'],
+                ['🏠', $homepage['service_2_title'] ?? 'PPOB & Tagihan', $homepage['service_2_description'] ?? 'Bayar listrik, air, BPJS, internet, dan berbagai tagihan lain dalam satu tempat.'],
+                ['🎮', $homepage['service_3_title'] ?? 'Top-Up Game', $homepage['service_3_description'] ?? 'Lebih dari 100 game populer tersedia. Top-up instan untuk pengalaman bermain terbaik.'],
+                ['💳', $homepage['service_4_title'] ?? 'E-Money & E-Wallet', $homepage['service_4_description'] ?? 'Isi saldo GoPay, OVO, DANA, dan ShopeePay dengan mudah dan aman.'],
+            ] as $svc)
+            <div class="flex items-start gap-6 py-7 border-b border-white/10">
+                <span class="text-2xl shrink-0 mt-0.5">{{ $svc[0] }}</span>
                 <div>
-                    <h3 class="text-lg font-bold mb-1" style="color:#f0f4ff">{{ $s[1] }}</h3>
-                    <p style="color:rgba(226,232,240,0.5)">{{ $s[2] }}</p>
+                    <h3 class="font-bold text-white text-base mb-1">{{ $svc[1] }}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">{{ $svc[2] }}</p>
                 </div>
             </div>
             @endforeach
@@ -92,41 +59,103 @@
     </div>
 </section>
 
-{{-- CTA --}}
-<section class="py-20 px-4" style="background:#0e0e1a;border-top:1px solid rgba(159,122,234,0.2)">
-    <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-4xl font-bold mb-4" style="font-family:'Poppins',sans-serif;color:#f0f4ff">{{ $homepage['cta_title']??'Siap Bergabung?' }}</h2>
-        <p class="text-lg mb-8" style="color:rgba(226,232,240,0.6)">{{ $homepage['cta_description']??'Mulai bisnis digital Anda hari ini.' }}</p>
-        <a href="{{ $homepage['cta_button_url']??url('/kontak') }}"
-           class="inline-block px-10 py-4 rounded-xl font-bold text-white"
-           style="background:linear-gradient(135deg,#9F7AEA,#63B3ED);box-shadow:0 0 40px rgba(159,122,234,0.4)">
-            {{ $homepage['cta_button_text']??'Daftar Sekarang' }}
-        </a>
+{{-- STATS: 2x2 grid --}}
+<section class="bg-[#0D0D0D] py-16 px-6">
+    <div class="max-w-4xl mx-auto">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-10">Angka yang Berbicara</p>
+        <div class="grid grid-cols-2 gap-4">
+            @foreach([['100K+','Pengguna Aktif'],['500+','Produk Digital'],['99.9%','Uptime Terjamin'],['24/7','Layanan Support']] as $stat)
+            <div class="bg-[#1A1A1A] px-8 py-10">
+                <p class="text-4xl font-bold text-white mb-2">{{ $stat[0] }}</p>
+                <p class="text-sm text-gray-400 uppercase tracking-widest">{{ $stat[1] }}</p>
+            </div>
+            @endforeach
+        </div>
     </div>
 </section>
 
+{{-- LATEST BLOGS --}}
 @if($latestBlogs->isNotEmpty())
-<section class="py-20 px-4" style="background:#0e0e1a">
-    <div class="max-w-6xl mx-auto">
-        <div class="flex items-center justify-between mb-10">
-            <h2 class="text-2xl font-bold" style="color:#f0f4ff">Artikel Terbaru</h2>
-            <a href="{{ route('blog.index') }}" class="text-sm font-semibold" style="color:#9F7AEA">Lihat Semua →</a>
+<section class="bg-[#0A0A0A] py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-end justify-between mb-10">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">Wawasan</p>
+                <h2 class="text-2xl font-bold text-white">Artikel Terbaru</h2>
+            </div>
+            <a href="{{ route('blog.index') }}" class="text-sm text-white underline underline-offset-4 hover:text-gray-300 transition-colors">Lihat Semua →</a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             @foreach($latestBlogs as $blog)
-            <a href="{{ route('blog.show',$blog->slug) }}" class="block rounded-2xl overflow-hidden group" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+            <article class="bg-[#111111] border border-white/10 overflow-hidden group">
                 @if($blog->featured_image)
-                <img src="{{ Storage::url($blog->featured_image) }}" class="w-full h-44 object-cover" alt="{{ $blog->title }}">
+                    <img src="{{ Storage::url($blog->featured_image) }}" class="w-full h-48 object-cover" alt="{{ $blog->title }}">
                 @else
-                <div class="w-full h-44" style="background:linear-gradient(135deg,rgba(159,122,234,0.3),rgba(99,179,237,0.3))"></div>
+                    <div class="w-full h-48 bg-[#1A1A1A] flex items-center justify-center">
+                        <span class="text-4xl">📄</span>
+                    </div>
                 @endif
-                <div class="p-5">
-                    <p class="text-xs mb-2" style="color:#9F7AEA">{{ $blog->published_at?->format('d M Y') }}</p>
-                    <h3 class="font-bold line-clamp-2 group-hover:text-purple-400 transition-colors" style="color:#f0f4ff">{{ $blog->title }}</h3>
+                <div class="p-6">
+                    <p class="text-xs text-gray-500 mb-3">{{ $blog->published_at?->format('d M Y') }}</p>
+                    <h3 class="font-bold text-white text-sm leading-snug mb-3 line-clamp-2 group-hover:text-gray-300 transition-colors">
+                        {{ $blog->title }}
+                    </h3>
+                    @if($blog->excerpt)
+                    <p class="text-xs text-gray-500 leading-relaxed mb-4">{{ Str::limit($blog->excerpt, 80) }}</p>
+                    @endif
+                    <a href="{{ route('blog.show', $blog->slug) }}" class="text-xs text-white underline underline-offset-2 hover:text-gray-400 transition-colors">Baca selengkapnya →</a>
                 </div>
-            </a>
+            </article>
             @endforeach
         </div>
     </div>
 </section>
 @endif
+
+{{-- CTA --}}
+<section class="bg-[#111111] border border-white/10 py-20 px-6 text-center">
+    <div class="max-w-2xl mx-auto">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-6">Bergabung Bersama Kami</p>
+        <h2 class="text-4xl font-bold text-white mb-4" style="letter-spacing:-0.03em">
+            {{ $homepage['cta_title'] ?? 'Siap Memulai?' }}
+        </h2>
+        <p class="text-gray-400 text-lg mb-10">
+            {{ $homepage['cta_description'] ?? 'Mulai bisnis digital Anda hari ini bersama ribuan mitra terpercaya kami.' }}
+        </p>
+        <a href="{{ $homepage['cta_button_url'] ?? url('/kontak') }}"
+           class="inline-block border border-white text-white px-10 py-4 text-sm font-semibold uppercase tracking-wider hover:bg-white hover:text-black transition-colors">
+            {{ $homepage['cta_button_text'] ?? 'Daftar Sekarang' }}
+        </a>
+    </div>
+</section>
+
+{{-- FOOTER --}}
+<footer class="bg-[#050505] border-t border-white/10 py-10 px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+            <p class="font-bold text-white text-base mb-3">{{ $siteName ?? 'MonetraPay' }}</p>
+            <p class="text-sm text-gray-500 leading-relaxed">{{ $footerSettings['tagline'] ?? 'Platform transaksi digital yang andal dan efisien.' }}</p>
+        </div>
+        <div>
+            <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-4">Navigasi</h4>
+            <ul class="space-y-2">
+                <li><a href="{{ url('/') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Beranda</a></li>
+                <li><a href="{{ url('/layanan') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Layanan</a></li>
+                <li><a href="{{ route('blog.index') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="{{ url('/kontak') }}" class="text-sm text-gray-500 hover:text-white transition-colors">Kontak</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-4">Kontak</h4>
+            @if(!empty($footerSettings['contact_email']))
+            <p class="text-sm text-gray-500 mb-2">✉ {{ $footerSettings['contact_email'] }}</p>
+            @endif
+            @if(!empty($footerSettings['contact_phone']))
+            <p class="text-sm text-gray-500">📞 {{ $footerSettings['contact_phone'] }}</p>
+            @endif
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto border-t border-white/10 mt-8 pt-6">
+        <p class="text-xs text-gray-700 text-center">{{ $footerSettings['copyright_text'] ?? '© ' . date('Y') . ' ' . ($siteName ?? 'MonetraPay') . '. All rights reserved.' }}</p>
+    </div>
+</footer>
