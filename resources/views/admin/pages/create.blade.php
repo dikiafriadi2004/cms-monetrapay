@@ -183,7 +183,7 @@
                         </label>
                     </div>
                     
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg mt-3">
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg mt-3 hidden" id="pb-create-info">
                         <p class="text-sm text-blue-800">
                             <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -258,38 +258,29 @@
     }
 
     function togglePageBuilder() {
-        const checkbox = document.getElementById('use_page_builder');
-        const contentSection = document.querySelector('[for="content"]');
+        const checkbox        = document.getElementById('use_page_builder');
+        const contentLabel    = document.querySelector('label[for="content"]');
         const templateSection = document.getElementById('template-section');
+        const pbInfo          = document.getElementById('pb-create-info');
 
-        if (!checkbox || !contentSection) {
-            console.error('Page Builder elements not found');
-            return;
+        if (!checkbox) return;
+
+        const isChecked = checkbox.checked;
+
+        // Dim TinyMCE editor when page builder is on
+        if (contentLabel) {
+            const contentBox = contentLabel.closest('.bg-white');
+            if (contentBox) {
+                contentBox.style.opacity       = isChecked ? '0.4' : '1';
+                contentBox.style.pointerEvents = isChecked ? 'none' : 'auto';
+            }
         }
 
-        const contentBox = contentSection.closest('.bg-white');
-        
-        if (checkbox.checked) {
-            // Dim content editor when page builder is enabled
-            if (contentBox) {
-                contentBox.style.opacity = '0.5';
-                contentBox.style.pointerEvents = 'none';
-            }
-            // Show template selection
-            if (templateSection) {
-                templateSection.classList.remove('hidden');
-            }
-        } else {
-            // Enable content editor when page builder is disabled
-            if (contentBox) {
-                contentBox.style.opacity = '1';
-                contentBox.style.pointerEvents = 'auto';
-            }
-            // Still show template
-            if (templateSection) {
-                templateSection.classList.remove('hidden');
-            }
-        }
+        // Show/hide info box
+        if (pbInfo) pbInfo.classList.toggle('hidden', !isChecked);
+
+        // Always show template
+        if (templateSection) templateSection.classList.remove('hidden');
     }
 
     // Run on page load

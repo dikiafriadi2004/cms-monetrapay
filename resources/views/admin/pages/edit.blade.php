@@ -185,7 +185,10 @@
                     </div>
 
                     @if($page->use_page_builder)
-                        <div class="space-y-3">
+                        <div class="space-y-3" id="pb-active-section">
+                    @else
+                        <div class="space-y-3 hidden" id="pb-active-section">
+                    @endif
                             <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
                                 <div class="flex items-center gap-2 text-sm text-green-800 mb-2">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -197,24 +200,32 @@
                                     Halaman ini menggunakan Page Builder. Klik tombol di bawah untuk mengedit komponen halaman.
                                 </p>
                             </div>
-                            <a href="{{ route('admin.page-builder.edit', $page) }}" 
+                            @if($page->use_page_builder)
+                            <a href="{{ route('admin.page-builder.edit', $page) }}"
                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
                                 </svg>
                                 Open Page Builder
                             </a>
+                            @else
+                            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-sm text-blue-700">
+                                    <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                                    Simpan halaman ini dulu, lalu tombol Page Builder akan muncul.
+                                </p>
+                            </div>
+                            @endif
                         </div>
-                    @else
-                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                            <p class="text-sm text-slate-600">
-                                <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                </svg>
-                                Aktifkan toggle di atas untuk menggunakan Page Builder, lalu simpan halaman ini.
-                            </p>
-                        </div>
-                    @endif
+
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg {{ $page->use_page_builder ? 'hidden' : '' }}" id="pb-inactive-section">
+                        <p class="text-sm text-slate-600">
+                            <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            Aktifkan toggle di atas untuk menggunakan Page Builder, lalu simpan halaman ini.
+                        </p>
+                    </div>
 
                     <p class="text-xs text-slate-500">Aktifkan untuk membuat halaman dengan drag & drop components. Jika diaktifkan, konten di editor TinyMCE akan diabaikan.</p>
                 </div>
@@ -303,38 +314,31 @@
     }
 
     function togglePageBuilder() {
-        const checkbox = document.getElementById('use_page_builder');
-        const contentSection = document.querySelector('[for="content"]');
+        const checkbox        = document.getElementById('use_page_builder');
+        const contentLabel    = document.querySelector('label[for="content"]');
         const templateSection = document.getElementById('template-section');
+        const pbActive        = document.getElementById('pb-active-section');
+        const pbInactive      = document.getElementById('pb-inactive-section');
 
-        if (!checkbox || !contentSection) {
-            console.error('Page Builder elements not found');
-            return;
+        if (!checkbox) return;
+
+        const isChecked = checkbox.checked;
+
+        // Dim TinyMCE editor when page builder is on
+        if (contentLabel) {
+            const contentBox = contentLabel.closest('.bg-white');
+            if (contentBox) {
+                contentBox.style.opacity       = isChecked ? '0.4' : '1';
+                contentBox.style.pointerEvents = isChecked ? 'none' : 'auto';
+            }
         }
 
-        const contentBox = contentSection.closest('.bg-white');
-        
-        if (checkbox.checked) {
-            // Dim content editor when page builder is enabled
-            if (contentBox) {
-                contentBox.style.opacity = '0.5';
-                contentBox.style.pointerEvents = 'none';
-            }
-            // Show template selection
-            if (templateSection) {
-                templateSection.classList.remove('hidden');
-            }
-        } else {
-            // Enable content editor when page builder is disabled
-            if (contentBox) {
-                contentBox.style.opacity = '1';
-                contentBox.style.pointerEvents = 'auto';
-            }
-            // Still show template
-            if (templateSection) {
-                templateSection.classList.remove('hidden');
-            }
-        }
+        // Show/hide page builder status sections
+        if (pbActive)    pbActive.classList.toggle('hidden', !isChecked);
+        if (pbInactive)  pbInactive.classList.toggle('hidden',  isChecked);
+
+        // Always show template section
+        if (templateSection) templateSection.classList.remove('hidden');
     }
 
     // Run on page load
