@@ -1,121 +1,274 @@
 {{--
-    Magazine Layout Home
-    Layout: Editorial newspaper-style grid,
-    3-column asymmetric, featured article style
+    Magazine Layout Home — Newspaper / Editorial Style
+    Colors: White bg, Black text, Red accent #C53030
+    NO gradients. All sections self-contained.
 --}}
 
-{{-- MAGAZINE HEADER HERO: newspaper masthead style --}}
-<section style="background:white;border-bottom:2px solid #e0e0e0">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        {{-- Breaking news bar --}}
-        <div class="flex items-center gap-4 px-4 py-2 mb-10 text-sm" style="background:#C0392B;color:white">
-            <span class="font-black uppercase tracking-wider text-xs shrink-0">Terbaru</span>
-            <span>Platform transaksi digital terpercaya untuk agen se-Indonesia</span>
+{{-- ═══════════════════════════════════════════════════════════
+     1. NAV — Newspaper masthead style
+     ═══════════════════════════════════════════════════════════ --}}
+<nav class="border-t-4 border-red-700 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="flex items-center justify-between py-3">
+            {{-- Site Name --}}
+            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tight text-gray-900 uppercase" style="font-family:Georgia,serif;letter-spacing:-0.02em">
+                {{ $siteName ?? config('app.name') }}
+            </a>
+            {{-- Date center --}}
+            <span class="hidden md:block text-xs text-gray-500 uppercase tracking-widest font-medium">
+                {{ date('d F Y') }}
+            </span>
+            {{-- Nav links --}}
+            <div class="flex items-center gap-6">
+                <a href="{{ url('/') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Beranda</a>
+                <a href="{{ url('/layanan') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Layanan</a>
+                <a href="{{ route('blog.index') }}" class="text-sm font-semibold text-gray-800 hover:text-red-700 uppercase tracking-wide">Artikel</a>
+                <a href="{{ url('/kontak') }}" class="text-sm font-bold bg-red-700 text-white px-4 py-2 uppercase tracking-wide hover:bg-red-800">Kontak</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{{-- ═══════════════════════════════════════════════════════════
+     2. HERO — Full-width newspaper front page style
+     ═══════════════════════════════════════════════════════════ --}}
+<section class="bg-white py-12 border-t-4 border-red-700">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+        {{-- Edition label --}}
+        <div class="mb-4">
+            <span class="text-xs font-black uppercase tracking-widest text-red-700" style="font-variant:small-caps;letter-spacing:0.15em">&#9632; Edisi Terkini &nbsp;|&nbsp; {{ date('d F Y') }}</span>
         </div>
 
-        {{-- 2-col hero split --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-            <div style="border-right:1px solid #e0e0e0;padding-right:2.5rem">
-                <span class="text-xs font-bold uppercase tracking-widest" style="color:#C0392B">Platform Unggulan</span>
-                <h1 class="mt-2 mb-4 leading-tight" style="font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:clamp(2rem,4vw,3.5rem);color:#1a1a1a">
-                    {{ $homepage['hero_title'] ?? 'Solusi Transaksi Digital untuk Agen Modern' }}
-                </h1>
-                <p class="text-lg leading-relaxed mb-6" style="color:#555;font-family:'Source Sans 3',sans-serif">
-                    {{ $homepage['hero_subtitle'] ?? 'Pulsa, PPOB, Top-Up Game & E-Money dalam satu platform terpercaya.' }}
+        {{-- Full-width bold headline --}}
+        <h1 class="text-5xl font-black leading-tight text-gray-900 mb-6 pb-6 border-b-2 border-gray-900" style="font-family:Georgia,'Times New Roman',serif">
+            {{ $homepage['hero_title'] ?? 'Headline Utama Platform Digital' }}
+        </h1>
+
+        {{-- 2-column split: col-span-2 + col-span-1 --}}
+        <div class="grid grid-cols-3 gap-8 pt-4">
+            {{-- Left: lead paragraph --}}
+            <div class="col-span-2 border-r border-gray-300 pr-8">
+                <p class="text-lg leading-relaxed text-gray-700 mb-6" style="font-family:Georgia,serif">
+                    {{ $homepage['hero_subtitle'] ?? 'Platform transaksi digital terpercaya hadir untuk memudahkan ribuan agen di seluruh Indonesia. Kelola pulsa, PPOB, top-up game, dan dompet digital dalam satu dashboard terintegrasi dengan teknologi terkini.' }}
                 </p>
-                <a href="{{ $homepage['hero_cta_url']??url('/kontak') }}"
-                   class="inline-block px-8 py-3 font-bold text-white"
-                   style="background:#C0392B">
-                    {{ $homepage['hero_cta_text']??'Daftar Jadi Agen' }} →
+                <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
+                   class="inline-block bg-red-700 text-white font-bold px-6 py-3 text-sm uppercase tracking-wider hover:bg-red-800">
+                    {{ $homepage['hero_cta_text'] ?? 'Mulai Sekarang' }} &rarr;
                 </a>
             </div>
-            {{-- Stats in editorial boxes --}}
-            <div class="grid grid-cols-2 gap-0" style="border:1px solid #e0e0e0">
-                @foreach([['100K+','Agen Aktif'],['500+','Produk'],['99.9%','Uptime'],['24/7','Support']] as $stat)
-                <div class="p-6 text-center" style="border:1px solid #e0e0e0">
-                    <p class="font-black text-3xl mb-1" style="font-family:'Playfair Display',serif;color:#C0392B">{{ $stat[0] }}</p>
-                    <p class="text-xs uppercase tracking-wider" style="color:#666">{{ $stat[1] }}</p>
-                </div>
-                @endforeach
+
+            {{-- Right: latest article titles --}}
+            <div class="col-span-1 pl-4">
+                <p class="text-xs font-black uppercase tracking-widest text-red-700 mb-3 pb-2 border-b border-red-700">Artikel Terbaru</p>
+                @if($latestBlogs->isNotEmpty())
+                    <ul class="space-y-3">
+                        @foreach($latestBlogs->take(3) as $blog)
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-700 font-black shrink-0 mt-0.5">&#9679;</span>
+                            <a href="{{ route('blog.show', $blog->slug) }}"
+                               class="text-sm font-semibold text-gray-800 hover:text-red-700 leading-snug line-clamp-2" style="font-family:Georgia,serif">
+                                {{ $blog->title }}
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2"><span class="text-red-700 font-black shrink-0">&#9679;</span><span class="text-sm text-gray-500">Belum ada artikel terbaru.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-red-700 font-black shrink-0">&#9679;</span><span class="text-sm text-gray-500">Artikel akan segera ditambahkan.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-red-700 font-black shrink-0">&#9679;</span><span class="text-sm text-gray-500">Kunjungi kembali halaman ini.</span></li>
+                    </ul>
+                @endif
             </div>
         </div>
     </div>
 </section>
 
-{{-- SERVICES: editorial list style --}}
-<section class="py-16 px-4" style="background:#f8f8f8;border-top:4px solid #C0392B">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex items-center gap-4 mb-10">
-            <h2 class="font-black text-2xl" style="font-family:'Playfair Display',serif">Layanan Kami</h2>
-            <div class="flex-1 h-px" style="background:#e0e0e0"></div>
+{{-- ═══════════════════════════════════════════════════════════
+     3. SERVICES — Horizontal pills + compact 2-column table
+     ═══════════════════════════════════════════════════════════ --}}
+<section class="bg-white py-12 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+        <div class="flex items-center gap-4 mb-6">
+            <h2 class="text-xl font-black uppercase tracking-widest text-gray-900 whitespace-nowrap" style="font-family:Georgia,serif">Layanan Kami</h2>
+            <div class="flex-1 h-px bg-gray-300"></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+        {{-- Horizontal pills row --}}
+        <div class="flex flex-wrap gap-2 mb-8">
             @foreach([
-                [$homepage['service_1_title']??'Pulsa All Operator',$homepage['service_1_description']??'Semua operator','📱'],
-                [$homepage['service_2_title']??'PPOB & Tagihan',$homepage['service_2_description']??'PLN PDAM BPJS','🏠'],
-                [$homepage['service_3_title']??'Top-Up Game',$homepage['service_3_description']??'100+ game','🎮'],
-                [$homepage['service_4_title']??'E-Money',$homepage['service_4_description']??'GoPay OVO DANA','💳'],
-            ] as $s)
-            <div class="p-5 bg-white" style="border-top:3px solid #C0392B">
-                <div class="text-3xl mb-3">{{ $s[2] }}</div>
-                <h3 class="font-bold mb-2" style="font-family:'Playfair Display',serif;font-size:1.1rem">{{ $s[0] }}</h3>
-                <p class="text-sm" style="color:#666;line-height:1.6">{{ $s[1] }}</p>
+                $homepage['service_1_title'] ?? 'Pulsa All Operator',
+                $homepage['service_2_title'] ?? 'PPOB & Tagihan',
+                $homepage['service_3_title'] ?? 'Top-Up Game',
+                $homepage['service_4_title'] ?? 'E-Money & Dompet Digital',
+            ] as $pill)
+            <span class="border border-gray-400 rounded-full px-4 py-1 text-sm inline-block text-gray-700 hover:border-red-700 hover:text-red-700 cursor-default">
+                {{ $pill }}
+            </span>
+            @endforeach
+        </div>
+
+        {{-- Compact 2-column table --}}
+        <div class="border border-gray-200">
+            @foreach([
+                [$homepage['service_1_title'] ?? 'Pulsa All Operator', $homepage['service_1_description'] ?? 'Tersedia untuk semua operator nasional dengan harga kompetitif dan proses real-time.'],
+                [$homepage['service_2_title'] ?? 'PPOB & Tagihan', $homepage['service_2_description'] ?? 'Bayar listrik, air, BPJS, telepon, dan berbagai tagihan lainnya dalam satu platform.'],
+                [$homepage['service_3_title'] ?? 'Top-Up Game', $homepage['service_3_description'] ?? 'Top-up lebih dari 100 game populer dengan harga terbaik dan proses instan.'],
+                [$homepage['service_4_title'] ?? 'E-Money & Dompet Digital', $homepage['service_4_description'] ?? 'Isi saldo GoPay, OVO, DANA, dan dompet digital lainnya dengan mudah.'],
+            ] as $i => $svc)
+            <div class="grid grid-cols-2 border-b border-gray-200 {{ $i % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
+                <div class="px-5 py-4 border-r border-gray-200">
+                    <p class="font-bold text-gray-900 text-sm">{{ $svc[0] }}</p>
+                </div>
+                <div class="px-5 py-4">
+                    <p class="text-sm text-gray-600">{{ $svc[1] }}</p>
+                </div>
             </div>
             @endforeach
         </div>
     </div>
 </section>
 
-{{-- HOW IT WORKS: numbered editorial --}}
-<section class="py-16 px-4 bg-white">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex items-center gap-4 mb-10">
-            <h2 class="font-black text-2xl whitespace-nowrap" style="font-family:'Playfair Display',serif">Cara Kerja</h2>
-            <div class="flex-1 h-px" style="background:#e0e0e0"></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-0" style="border:1px solid #e0e0e0">
-            @foreach([['Langkah 01','Daftar Akun','Registrasi gratis dengan email dan telepon.'],['Langkah 02','Isi Saldo','Deposit via transfer bank atau e-wallet.'],['Langkah 03','Mulai Jualan','Transaksi real-time 24 jam non-stop.']] as $s)
-            <div class="p-8" style="border-right:1px solid #e0e0e0">
-                <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#C0392B">{{ $s[0] }}</p>
-                <h3 class="font-black text-xl mb-3" style="font-family:'Playfair Display',serif">{{ $s[1] }}</h3>
-                <p class="text-sm leading-relaxed" style="color:#555">{{ $s[2] }}</p>
+{{-- ═══════════════════════════════════════════════════════════
+     4. STATS — Full-width light gray marquee-style
+     ═══════════════════════════════════════════════════════════ --}}
+<section class="bg-gray-100 py-4 border-t border-b border-gray-300">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="overflow-hidden">
+            <div class="flex items-center gap-8 text-sm font-bold text-gray-700 uppercase tracking-widest whitespace-nowrap">
+                <span class="text-red-700">&#9658;</span>
+                <span>100K+ Pengguna</span>
+                <span class="text-red-700">&#9658;</span>
+                <span>500+ Produk</span>
+                <span class="text-red-700">&#9658;</span>
+                <span>99.9% Uptime</span>
+                <span class="text-red-700">&#9658;</span>
+                <span>50+ Partner</span>
+                <span class="text-red-700">&#9658;</span>
+                <span>Transaksi Real-Time</span>
+                <span class="text-red-700">&#9658;</span>
+                <span>Support 24/7</span>
             </div>
-            @endforeach
         </div>
     </div>
 </section>
 
-{{-- CTA: editorial banner --}}
-<section class="py-16 px-4" style="background:#1a1a1a">
-    <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-        <div>
-            <h2 class="text-3xl font-black mb-2 text-white" style="font-family:'Playfair Display',serif">{{ $homepage['cta_title']??'Bergabung Sekarang' }}</h2>
-            <p style="color:rgba(255,255,255,0.6)">{{ $homepage['cta_description']??'Mulai bisnis digital Anda hari ini.' }}</p>
-        </div>
-        <a href="{{ $homepage['cta_button_url']??url('/kontak') }}"
-           class="shrink-0 px-8 py-3 font-bold text-white whitespace-nowrap"
-           style="background:#C0392B">
-            {{ $homepage['cta_button_text']??'Daftar Sekarang' }} →
-        </a>
-    </div>
-</section>
-
+{{-- ═══════════════════════════════════════════════════════════
+     5. BLOG GRID — 3-column editorial article cards
+     ═══════════════════════════════════════════════════════════ --}}
 @if($latestBlogs->isNotEmpty())
-<section class="py-16 px-4 bg-white" style="border-top:4px solid #C0392B">
-    <div class="max-w-7xl mx-auto">
+<section class="bg-white py-14 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="font-black text-2xl" style="font-family:'Playfair Display',serif">Artikel Terbaru</h2>
-            <a href="{{ route('blog.index') }}" class="text-sm font-bold" style="color:#C0392B">Selengkapnya →</a>
+            <div class="flex items-center gap-4">
+                <h2 class="text-xl font-black uppercase tracking-widest text-gray-900 whitespace-nowrap" style="font-family:Georgia,serif">Artikel &amp; Berita</h2>
+                <div class="w-24 h-px bg-gray-300"></div>
+            </div>
+            <a href="{{ route('blog.index') }}" class="text-sm font-bold text-red-700 hover:text-red-800 uppercase tracking-wide">Selengkapnya &rarr;</a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-0" style="border:1px solid #e0e0e0">
-            @foreach($latestBlogs as $i => $blog)
-            <a href="{{ route('blog.show',$blog->slug) }}" class="block p-6 group" style="border-right:1px solid #e0e0e0">
-                <p class="text-xs uppercase tracking-widest mb-2" style="color:#C0392B">{{ $blog->published_at?->format('d M Y') }}</p>
-                <h3 class="font-black text-lg mb-2 group-hover:text-red-700 transition-colors line-clamp-3" style="font-family:'Playfair Display',serif">{{ $blog->title }}</h3>
-                @if($blog->excerpt)<p class="text-sm line-clamp-2" style="color:#666">{{ $blog->excerpt }}</p>@endif
-            </a>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-200">
+            @foreach($latestBlogs as $blog)
+            <article class="border-r border-gray-200 last:border-r-0">
+                {{-- Image or solid red placeholder --}}
+                @if($blog->thumbnail)
+                <img src="{{ \Storage::url($blog->thumbnail) }}" alt="{{ $blog->title }}"
+                     class="w-full h-44 object-cover">
+                @else
+                <div class="w-full h-44 bg-red-700 flex items-center justify-center">
+                    <span class="text-4xl">📰</span>
+                </div>
+                @endif
+
+                <div class="p-5">
+                    {{-- Category tag --}}
+                    @if($blog->category)
+                    <span class="text-xs font-black uppercase tracking-widest text-red-700">{{ $blog->category->name }}</span>
+                    @else
+                    <span class="text-xs font-black uppercase tracking-widest text-red-700">Artikel</span>
+                    @endif
+
+                    <h3 class="font-black text-base mt-2 mb-3 text-gray-900 leading-snug line-clamp-3" style="font-family:Georgia,serif">
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="hover:text-red-700">{{ $blog->title }}</a>
+                    </h3>
+
+                    @if($blog->excerpt)
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ $blog->excerpt }}</p>
+                    @endif
+
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">{{ $blog->published_at?->format('d M Y') }}</p>
+                </div>
+            </article>
             @endforeach
         </div>
     </div>
 </section>
 @endif
+
+{{-- ═══════════════════════════════════════════════════════════
+     6. CTA — Left-aligned, large red heading
+     ═══════════════════════════════════════════════════════════ --}}
+<section class="bg-white py-16 border-t-4 border-red-700">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="max-w-2xl">
+            <p class="text-xs font-black uppercase tracking-widest text-red-700 mb-3">&#9632; Bergabung Sekarang</p>
+            <h2 class="text-4xl font-black text-red-700 leading-tight mb-4" style="font-family:Georgia,serif">
+                {{ $homepage['cta_title'] ?? 'Jadilah Agen Digital Terpercaya' }}
+            </h2>
+            <p class="text-lg text-gray-600 mb-8" style="font-family:Georgia,serif">
+                {{ $homepage['cta_description'] ?? 'Ribuan agen sudah membuktikan kemudahan dan keuntungan bertransaksi bersama kami. Daftarkan diri Anda sekarang dan mulai hasilkan pendapatan dari bisnis digital.' }}
+            </p>
+            <a href="{{ $homepage['cta_button_url'] ?? url('/kontak') }}"
+               class="inline-block bg-red-700 text-white font-bold px-8 py-4 text-sm uppercase tracking-wider hover:bg-red-800">
+                {{ $homepage['cta_button_text'] ?? 'Daftar Jadi Agen' }} &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+
+{{-- ═══════════════════════════════════════════════════════════
+     7. FOOTER — Black bg, white text, 3-column grid
+     ═══════════════════════════════════════════════════════════ --}}
+<footer class="bg-gray-900 text-white py-14 border-t-4 border-red-700">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+            {{-- Col 1: Brand --}}
+            <div>
+                <p class="text-xl font-black uppercase tracking-tight mb-3" style="font-family:Georgia,serif">
+                    {{ $siteName ?? config('app.name') }}
+                </p>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    Platform transaksi digital terpercaya untuk agen se-Indonesia. Pulsa, PPOB, Game, dan E-Money dalam satu platform.
+                </p>
+            </div>
+
+            {{-- Col 2: Navigation --}}
+            <div>
+                <p class="text-xs font-black uppercase tracking-widest text-red-500 mb-4 pb-2 border-b border-gray-700">Navigasi</p>
+                <ul class="space-y-2">
+                    <li><a href="{{ url('/') }}" class="text-sm text-gray-400 hover:text-white">Beranda</a></li>
+                    <li><a href="{{ url('/layanan') }}" class="text-sm text-gray-400 hover:text-white">Layanan</a></li>
+                    <li><a href="{{ route('blog.index') }}" class="text-sm text-gray-400 hover:text-white">Artikel</a></li>
+                    <li><a href="{{ url('/kontak') }}" class="text-sm text-gray-400 hover:text-white">Kontak</a></li>
+                </ul>
+            </div>
+
+            {{-- Col 3: Contact --}}
+            <div>
+                <p class="text-xs font-black uppercase tracking-widest text-red-500 mb-4 pb-2 border-b border-gray-700">Hubungi Kami</p>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li>📧 {{ $homepage['contact_email'] ?? 'info@example.com' }}</li>
+                    <li>📞 {{ $homepage['contact_phone'] ?? '+62 800 0000 0000' }}</li>
+                    <li>📍 {{ $homepage['contact_address'] ?? 'Indonesia' }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-2">
+            <p class="text-xs text-gray-500">&copy; {{ date('Y') }} {{ $siteName ?? config('app.name') }}. Hak cipta dilindungi.</p>
+            <p class="text-xs text-gray-600">Edisi {{ date('d F Y') }}</p>
+        </div>
+    </div>
+</footer>
