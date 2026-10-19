@@ -44,7 +44,8 @@
 
 @section('content')
 
-@if(isset($themeSlug) && View::exists('frontend.home-themes.' . $themeSlug))
+@php if(!isset($themeSlug)){try{$themeSlug=app(\App\Services\ThemeService::class)->getActiveTheme()?->slug??'modern-corporate';}catch(\Throwable $e){$themeSlug='modern-corporate';}} @endphp
+@if(View::exists('frontend.home-themes.' . $themeSlug))
     @include('frontend.home-themes.' . $themeSlug)
 @else
 {{-- ═══════════════ HERO SECTION ═══════════════ --}}

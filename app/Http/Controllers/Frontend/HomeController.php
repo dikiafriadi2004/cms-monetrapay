@@ -15,8 +15,15 @@ class HomeController extends Controller
     public function index()
     {
         $latestBlogs = $this->cache->latestBlogs(3);
-        $homepage = Setting::getGroup('homepage');
+        $homepage    = Setting::getGroup('homepage');
 
-        return view('frontend.home', compact('latestBlogs', 'homepage'));
+        // Resolve active theme slug for home page layout switching
+        try {
+            $themeSlug = app(\App\Services\ThemeService::class)->getActiveTheme()?->slug ?? 'modern-corporate';
+        } catch (\Throwable $e) {
+            $themeSlug = 'modern-corporate';
+        }
+
+        return view('frontend.home', compact('latestBlogs', 'homepage', 'themeSlug'));
     }
 }
