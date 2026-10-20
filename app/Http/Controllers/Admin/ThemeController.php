@@ -72,27 +72,44 @@ class ThemeController extends Controller
     public function update(Request $request, Theme $theme): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
-            'config' => 'required|array',
-            'config.primary_color' => 'required|string',
-            'config.secondary_color' => 'required|string',
-            'config.font_heading' => 'required|string',
-            'config.font_body' => 'required|string',
-            'config.header_style' => 'required|string',
-            'config.footer_style' => 'required|string',
-            'config.sidebar_position' => 'required|string',
-            'config.layout_width' => 'required|string',
+            'config'                  => 'required|array',
+            'config.primary_color'    => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'config.secondary_color'  => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'config.font_heading'     => 'required|string|max:100',
+            'config.font_body'        => 'required|string|max:100',
+            // Optional fields — not all themes use these
+            'config.header_style'     => 'nullable|string|max:50',
+            'config.footer_style'     => 'nullable|string|max:50',
+            'config.sidebar_position' => 'nullable|string|max:20',
+            'config.layout_width'     => 'nullable|string|max:20',
+            // Extra custom fields
+            'config.border_radius'    => 'nullable|string|max:20',
+            'config.button_style'     => 'nullable|string|max:20',
+        ], [
+            'config.primary_color.regex'   => 'Primary color harus berformat hex (#RRGGBB).',
+            'config.secondary_color.regex' => 'Secondary color harus berformat hex (#RRGGBB).',
         ]);
 
+        // Merge incoming config with existing (don't overwrite fields not in form)
+        $currentConfig  = $theme->config ?? [];
+        $newConfig      = array_merge($currentConfig, $validated['config']);
+
         try {
-            $theme->update(['config' => $validated['config']]);
+            $theme->update(['config' => $newConfig]);
             $this->themeService->clearCache();
 
-            return $this->successResponse(
-                'Konfigurasi theme berhasil disimpan!',
-                ['theme' => $theme]
-            );
+            if ($request->wantsJson() || $request->ajax()) {
+                return $this->successResponse(
+                    'Konfigurasi tema "' . $theme->name . '" berhasil disimpan!',
+                    ['theme' => $theme->fresh()]
+                );
+            }
+
+            return redirect()
+                ->route('admin.themes.customize', $theme)
+                ->with('success', 'Konfigurasi tema berhasil disimpan!');
         } catch (\Throwable $e) {
-            return $this->handleError($e, 'Gagal menyimpan konfigurasi theme.');
+            return $this->handleError($e, 'Gagal menyimpan konfigurasi tema.');
         }
     }
 }

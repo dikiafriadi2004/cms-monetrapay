@@ -249,6 +249,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('files/{media}', [FileManagerController::class, 'update'])
         ->middleware('check.permission:file.edit')
         ->name('files.update');
+    Route::post('files/{media}/crop', [FileManagerController::class, 'crop'])
+        ->middleware('check.permission:file.edit')
+        ->name('files.crop');
 
     // Ad Management Routes
     Route::middleware('check.permission:ad.view')->group(function () {

@@ -1,21 +1,22 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Edit Menu: ' . $menu->name)
 @section('page-title', 'Menu Builder')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js">
 <style>
-    .menu-item.is-dragging {
-        opacity: 0.45;
-        border-color: rgba(61, 158, 122, 0.7);
-    }
+    .menu-item.sortable-ghost { opacity: 0.35; background: #f0fdf4; border-color: #86efac; }
+    .menu-item.sortable-chosen { box-shadow: 0 4px 16px rgba(61,158,122,0.2); }
+    .menu-item.sortable-drag { opacity: 0.9; }
+    .nested-container { min-height: 8px; }
 </style>
 @endpush
 
 @section('content')
 <div x-data="menuBuilder()" class="space-y-5">
 
-    {{-- ═══ HEADER ═══ --}}
+    {{-- â•â•â• HEADER â•â•â• --}}
     <div class="flex items-center justify-between gap-3 flex-wrap">
         <div class="flex items-center gap-3 min-w-0">
             <a href="{{ route('admin.menus.index') }}"
@@ -47,7 +48,7 @@
         <p class="text-sm font-medium" x-text="message"></p>
     </div>
 
-    {{-- ═══ MENU INFO CARD ═══ --}}
+    {{-- â•â•â• MENU INFO CARD â•â•â• --}}
     <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
         <h2 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
             <span class="w-1 h-4 bg-primary rounded-full"></span>
@@ -77,10 +78,10 @@
         </form>
     </div>
 
-    {{-- ═══ MAIN GRID ═══ --}}
+    {{-- â•â•â• MAIN GRID â•â•â• --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {{-- ═══ LEFT: MENU ITEMS LIST ═══ --}}
+        {{-- â•â•â• LEFT: MENU ITEMS LIST â•â•â• --}}
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -94,7 +95,7 @@
                 </div>
 
                 <div class="p-5">
-                    <div id="menu-items-container" class="min-h-[260px] space-y-2" x-ref="sortableContainer">
+                    <div id="sortable-root" class="min-h-[260px] space-y-2">
                         <template x-if="items.length === 0">
                             <div class="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-xl text-center">
                                 <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-3">
@@ -106,16 +107,111 @@
                         </template>
 
                         <template x-for="(item, index) in items" :key="item._id">
-                            <div class="menu-item-wrapper">
+                            <div :data-id="item._id">
                                 {{-- LEVEL 1 --}}
-                                <div class="menu-item group flex items-center gap-2 p-3 bg-white border-2 border-slate-200 rounded-lg cursor-move hover:border-primary/40 hover:shadow-sm transition-all"
-                                     :class="dragging.item && dragging.item._id === item._id ? 'is-dragging' : ''"
-                                     :data-id="item._id"
-                                     draggable="true"
-                                     @dragstart.stop="startDrag(items, index, $event)"
-                                     @dragover.prevent
-                                     @drop.stop="dropItem(items, index, $event)"
-                                     @dragend="endDrag()">
+                                <div class="menu-item group flex items-center gap-2 p-3 bg-white border-2 border-slate-200 rounded-lg hover:border-primary/40 hover:shadow-sm transition-all">
+                                    {{-- Drag handle --}}
+                                    <div class="drag-handle cursor-grab active:cursor-grabbing shrink-0 text-slate-300 hover:text-primary transition-colors p-1 rounded">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+                                    </div>
+                                    {{-- Inline edit form --}}
+                                    <template x-if="editingId === item._id">
+                                        <div class="flex-1 flex items-center gap-2">
+                                            <input type="text" x-model="editLabel" @keydown.enter="saveEdit(item)" @keydown.escape="cancelEdit()"
+                                                   class="flex-1 text-sm px-2 py-1 rounded border border-primary focus:outline-none">
+                                            <input x-show="item.type === 'custom' || item.type === 'external'"
+                                                   type="text" x-model="editUrl" placeholder="URL"
+                                                   @keydown.enter="saveEdit(item)" @keydown.escape="cancelEdit()"
+                                                   class="flex-1 text-xs px-2 py-1 rounded border border-slate-300 focus:outline-none font-mono">
+                                            <button @click="saveEdit(item)" class="p-1 text-green-600 hover:bg-green-50 rounded" title="Simpan"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+                                            <button @click="cancelEdit()" class="p-1 text-slate-400 hover:bg-slate-50 rounded" title="Batal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                        </div>
+                                    </template>
+                                    <template x-if="editingId !== item._id">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-semibold text-slate-800 truncate" x-text="item.label"></span>
+                                                <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase tracking-wide"
+                                                      :class="{'bg-primary/10 text-primary':item.type==='page','bg-purple-50 text-purple-700':item.type==='category','bg-amber-50 text-amber-700':item.type==='custom','bg-secondary/10 text-secondary-dark':item.type==='external'}"
+                                                      x-text="item.type"></span>
+                                            </div>
+                                            <p class="text-[11px] text-slate-500 truncate font-mono" x-text="item.url||'-'"></p>
+                                        </div>
+                                    </template>
+                                    {{-- Edit + Delete --}}
+                                    <template x-if="editingId !== item._id">
+                                        <div class="flex items-center gap-1 shrink-0">
+                                            <button @click="startEdit(item)" class="p-1.5 text-slate-300 hover:text-primary hover:bg-primary/5 rounded-md transition-colors" title="Edit">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            </button>
+                                            <button @click="removeItem(items, index)" class="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Hapus">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                                {{-- CHILDREN (level 2+) --}}
+                                <div class="nested-container ml-7 mt-1.5 space-y-1.5 min-h-[8px]">
+                                    <template x-for="(child, ci) in item.children" :key="child._id">
+                                        <div :data-id="child._id">
+                                            <div class="menu-item group flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg hover:border-primary/40 transition-all">
+                                                <div class="drag-handle cursor-grab active:cursor-grabbing shrink-0 text-slate-300 hover:text-primary transition-colors">
+                                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+                                                </div>
+                                                <template x-if="editingId === child._id">
+                                                    <div class="flex-1 flex items-center gap-2">
+                                                        <input type="text" x-model="editLabel" @keydown.enter="saveEdit(child)" @keydown.escape="cancelEdit()" class="flex-1 text-sm px-2 py-1 rounded border border-primary focus:outline-none">
+                                                        <input x-show="child.type==='custom'||child.type==='external'" type="text" x-model="editUrl" class="flex-1 text-xs px-2 py-1 rounded border border-slate-300 font-mono focus:outline-none">
+                                                        <button @click="saveEdit(child)" class="p-1 text-green-600 hover:bg-green-50 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+                                                        <button @click="cancelEdit()" class="p-1 text-slate-400 hover:bg-slate-50 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                    </div>
+                                                </template>
+                                                <template x-if="editingId !== child._id">
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center gap-1.5">
+                                                            <span class="text-sm font-medium text-slate-700 truncate" x-text="child.label"></span>
+                                                            <span class="inline-flex px-1 py-0.5 text-[9px] font-bold rounded uppercase"
+                                                                  :class="{'bg-primary/10 text-primary':child.type==='page','bg-purple-50 text-purple-700':child.type==='category','bg-amber-50 text-amber-700':child.type==='custom','bg-secondary/10 text-secondary-dark':child.type==='external'}"
+                                                                  x-text="child.type"></span>
+                                                        </div>
+                                                        <p class="text-[10px] text-slate-400 truncate font-mono" x-text="child.url||'-'"></p>
+                                                    </div>
+                                                </template>
+                                                <template x-if="editingId !== child._id">
+                                                    <div class="flex items-center gap-1 shrink-0">
+                                                        <button @click="startEdit(child)" class="p-1 text-slate-300 hover:text-primary hover:bg-primary/5 rounded transition-colors"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                                                        <button @click="removeItem(item.children, ci)" class="p-1 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            {{-- Level 3 --}}
+                                            <div class="nested-container ml-6 mt-1 space-y-1 min-h-[6px]">
+                                                <template x-for="(gc, gi) in child.children" :key="gc._id">
+                                                    <div :data-id="gc._id" class="menu-item group flex items-center gap-2 p-2.5 bg-white border border-dashed border-slate-200 rounded-lg hover:border-primary/40 transition-all">
+                                                        <div class="drag-handle cursor-grab active:cursor-grabbing shrink-0 text-slate-300 hover:text-primary transition-colors">
+                                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <span class="text-xs font-medium text-slate-600 truncate" x-text="gc.label"></span>
+                                                            <p class="text-[10px] text-slate-400 truncate font-mono" x-text="gc.url||'-'"></p>
+                                                        </div>
+                                                        <button @click="startEdit(gc)" class="p-1 text-slate-300 hover:text-primary rounded transition-colors opacity-0 group-hover:opacity-100"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                                                        <button @click="removeItem(child.children, gi)" class="p-1 text-slate-300 hover:text-red-600 rounded transition-colors opacity-0 group-hover:opacity-100"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="mt-4 flex items-start gap-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                        <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs text-blue-700">Drag â ¿ untuk mengubah urutan. Seret ke dalam item lain untuk membuat sub-menu. Klik âœï¸ untuk edit label/URL. Maksimal 3 level, 50 item.</p>
+                    </div>
+                </div>
                                     <svg class="w-4 h-4 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
@@ -138,79 +234,6 @@
                                     </button>
                                 </div>
 
-                                {{-- LEVEL 2 --}}
-                                <div class="ml-7 mt-2 space-y-2 nested-sortable" :data-parent-id="item._id" @dragover.prevent @drop.stop="dropInto(item.children, $event)">
-                                    <template x-for="(child, childIndex) in item.children" :key="child._id">
-                                        <div class="menu-item-wrapper">
-                                            <div class="menu-item group flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg cursor-move hover:border-primary/40 transition-all"
-                                                 :class="dragging.item && dragging.item._id === child._id ? 'is-dragging' : ''"
-                                                 :data-id="child._id"
-                                                 draggable="true"
-                                                 @dragstart.stop="startDrag(item.children, childIndex, $event)"
-                                                 @dragover.prevent
-                                                 @drop.stop="dropItem(item.children, childIndex, $event)"
-                                                 @dragend="endDrag()">
-                                                <svg class="w-3.5 h-3.5 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-sm font-medium text-slate-700 truncate" x-text="child.label"></span>
-                                                        <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase tracking-wide"
-                                                              :class="{
-                                                                  'bg-primary/10 text-primary': child.type === 'page',
-                                                                  'bg-purple-50 text-purple-700': child.type === 'category',
-                                                                  'bg-amber-50 text-amber-700': child.type === 'custom',
-                                                                  'bg-secondary/10 text-secondary-dark': child.type === 'external'
-                                                              }"
-                                                              x-text="child.type"></span>
-                                                    </div>
-                                                    <p class="text-[11px] text-slate-500 truncate font-mono" x-text="child.url || '-'"></p>
-                                                </div>
-                                                <button @click="removeItem(item.children, childIndex)"
-                                                        class="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                </button>
-                                            </div>
-
-                                            {{-- LEVEL 3 --}}
-                                            <div class="ml-6 mt-2 space-y-2 nested-sortable" :data-parent-id="child._id" @dragover.prevent @drop.stop="dropInto(child.children, $event)">
-                                                <template x-for="(grandchild, gcIndex) in child.children" :key="grandchild._id">
-                                                    <div class="menu-item group flex items-center gap-2 p-2.5 bg-white border border-slate-200 border-dashed rounded-lg cursor-move hover:border-primary/40 transition-all"
-                                                         :class="dragging.item && dragging.item._id === grandchild._id ? 'is-dragging' : ''"
-                                                         :data-id="grandchild._id"
-                                                         draggable="true"
-                                                         @dragstart.stop="startDrag(child.children, gcIndex, $event)"
-                                                         @dragover.prevent
-                                                         @drop.stop="dropItem(child.children, gcIndex, $event)"
-                                                         @dragend="endDrag()">
-                                                        <svg class="w-3 h-3 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-                                                        <div class="flex-1 min-w-0">
-                                                            <div class="flex items-center gap-2">
-                                                                <span class="text-xs font-medium text-slate-600 truncate" x-text="grandchild.label"></span>
-                                                                <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
-                                                                      :class="{
-                                                                          'bg-primary/10 text-primary': grandchild.type === 'page',
-                                                                          'bg-purple-50 text-purple-700': grandchild.type === 'category',
-                                                                          'bg-amber-50 text-amber-700': grandchild.type === 'custom',
-                                                                          'bg-secondary/10 text-secondary-dark': grandchild.type === 'external'
-                                                                      }"
-                                                                      x-text="grandchild.type"></span>
-                                                            </div>
-                                                            <p class="text-[10px] text-slate-400 truncate font-mono" x-text="grandchild.url || '-'"></p>
-                                                        </div>
-                                                        <button @click="removeItem(child.children, gcIndex)"
-                                                                class="p-1 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0">
-                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                        </button>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-
                     <div class="mt-4 flex items-start gap-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
                         <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p class="text-xs text-blue-700">Drag item untuk mengubah urutan. Maksimal 3 level kedalaman dan 50 item per menu.</p>
@@ -219,7 +242,7 @@
             </div>
         </div>
 
-        {{-- ═══ RIGHT: ADD ITEM PANEL ═══ --}}
+        {{-- â•â•â• RIGHT: ADD ITEM PANEL â•â•â• --}}
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm sticky top-4">
                 <div class="px-5 py-4 border-b border-slate-100">
@@ -368,9 +391,12 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
-    const pagesData = @json($pages);
+    const pagesData     = @json($pages);
     const categoriesData = @json($categories);
+    const SAVE_URL      = "{{ route('admin.menus.save-items', $menu) }}";
+    const CSRF          = "{{ csrf_token() }}";
 
     function menuBuilder() {
         return {
@@ -389,10 +415,15 @@
             showRemoveConfirm: false,
             removeConfirmName: '',
             _pendingRemove: null,
-            dragging: { array: null, index: null, item: null },
+
+            // â”€â”€ Inline edit state â”€â”€
+            editingId: null,
+            editLabel: '',
+            editUrl: '',
 
             init() {
                 this.assignIds(this.items);
+                this.$nextTick(() => this._initSortable());
             },
 
             assignIds(items) {
@@ -405,10 +436,218 @@
 
             generateId() { return 'item_' + (this._idCounter++); },
 
-            startDrag(array, index, event) {
-                this.dragging = { array, index, item: array[index] };
-                event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('text/plain', array[index]._id);
+            _initSortable() {
+                const root = document.getElementById('sortable-root');
+                if (!root || typeof Sortable === 'undefined') return;
+                this._makeSortable(root, this.items);
+            },
+
+            _makeSortable(el, array) {
+                if (!el) return;
+                Sortable.create(el, {
+                    group: 'menu-items',
+                    animation: 150,
+                    handle: '.drag-handle',
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    dragClass: 'sortable-drag',
+                    fallbackOnBody: true,
+                    swapThreshold: 0.65,
+                    onEnd: () => {
+                        // Sync DOM order back to Alpine data after drag
+                        this.$nextTick(() => this._syncFromDom());
+                    }
+                });
+                // Also init nested containers
+                el.querySelectorAll('.nested-container').forEach(nested => {
+                    if (!nested._sortable) {
+                        nested._sortable = true;
+                        Sortable.create(nested, {
+                            group: 'menu-items',
+                            animation: 150,
+                            handle: '.drag-handle',
+                            ghostClass: 'sortable-ghost',
+                            chosenClass: 'sortable-chosen',
+                            fallbackOnBody: true,
+                            swapThreshold: 0.65,
+                            onEnd: () => {
+                                this.$nextTick(() => this._syncFromDom());
+                            }
+                        });
+                    }
+                });
+            },
+
+            _syncFromDom() {
+                // After sortable changes DOM, rebuild items array from DOM order
+                const root = document.getElementById('sortable-root');
+                if (!root) return;
+                const flat = {}; // id â†’ item
+                const flatAll = (arr) => arr.forEach(i => { flat[i._id] = i; flatAll(i.children || []); });
+                flatAll(this.items);
+
+                const buildFromDom = (container) => {
+                    const result = [];
+                    container.querySelectorAll(':scope > [data-id]').forEach(el => {
+                        const id = el.dataset.id;
+                        const item = flat[id];
+                        if (!item) return;
+                        const nested = el.querySelector('.nested-container');
+                        item.children = nested ? buildFromDom(nested) : [];
+                        result.push(item);
+                    });
+                    return result;
+                };
+
+                this.items = buildFromDom(root);
+                // Re-init sortable on new nested containers
+                this.$nextTick(() => {
+                    document.querySelectorAll('.nested-container:not([data-sortable-init])').forEach(el => {
+                        el.setAttribute('data-sortable-init', '1');
+                        Sortable.create(el, {
+                            group: 'menu-items',
+                            animation: 150,
+                            handle: '.drag-handle',
+                            ghostClass: 'sortable-ghost',
+                            fallbackOnBody: true,
+                            swapThreshold: 0.65,
+                            onEnd: () => this.$nextTick(() => this._syncFromDom()),
+                        });
+                    });
+                });
+            },
+
+            // â”€â”€ Inline edit â”€â”€
+            startEdit(item) {
+                this.editingId = item._id;
+                this.editLabel = item.label;
+                this.editUrl   = item.url;
+            },
+
+            saveEdit(item) {
+                if (!this.editLabel.trim()) return;
+                item.label = this.editLabel.trim();
+                if (item.type === 'custom' || item.type === 'external') {
+                    item.url = this.editUrl.trim();
+                }
+                this.editingId = null;
+            },
+
+            cancelEdit() { this.editingId = null; },
+
+            countItems(items) {
+                let count = 0;
+                items.forEach(item => {
+                    count++;
+                    if (item.children && item.children.length > 0) count += this.countItems(item.children);
+                });
+                return count;
+            },
+
+            validateUrl(url) {
+                if (!url) return false;
+                try {
+                    const parsed = new URL(url);
+                    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+                } catch { return false; }
+            },
+
+            addCustomItem() {
+                this.urlError = '';
+                if (!this.newItem.label.trim()) { this.urlError = 'Label wajib diisi.'; return; }
+                if (!this.newItem.url.trim()) { this.urlError = 'URL wajib diisi.'; return; }
+                if (!this.validateUrl(this.newItem.url)) { this.urlError = 'URL harus berformat http:// atau https://.'; return; }
+                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
+                this.items.push({ _id: this.generateId(), label: this.newItem.label.trim(), type: 'custom', url: this.newItem.url.trim(), target: this.newItem.target, page_id: null, category_id: null, children: [] });
+                this.newItem = { label: '', url: '', target: '_self' };
+                this.showMessage('Item ditambahkan.', 'success');
+                this.$nextTick(() => this._syncFromDom());
+            },
+
+            addPageItem() {
+                if (!this.selectedPage) return;
+                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
+                const page = pagesData.find(p => p.id == this.selectedPage);
+                if (!page) return;
+                this.items.push({ _id: this.generateId(), label: page.title, type: 'page', url: '/' + page.slug, target: '_self', page_id: page.id, category_id: null, children: [] });
+                this.selectedPage = '';
+                this.showMessage('Halaman ditambahkan.', 'success');
+                this.$nextTick(() => this._syncFromDom());
+            },
+
+            addCategoryItem() {
+                if (!this.selectedCategory) return;
+                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
+                const cat = categoriesData.find(c => c.id == this.selectedCategory);
+                if (!cat) return;
+                this.items.push({ _id: this.generateId(), label: cat.name, type: 'category', url: '/kategori/' + cat.slug, target: '_self', page_id: null, category_id: cat.id, children: [] });
+                this.selectedCategory = '';
+                this.showMessage('Kategori ditambahkan.', 'success');
+                this.$nextTick(() => this._syncFromDom());
+            },
+
+            addExternalItem() {
+                this.externalUrlError = '';
+                if (!this.externalItem.label.trim()) { this.externalUrlError = 'Label wajib diisi.'; return; }
+                if (!this.externalItem.url.trim()) { this.externalUrlError = 'URL wajib diisi.'; return; }
+                if (!this.validateUrl(this.externalItem.url)) { this.externalUrlError = 'URL harus berformat http:// atau https://.'; return; }
+                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
+                this.items.push({ _id: this.generateId(), label: this.externalItem.label.trim(), type: 'external', url: this.externalItem.url.trim(), target: '_blank', page_id: null, category_id: null, children: [] });
+                this.externalItem = { label: '', url: '' };
+                this.showMessage('Link external ditambahkan.', 'success');
+                this.$nextTick(() => this._syncFromDom());
+            },
+
+            removeItem(array, index) {
+                this._pendingRemove = { array, index };
+                this.removeConfirmName = array[index].label;
+                this.showRemoveConfirm = true;
+            },
+
+            confirmRemove() {
+                if (this._pendingRemove) {
+                    this._pendingRemove.array.splice(this._pendingRemove.index, 1);
+                    this._pendingRemove = null;
+                }
+                this.showRemoveConfirm = false;
+            },
+
+            prepareItemsForSave(items) {
+                return items.map(item => ({
+                    label: item.label, type: item.type, url: item.url,
+                    target: item.target || '_self',
+                    page_id: item.page_id || null, category_id: item.category_id || null,
+                    children: item.children ? this.prepareItemsForSave(item.children) : []
+                }));
+            },
+
+            async saveMenu() {
+                this.saving = true;
+                this.message = '';
+                const payload = { items: this.prepareItemsForSave(this.items) };
+                try {
+                    const response = await fetch(SAVE_URL, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) this.showMessage(data.message || 'Menu berhasil disimpan.', 'success');
+                    else this.showMessage(data.message || 'Gagal menyimpan menu.', 'error');
+                } catch (error) {
+                    this.showMessage('Terjadi kesalahan saat menyimpan menu.', 'error');
+                }
+                this.saving = false;
+            },
+
+            showMessage(text, type) {
+                this.message = text; this.messageType = type;
+                setTimeout(() => { this.message = ''; }, 4000);
+            }
+        };
+    }
+</script>
+@endsection
             },
 
             dropItem(targetArray, targetIndex, event) {

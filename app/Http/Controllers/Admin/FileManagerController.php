@@ -307,6 +307,77 @@ class FileManagerController extends Controller
     }
 
     /**
+     * Crop an image to the given coordinates and dimensions.
+     * Saves the cropped result back to the same path (replaces original).
+     */
+    public function crop(Request $request, Media $media)
+    {
+        // Only images can be cropped
+        if (! in_array($media->mime_type, $this->imageMimeTypes)) {
+            return response()->json(['success' => false, 'message' => 'Hanya file gambar yang bisa di-crop.'], 422);
+        }
+
+        $validated = $request->validate([
+            'x'      => ['required', 'numeric', 'min:0'],
+            'y'      => ['required', 'numeric', 'min:0'],
+            'width'  => ['required', 'numeric', 'min:1'],
+            'height' => ['required', 'numeric', 'min:1'],
+        ]);
+
+        $fullPath = storage_path('app/public/' . $media->path);
+
+        if (! file_exists($fullPath)) {
+            return response()->json(['success' => false, 'message' => 'File tidak ditemukan.'], 404);
+        }
+
+        try {
+            $manager = new ImageManager(new Driver);
+            $image   = $manager->read($fullPath);
+
+            // Apply crop
+            $image->crop(
+                (int) $validated['width'],
+                (int) $validated['height'],
+                (int) $validated['x'],
+                (int) $validated['y']
+            );
+
+            // Save back with same quality
+            $ext = strtolower(pathinfo($media->path, PATHINFO_EXTENSION));
+            if (in_array($ext, ['jpg', 'jpeg'])) {
+                $image->toJpeg(quality: 85)->save($fullPath);
+            } elseif ($ext === 'webp') {
+                $image->toWebp(quality: 85)->save($fullPath);
+            } else {
+                $image->toPng()->save($fullPath);
+            }
+
+            // Regenerate thumbnail
+            if ($media->thumbnail_path) {
+                $thumbFull = storage_path('app/public/' . $media->thumbnail_path);
+                $thumb = $manager->read($fullPath);
+                $thumb->cover(300, 300);
+                $thumb->toWebp(quality: 80)->save($thumbFull);
+            }
+
+            // Update size in DB
+            $media->update(['size' => filesize($fullPath)]);
+
+            return response()->json([
+                'success'       => true,
+                'message'       => 'Gambar berhasil di-crop.',
+                'new_url'       => Storage::url($media->path) . '?v=' . time(),
+                'thumbnail_url' => $media->thumbnail_path
+                    ? Storage::url($media->thumbnail_path) . '?v=' . time()
+                    : null,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json(['success' => false, 'message' => 'Gagal crop: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Update searchable media metadata.
      */
     public function update(Request $request, Media $media)

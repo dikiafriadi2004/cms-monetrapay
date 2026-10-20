@@ -109,6 +109,14 @@
                             title="Hapus">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
+                    {{-- Crop button (images only) --}}
+                    @if(str_starts_with($file->mime_type, 'image/'))
+                    <button @click="openCrop({{ $file->id }}, '{{ Storage::url($file->path) }}', '{{ addslashes($file->original_name) }}')"
+                            class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm hover:bg-primary-dark z-10"
+                            title="Crop">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2"/></svg>
+                    </button>
+                    @endif
                     {{-- Thumbnail --}}
                     <div class="aspect-square flex items-center justify-center mb-2 overflow-hidden rounded-lg bg-white border border-slate-100">
                         @if($file->thumbnail_path)
@@ -167,6 +175,80 @@
     {{-- Folder Modal --}}
     @include('admin.files._folder_modal')
 
+    {{-- ═══ CROP MODAL ═══ --}}
+    <div x-show="showCropModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" @click="closeCrop()"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col"
+             style="max-height:90vh"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100">
+            {{-- Header --}}
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
+                <div>
+                    <h3 class="text-base font-bold text-slate-800">Crop Gambar</h3>
+                    <p class="text-xs text-slate-500 mt-0.5" x-text="cropFileName"></p>
+                </div>
+                <button @click="closeCrop()" class="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            {{-- Crop area --}}
+            <div class="flex-1 overflow-hidden p-4 bg-slate-50 flex items-center justify-center" style="min-height:300px;max-height:55vh">
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <img id="crop-image" class="max-w-full max-h-full" style="display:none">
+                </div>
+            </div>
+            {{-- Controls --}}
+            <div class="px-6 py-4 border-t border-slate-100 shrink-0">
+                {{-- Aspect ratio buttons --}}
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="text-xs font-semibold text-slate-500 mr-1">Rasio:</span>
+                    <button @click="setCropRatio(NaN)" :class="cropRatio === 'free' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">Bebas</button>
+                    <button @click="setCropRatio(1)" :class="cropRatio === '1' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">1:1</button>
+                    <button @click="setCropRatio(16/9)" :class="cropRatio === '16:9' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">16:9</button>
+                    <button @click="setCropRatio(4/3)" :class="cropRatio === '4:3' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">4:3</button>
+                    <button @click="setCropRatio(3/2)" :class="cropRatio === '3:2' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">3:2</button>
+
+                    <div class="ml-auto flex items-center gap-2">
+                        {{-- Rotate --}}
+                        <button @click="rotateCrop(-90)" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" title="Putar kiri">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10a7 7 0 1014 0 7 7 0 00-14 0M3 10V6m0 4h4"/></svg>
+                        </button>
+                        <button @click="rotateCrop(90)" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" title="Putar kanan">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10a7 7 0 10-14 0 7 7 0 0014 0M21 10V6m0 4h-4"/></svg>
+                        </button>
+                        {{-- Reset --}}
+                        <button @click="resetCrop()" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors" title="Reset">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </button>
+                    </div>
+                </div>
+                {{-- Crop info --}}
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-xs text-slate-400" x-text="cropInfo"></span>
+                </div>
+                {{-- Action buttons --}}
+                <div class="flex gap-3">
+                    <button @click="closeCrop()"
+                            class="flex-1 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
+                        Batal
+                    </button>
+                    <button @click="applyCrop()" :disabled="cropping"
+                            class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-primary rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2">
+                        <svg x-show="cropping" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                        <svg x-show="!cropping" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span x-text="cropping ? 'Memproses...' : 'Terapkan Crop'"></span>
+                    </button>
+                </div>
+                <p class="text-xs text-amber-600 mt-3 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    Crop akan mengganti file asli secara permanen.
+                </p>
+            </div>
+        </div>
+    </div>
+
     {{-- Delete Modal (File + Folder) --}}
     <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
@@ -202,6 +284,17 @@
 </div>
 
 <script>
+// Load Cropper.js
+(function() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css';
+    document.head.appendChild(link);
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js';
+    document.head.appendChild(script);
+})();
+
 function fileManager() {
     return {
         showUploadModal: false, showFolderModal: false, showDeleteModal: false,
@@ -210,7 +303,17 @@ function fileManager() {
         deleteModalTitle: 'Hapus File',
         deleteWarning: false, deleteWarningMessage: '', deleteUsages: [],
         uploading: false, uploadProgress: 0,
-        _deleteType: 'file', // 'file' or 'folder'
+        _deleteType: 'file',
+
+        // ── Crop state ──
+        showCropModal: false,
+        cropFileId: null,
+        cropFileName: '',
+        cropUrl: '',
+        cropRatio: 'free',
+        cropping: false,
+        cropInfo: '',
+        _cropper: null,
 
         formatSize(bytes) {
             if (!bytes) return '0 B';
@@ -293,7 +396,105 @@ function fileManager() {
             xhr.onload = () => { this.uploading = false; if (xhr.status === 200) window.location.reload(); else alert('Upload gagal.'); };
             xhr.onerror = () => { this.uploading = false; alert('Upload gagal.'); };
             xhr.send(fd);
-        }
+        },
+
+        // ── Crop methods ──
+        openCrop(id, url, name) {
+            this.cropFileId = id;
+            this.cropUrl    = url;
+            this.cropFileName = name;
+            this.cropRatio  = 'free';
+            this.cropInfo   = '';
+            this.showCropModal = true;
+
+            this.$nextTick(() => {
+                const img = document.getElementById('crop-image');
+                if (!img) return;
+
+                // Destroy previous instance
+                if (this._cropper) { this._cropper.destroy(); this._cropper = null; }
+
+                img.src = url + '?nocache=' + Date.now();
+                img.style.display = 'block';
+
+                img.onload = () => {
+                    this._cropper = new Cropper(img, {
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                        responsive: true,
+                        restore: false,
+                        guides: true,
+                        center: true,
+                        highlight: true,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                        crop: (event) => {
+                            const d = event.detail;
+                            this.cropInfo = `${Math.round(d.x)}, ${Math.round(d.y)} — ${Math.round(d.width)} × ${Math.round(d.height)} px`;
+                        }
+                    });
+                };
+            });
+        },
+
+        closeCrop() {
+            if (this._cropper) { this._cropper.destroy(); this._cropper = null; }
+            const img = document.getElementById('crop-image');
+            if (img) { img.src = ''; img.style.display = 'none'; }
+            this.showCropModal = false;
+        },
+
+        setCropRatio(ratio) {
+            const labelMap = { [NaN]: 'free', [1]: '1', [16/9]: '16:9', [4/3]: '4:3', [3/2]: '3:2' };
+            this.cropRatio = isNaN(ratio) ? 'free' : String(ratio);
+            // Find label
+            for (const [k, v] of Object.entries(labelMap)) {
+                if (String(k) === String(ratio)) { this.cropRatio = v; break; }
+            }
+            if (this._cropper) this._cropper.setAspectRatio(ratio);
+        },
+
+        rotateCrop(deg) {
+            if (this._cropper) this._cropper.rotate(deg);
+        },
+
+        resetCrop() {
+            if (this._cropper) this._cropper.reset();
+        },
+
+        async applyCrop() {
+            if (!this._cropper || this.cropping) return;
+            const data = this._cropper.getData(true); // rounded integers
+
+            if (data.width < 10 || data.height < 10) {
+                alert('Area crop terlalu kecil. Minimal 10×10 px.');
+                return;
+            }
+
+            this.cropping = true;
+            try {
+                const r = await fetch(`/admin/files/${this.cropFileId}/crop`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ x: data.x, y: data.y, width: data.width, height: data.height }),
+                });
+                const result = await r.json();
+                if (r.ok && result.success) {
+                    this.closeCrop();
+                    window.location.reload();
+                } else {
+                    alert(result.message || 'Crop gagal.');
+                }
+            } catch(e) {
+                alert('Terjadi kesalahan saat crop.');
+            }
+            this.cropping = false;
+        },
     };
 }
 </script>
