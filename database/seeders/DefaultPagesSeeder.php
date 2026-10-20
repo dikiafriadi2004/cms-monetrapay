@@ -10,12 +10,11 @@ class DefaultPagesSeeder extends Seeder
 {
     public function run(): void
     {
-        // ── 1. HALAMAN KONTAK ───────────────────────────────────────────
+        // ── 1. HALAMAN KONTAK ────────────────────────────────────────
         $kontak = Page::updateOrCreate(
             ['slug' => 'kontak'],
             [
                 'title'            => 'Kontak',
-                'slug'             => 'kontak',
                 'content'          => '',
                 'status'           => 'published',
                 'template'         => 'kontak',
@@ -25,7 +24,6 @@ class DefaultPagesSeeder extends Seeder
             ]
         );
 
-        // Hapus komponen lama lalu buat default
         $kontak->components()->delete();
 
         PageComponent::create([
@@ -37,7 +35,6 @@ class DefaultPagesSeeder extends Seeder
                 'badge_text'      => 'Hubungi Kami',
                 'button_text'     => 'Isi Formulir',
                 'button_link'     => '#contact',
-                'button2_text'    => '',
                 'height'          => 'medium',
                 'text_align'      => 'center',
                 'background_type' => 'gradient',
@@ -51,23 +48,22 @@ class DefaultPagesSeeder extends Seeder
             'page_id'        => $kontak->id,
             'component_type' => 'contact-form',
             'content'        => [
-                'title'          => 'Daftar Menjadi Agen',
-                'subtitle'       => 'Isi formulir di bawah dan tim kami akan menghubungi Anda dalam 1×24 jam.',
-                'button_text'    => 'Kirim Pendaftaran',
-                'success_message'=> 'Terima kasih! Tim kami akan segera menghubungi Anda.',
-                'show_city'      => true,
+                'title'           => 'Daftar Menjadi Agen',
+                'subtitle'        => 'Isi formulir di bawah dan tim kami akan menghubungi Anda dalam 1×24 jam.',
+                'button_text'     => 'Kirim Pendaftaran',
+                'success_message' => 'Terima kasih! Tim kami akan segera menghubungi Anda.',
+                'show_city'       => true,
             ],
             'settings'   => [],
             'sort_order' => 2,
             'is_visible' => true,
         ]);
 
-        // ── 2. HALAMAN TENTANG KAMI ────────────────────────────────────
+        // ── 2. HALAMAN TENTANG KAMI ──────────────────────────────────
         $tentang = Page::updateOrCreate(
             ['slug' => 'tentang-kami'],
             [
                 'title'            => 'Tentang Kami',
-                'slug'             => 'tentang-kami',
                 'content'          => '',
                 'status'           => 'published',
                 'template'         => 'tentang-kami',
@@ -108,16 +104,34 @@ class DefaultPagesSeeder extends Seeder
                 'columns'          => 3,
                 'style'            => 'cards',
                 'features'         => [
-                    ['icon_emoji' => '🔒', 'title' => 'Terpercaya & Aman',      'description' => 'Sistem keamanan berlapis untuk setiap transaksi Anda.'],
-                    ['icon_emoji' => '⚡', 'title' => 'Transaksi Instan',        'description' => 'Proses selesai kurang dari 30 detik, tanpa gangguan.'],
-                    ['icon_emoji' => '💰', 'title' => 'Margin Kompetitif',       'description' => 'Harga terbaik untuk semua produk digital.'],
-                    ['icon_emoji' => '🤝', 'title' => 'Support 24/7',           'description' => 'Tim siap membantu kapan saja Anda butuhkan.'],
-                    ['icon_emoji' => '📊', 'title' => 'Laporan Real-time',       'description' => 'Monitor performa bisnis dari dashboard lengkap.'],
-                    ['icon_emoji' => '🚀', 'title' => 'Mudah Digunakan',         'description' => 'Antarmuka intuitif, siap dipakai tanpa pelatihan.'],
+                    ['icon_emoji' => '🔒', 'title' => 'Terpercaya & Aman',    'description' => 'Sistem keamanan berlapis untuk setiap transaksi Anda.'],
+                    ['icon_emoji' => '⚡', 'title' => 'Transaksi Instan',     'description' => 'Proses selesai kurang dari 30 detik, tanpa gangguan.'],
+                    ['icon_emoji' => '💰', 'title' => 'Margin Kompetitif',    'description' => 'Harga terbaik untuk semua produk digital.'],
+                    ['icon_emoji' => '🤝', 'title' => 'Support 24/7',        'description' => 'Tim siap membantu kapan saja Anda butuhkan.'],
+                    ['icon_emoji' => '📊', 'title' => 'Laporan Real-time',    'description' => 'Monitor performa bisnis dari dashboard lengkap.'],
+                    ['icon_emoji' => '🚀', 'title' => 'Mudah Digunakan',      'description' => 'Antarmuka intuitif, siap dipakai tanpa pelatihan.'],
                 ],
             ],
             'settings'   => [],
             'sort_order' => 2,
+            'is_visible' => true,
+        ]);
+
+        PageComponent::create([
+            'page_id'        => $tentang->id,
+            'component_type' => 'testimonials',
+            'content'        => [
+                'section_title'    => 'Apa Kata Mitra Kami',
+                'section_subtitle' => 'Ribuan agen telah membuktikan keandalan MonetraPay.',
+                'columns'          => 3,
+                'items'            => [
+                    ['name' => 'Ahmad Rizki',  'role' => 'Agen Pulsa',  'company' => 'Toko Rizki Jakarta', 'quote' => 'Platform ini benar-benar mengubah bisnis saya. Transaksi jauh lebih cepat dan margin lebih baik dari sebelumnya.', 'rating' => 5],
+                    ['name' => 'Siti Rahayu', 'role' => 'Reseller',    'company' => 'Warung Berkah Bandung', 'quote' => 'Sudah 2 tahun bergabung dan tidak pernah mengecewakan. Support tim sangat responsif dan membantu.', 'rating' => 5],
+                    ['name' => 'Budi Santoso', 'role' => 'Distributor', 'company' => 'CV Maju Jaya Surabaya', 'quote' => 'Harga bersaing, transaksi real-time, dan laporan lengkap. Semua ada di satu aplikasi!', 'rating' => 5],
+                ],
+            ],
+            'settings'   => [],
+            'sort_order' => 3,
             'is_visible' => true,
         ]);
 
@@ -134,16 +148,15 @@ class DefaultPagesSeeder extends Seeder
                 'background'  => 'gradient',
             ],
             'settings'   => [],
-            'sort_order' => 3,
+            'sort_order' => 4,
             'is_visible' => true,
         ]);
 
-        // ── 3. HALAMAN LAYANAN ─────────────────────────────────────────
+        // ── 3. HALAMAN LAYANAN ───────────────────────────────────────
         $layanan = Page::updateOrCreate(
             ['slug' => 'layanan'],
             [
                 'title'            => 'Layanan',
-                'slug'             => 'layanan',
                 'content'          => '',
                 'status'           => 'published',
                 'template'         => 'layanan',
@@ -274,9 +287,6 @@ class DefaultPagesSeeder extends Seeder
             'is_visible' => true,
         ]);
 
-        $this->command->info('✅ Default pages seeded: kontak, tentang-kami, layanan');
-        $this->command->info('   Kontak: ' . $kontak->components()->count() . ' components');
-        $this->command->info('   Tentang Kami: ' . $tentang->components()->count() . ' components');
-        $this->command->info('   Layanan: ' . $layanan->components()->count() . ' components');
+        $this->command->info('✅ Default pages seeded: kontak (' . $kontak->components()->count() . ' components), tentang-kami (' . $tentang->components()->count() . '), layanan (' . $layanan->components()->count() . ')');
     }
 }

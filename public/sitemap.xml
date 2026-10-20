@@ -2,9 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>http://cms-monetrapay.test</loc>
-        <lastmod>2026-10-18T15:23:34+00:00</lastmod>
+        <lastmod>2026-10-20T07:21:12+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/blog/cara-memulai-bisnis-pulsa-dari-nol</loc>
+        <lastmod>2026-10-20T07:21:11+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/blog/panduan-lengkap-ppob-untuk-pemula</loc>
+        <lastmod>2026-10-20T07:21:12+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/blog/5-game-mobile-terpopuler-top-up</loc>
+        <lastmod>2026-10-20T07:21:12+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/blog/tips-meningkatkan-omzet-bisnis-digital</loc>
+        <lastmod>2026-10-20T07:21:12+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/blog/dompet-digital-terpopuler-indonesia</loc>
+        <lastmod>2026-10-20T07:21:12+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>http://cms-monetrapay.test/contact</loc>
@@ -29,5 +59,71 @@
         <lastmod>2026-10-18T15:23:34+00:00</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/kebijakan-privasi</loc>
+        <lastmod>2026-10-20T07:20:07+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/syarat-ketentuan</loc>
+        <lastmod>2026-10-20T07:20:07+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/faq</loc>
+        <lastmod>2026-10-20T07:20:07+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/tips-trik</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/pulsa-data</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/ppob</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/topup-game</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/e-money</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/bisnis-digital</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/promo-penawaran</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>http://cms-monetrapay.test/category/berita</loc>
+        <lastmod>2026-10-20T07:20:06+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
     </url>
 </urlset>

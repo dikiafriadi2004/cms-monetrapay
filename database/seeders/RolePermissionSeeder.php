@@ -64,29 +64,23 @@ class RolePermissionSeeder extends Seeder
         $authorRole = Role::firstOrCreate(['name' => 'Author', 'guard_name' => 'web']);
         $authorRole->syncPermissions($authorPermissions);
 
-        $adminEmail = config('admin.default_email', 'admin@monetrapay.com');
-        $adminPassword = config('admin.default_password');
+        $adminEmail    = env('ADMIN_EMAIL',    'admin@monetrapay.com');
+        $adminPassword = env('ADMIN_PASSWORD', 'password');
+        $adminName     = env('ADMIN_NAME',     'Super Admin');
 
-        if (app()->environment('production') && empty($adminPassword)) {
-            return;
+        if (app()->environment('production') && $adminPassword === 'password') {
+            Log::warning('⚠️  Menggunakan password default "password" di production! Ganti segera via ADMIN_PASSWORD di .env');
         }
 
-        // Production admin password must be at least 12 characters with mixed case, numbers, and special characters.
-        if (app()->environment('production') && ! empty($adminPassword)) {
-            $passwordPattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/';
-            if (! preg_match($passwordPattern, $adminPassword)) {
-                Log::warning('Weak admin password detected in production seeder. Change immediately after first login.');
-            }
-        }
-
-        // Create default Super Admin user for local/testing, or production only when explicit credentials are set.
         $superAdmin = User::firstOrCreate(
             ['email' => $adminEmail],
             [
-                'name' => config('admin.default_name', 'Super Admin'),
-                'password' => bcrypt($adminPassword ?: 'password'),
+                'name'     => $adminName,
+                'password' => bcrypt($adminPassword),
             ]
         );
         $superAdmin->assignRole($superAdminRole);
+
+        $this->command->info('✅ Roles & permissions seeded. Admin: ' . $adminEmail);
     }
 }
