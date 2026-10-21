@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             DefaultPagesSeeder::class,
             BlogSeeder::class,
+            AdsSeeder::class,
         ]);
 
         $this->command->newLine();

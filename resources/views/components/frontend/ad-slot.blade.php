@@ -1,7 +1,13 @@
 @props(['position'])
 
 @php
-    $ads = \App\Models\Ad::where('position', $position)
+    // Map alias positions to database ENUM values
+    $positionMap = [
+        'sidebar_bottom' => 'in_content',
+    ];
+    $dbPosition = $positionMap[$position] ?? $position;
+
+    $ads = \App\Models\Ad::where('position', $dbPosition)
         ->where('is_active', true)
         ->where(function ($query) {
             $query->whereNull('start_date')
