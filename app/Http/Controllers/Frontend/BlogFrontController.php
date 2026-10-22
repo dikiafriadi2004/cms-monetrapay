@@ -69,9 +69,17 @@ class BlogFrontController extends Controller
             ->limit(3)
             ->get();
 
-        // Auto-insert ads
+        // Auto-insert ads into paragraphs (position = auto_insert)
         $autoInsertAds = Ad::where('position', 'auto_insert')
             ->where('is_active', true)
+            ->whereNotNull('interval')
+            ->where('interval', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', today());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', today());
+            })
             ->get();
 
         $content = $this->adInsertionService->insertAdsInContent($blog->content, $autoInsertAds);
