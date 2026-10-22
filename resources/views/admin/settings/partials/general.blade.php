@@ -97,4 +97,47 @@
             </div>
         </div>
     </div>
+
+    {{-- Section: WhatsApp Floating Button --}}
+    <div class="pt-5 border-t border-slate-100">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tombol WhatsApp Floating</h3>
+        <p class="text-[11px] text-slate-400 mb-3">Tombol WhatsApp yang mengambang di pojok kanan bawah semua halaman frontend. Sangat efektif untuk bisnis di Indonesia.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2 flex items-center gap-3">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="whatsapp_float_enabled" value="1" id="whatsapp_float_enabled"
+                           {{ old('whatsapp_float_enabled', $settings['whatsapp_float_enabled'] ?? '1') == '1' ? 'checked' : '' }}
+                           class="sr-only peer">
+                    <div class="w-10 h-6 bg-slate-200 peer-checked:bg-green-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    <span class="ms-3 text-xs font-semibold text-slate-700">Tampilkan tombol WhatsApp</span>
+                </label>
+                <span class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                    Aktif di semua halaman frontend
+                </span>
+            </div>
+            <div>
+                <label for="whatsapp_number" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Nomor WhatsApp
+                    <span class="text-slate-400 font-normal ml-1">(format internasional tanpa + atau spasi)</span>
+                </label>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-slate-400 font-mono bg-slate-50 px-3 py-2.5 border border-slate-200 rounded-lg shrink-0">+</span>
+                    <input type="text" name="whatsapp_number" id="whatsapp_number"
+                           value="{{ old('whatsapp_number', $settings['whatsapp_number'] ?? '') }}"
+                           maxlength="20" placeholder="6281234567890"
+                           class="flex-1">
+                </div>
+                <p class="mt-1 text-[11px] text-slate-400">Contoh: 6281234567890 (62 = kode negara Indonesia, tanpa 0 di depan)</p>
+                @error('whatsapp_number') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label for="whatsapp_text" class="block text-xs font-semibold text-slate-700 mb-1.5">Pesan Default</label>
+                <textarea name="whatsapp_text" id="whatsapp_text" rows="2" maxlength="200"
+                          placeholder="Halo, saya ingin tahu lebih lanjut...">{{ old('whatsapp_text', $settings['whatsapp_text'] ?? 'Halo, saya ingin tahu lebih lanjut tentang layanan MonetraPay') }}</textarea>
+                <p class="mt-1 text-[11px] text-slate-400">Pesan yang sudah terisi saat pelanggan klik tombol. Maks 200 karakter.</p>
+                @error('whatsapp_text') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+        </div>
+    </div>
 </div>

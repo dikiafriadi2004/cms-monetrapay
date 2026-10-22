@@ -11,15 +11,19 @@ class SettingsSeeder extends Seeder
     {
         $settings = [
             // ── GENERAL ────────────────────────────────────────────────
-            ['group' => 'general', 'key' => 'site_name',          'value' => 'MonetraPay'],
-            ['group' => 'general', 'key' => 'tagline',             'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
-            ['group' => 'general', 'key' => 'contact_email',       'value' => 'support@monetrapay.com'],
-            ['group' => 'general', 'key' => 'contact_phone',       'value' => '+62 812-3456-7890'],
-            ['group' => 'general', 'key' => 'logo',                'value' => null],
-            ['group' => 'general', 'key' => 'favicon',             'value' => null],
+            ['group' => 'general', 'key' => 'site_name',             'value' => 'MonetraPay'],
+            ['group' => 'general', 'key' => 'tagline',               'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
+            ['group' => 'general', 'key' => 'contact_email',         'value' => 'support@monetrapay.com'],
+            ['group' => 'general', 'key' => 'contact_phone',         'value' => '+62 812-3456-7890'],
+            ['group' => 'general', 'key' => 'logo',                  'value' => null],
+            ['group' => 'general', 'key' => 'favicon',               'value' => null],
             // Navbar CTA — ubah teks & URL sesuai kebutuhan
-            ['group' => 'general', 'key' => 'navbar_cta_text',     'value' => 'Daftar Jadi Agen'],
-            ['group' => 'general', 'key' => 'navbar_cta_url',      'value' => '/kontak'],
+            ['group' => 'general', 'key' => 'navbar_cta_text',       'value' => 'Daftar Jadi Agen'],
+            ['group' => 'general', 'key' => 'navbar_cta_url',        'value' => '/kontak'],
+            // WhatsApp Floating Button
+            ['group' => 'general', 'key' => 'whatsapp_float_enabled','value' => '1'],
+            ['group' => 'general', 'key' => 'whatsapp_number',       'value' => '6281234567890'],
+            ['group' => 'general', 'key' => 'whatsapp_text',         'value' => 'Halo, saya ingin tahu lebih lanjut tentang layanan MonetraPay'],
 
             // ── SOCIAL MEDIA ──────────────────────────────────────────
             ['group' => 'social', 'key' => 'facebook_url',         'value' => 'https://facebook.com/monetrapay'],

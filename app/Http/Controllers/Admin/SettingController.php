@@ -47,6 +47,8 @@ class SettingController extends Controller
         // Handle file uploads
         if ($group === 'general') {
             $validated = $this->handleFileUploads($request, $validated);
+            // Checkbox: simpan '0' jika tidak dicentang
+            $validated['whatsapp_float_enabled'] = $request->has('whatsapp_float_enabled') ? '1' : '0';
         }
 
         if ($group === 'homepage') {
@@ -106,12 +108,17 @@ class SettingController extends Controller
     {
         $rules = match ($group) {
             'general' => [
-                'site_name' => ['nullable', 'max:100'],
-                'tagline' => ['nullable', 'max:255'],
-                'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
-                'favicon' => ['nullable', 'file', 'mimetypes:image/x-icon,image/vnd.microsoft.icon,image/png,image/jpeg,image/svg+xml', 'max:2048'],
-                'contact_email' => ['nullable', 'email', 'max:255'],
-                'contact_phone' => ['nullable', 'max:20'],
+                'site_name'              => ['nullable', 'max:100'],
+                'tagline'                => ['nullable', 'max:255'],
+                'logo'                   => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
+                'favicon'                => ['nullable', 'file', 'mimetypes:image/x-icon,image/vnd.microsoft.icon,image/png,image/jpeg,image/svg+xml', 'max:2048'],
+                'contact_email'          => ['nullable', 'email', 'max:255'],
+                'contact_phone'          => ['nullable', 'max:20'],
+                'navbar_cta_text'        => ['nullable', 'max:50'],
+                'navbar_cta_url'         => ['nullable', 'max:255'],
+                'whatsapp_float_enabled' => ['nullable'],
+                'whatsapp_number'        => ['nullable', 'max:20', 'regex:/^[0-9]+$/'],
+                'whatsapp_text'          => ['nullable', 'max:200'],
             ],
             'homepage' => [
                 'hero_title' => ['nullable', 'max:255'],
