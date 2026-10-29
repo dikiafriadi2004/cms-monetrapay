@@ -147,11 +147,8 @@
       x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 }, { passive: true })">
 
 {{-- ===== NAVBAR: load per-theme partial if exists, else default ===== --}}
-@if(View::exists('frontend.layouts.partials.navbar-' . $themeSlug))
-    @include('frontend.layouts.partials.navbar-' . $themeSlug)
-@else
-    @include('frontend.layouts.partials.navbar')
-@endif
+@includeWhen(view()->exists('frontend.layouts.partials.navbar-' . $themeSlug), 'frontend.layouts.partials.navbar-' . $themeSlug)
+@includeWhen(!view()->exists('frontend.layouts.partials.navbar-' . $themeSlug), 'frontend.layouts.partials.navbar')
 
 {{-- Main Content --}}
 <main role="main" class="flex-1">
@@ -159,11 +156,8 @@
 </main>
 
 {{-- ===== FOOTER: load per-theme partial if exists, else default ===== --}}
-@if(View::exists('frontend.layouts.partials.footer-' . $themeSlug))
-    @include('frontend.layouts.partials.footer-' . $themeSlug)
-@else
-    @include('frontend.layouts.partials.footer')
-@endif
+@includeWhen(view()->exists('frontend.layouts.partials.footer-' . $themeSlug), 'frontend.layouts.partials.footer-' . $themeSlug)
+@includeWhen(!view()->exists('frontend.layouts.partials.footer-' . $themeSlug), 'frontend.layouts.partials.footer')
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @yield('scripts')
 
