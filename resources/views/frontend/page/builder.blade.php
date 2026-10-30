@@ -20,15 +20,6 @@
 
     {{-- Structured Data --}}
     <script type="application/ld+json">{!! json_encode($structuredData) !!}</script>
-
-    {{-- Apply active theme styles --}}
-    @php
-        $themeService = app(\App\Services\ThemeService::class);
-        $themeStyles = $themeService->applyThemeStyles();
-    @endphp
-    @if($themeStyles)
-    <style>{!! $themeStyles !!}</style>
-    @endif
 @endpush
 
 @section('content')

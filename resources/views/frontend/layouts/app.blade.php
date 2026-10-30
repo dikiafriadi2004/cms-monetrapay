@@ -18,30 +18,12 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {{-- Load Google Fonts dynamically based on active theme --}}
     @php
-        try {
-            $activeThemeFonts = app(\App\Services\ThemeService::class)->getActiveTheme();
-            $fontHeading = $activeThemeFonts?->config['font_heading'] ?? 'Plus Jakarta Sans';
-            $fontBody    = $activeThemeFonts?->config['font_body']    ?? 'Plus Jakarta Sans';
-            // Fonts that don't need external loading (system/web-safe)
-            $systemFonts = ['Georgia','Times New Roman','Arial','Helvetica','Verdana','Tahoma','system-ui'];
-            $needGoogleFonts = !in_array($fontHeading, $systemFonts) || !in_array($fontBody, $systemFonts);
-            // Build Google Fonts URL
-            $fontsToLoad = collect([$fontHeading, $fontBody])
-                ->unique()
-                ->filter(fn($f) => !in_array($f, $systemFonts))
-                ->map(fn($f) => urlencode($f) . ':wght@300;400;500;600;700;800')
-                ->implode('&family=');
-        } catch (\Throwable $e) {
-            $needGoogleFonts = true;
-            $fontsToLoad = 'Plus+Jakarta+Sans:wght@300;400;500;600;700;800';
-        }
+        $needGoogleFonts = true;
+        $fontsToLoad = 'Plus+Jakarta+Sans:wght@300;400;500;600;700;800';
     @endphp
     @if($needGoogleFonts && $fontsToLoad)
-    <link href="https://fonts.googleapis.com/css2?family={{ $fontsToLoad }}&display=swap" rel="stylesheet">
-    @else
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family={{$fontsToLoad}}&display=swap" rel="stylesheet">
     @endif
     {{-- Preload critical assets --}}
     @php $logoPreload = \App\Models\Setting::get('logo', 'general'); @endphp
@@ -113,20 +95,7 @@
         });
     </script>
     @endif
-    {{-- Active Theme CSS Variables --}}
-    @php
-        try {
-            $themeService = app(\App\Services\ThemeService::class);
-            $themeStyles  = $themeService->applyThemeStyles();
-            $themeSlug    = $themeService->getActiveTheme()?->slug ?? 'modern-corporate';
-        } catch (\Throwable $e) {
-            $themeStyles = '';
-            $themeSlug   = 'modern-corporate';
-        }
-    @endphp
-    @if(!empty($themeStyles))
-    <style id="theme-vars">{!! $themeStyles !!}</style>
-    @endif
+    @php $themeSlug = 'modern-corporate'; @endphp
 </head>
 @php
     $currentPath = request()->path();
@@ -146,26 +115,14 @@
       x-data="{ mobileMenuOpen: false, scrolled: false }"
       x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 }, { passive: true })">
 
-{{-- ===== NAVBAR: load per-theme partial if exists, else default ===== --}}
-@php
-    $navbarPartial = view()->exists('frontend.layouts.partials.navbar-' . $themeSlug)
-        ? 'frontend.layouts.partials.navbar-' . $themeSlug
-        : 'frontend.layouts.partials.navbar';
-@endphp
-@include($navbarPartial)
+@include('frontend.layouts.partials.navbar')
 
 {{-- Main Content --}}
 <main role="main" class="flex-1">
     @yield('content')
 </main>
 
-{{-- ===== FOOTER: load per-theme partial if exists, else default ===== --}}
-@php
-    $footerPartial = view()->exists('frontend.layouts.partials.footer-' . $themeSlug)
-        ? 'frontend.layouts.partials.footer-' . $themeSlug
-        : 'frontend.layouts.partials.footer';
-@endphp
-@include($footerPartial)
+@include('frontend.layouts.partials.footer')
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @yield('scripts')
 

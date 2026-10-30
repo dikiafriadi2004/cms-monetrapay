@@ -44,10 +44,6 @@
 
 @section('content')
 
-@php if(!isset($themeSlug)){try{$themeSlug=app(\App\Services\ThemeService::class)->getActiveTheme()?->slug??'modern-corporate';}catch(\Throwable $e){$themeSlug='modern-corporate';}} @endphp
-@if(view()->exists('frontend.home-themes.' . $themeSlug))
-    @include('frontend.home-themes.' . $themeSlug)
-@else
 {{-- ═══════════════ HERO SECTION ═══════════════ --}}
 <section class="relative overflow-hidden bg-primary-light">
     {{-- Subtle background shapes --}}
@@ -454,7 +450,5 @@
         </div>
     </div>
 </section>
-@endif
-{{-- End theme check --}}
 @endif
 @endsection

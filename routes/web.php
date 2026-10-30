@@ -402,17 +402,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::delete('tools/export/delete', [\App\Http\Controllers\Admin\ExportImportController::class, 'deleteExport'])->name('tools.export.delete');
     });
 
-    // Theme Management
-    Route::middleware('check.permission:setting.view')->group(function () {
-        Route::get('themes', [\App\Http\Controllers\Admin\ThemeController::class, 'index'])->name('themes.index');
-        Route::get('themes/{theme}/preview', [\App\Http\Controllers\Admin\ThemeController::class, 'preview'])->name('themes.preview');
-    });
-    Route::middleware('check.permission:setting.edit')->group(function () {
-        Route::post('themes/{theme}/activate', [\App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
-        Route::get('themes/{theme}/customize', [\App\Http\Controllers\Admin\ThemeController::class, 'customize'])->name('themes.customize');
-        Route::put('themes/{theme}', [\App\Http\Controllers\Admin\ThemeController::class, 'update'])->name('themes.update');
-    });
-
     // Page Builder
     Route::middleware('check.permission:page.edit')->group(function () {
         Route::get('page-builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'index'])->name('page-builder.index');

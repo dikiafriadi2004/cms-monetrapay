@@ -16,11 +16,10 @@ class DatabaseSeeder extends Seeder
      * 1. RolePermissionSeeder  → buat roles, permissions, dan akun admin
      * 2. SettingsSeeder        → semua konfigurasi site (nama, kontak, social, dll)
      * 3. CategorySeeder        → kategori blog
-     * 4. ThemeSeeder           → 10 tema tampilan
-     * 5. MenuSeeder            → menu navigasi (header, footer, social)
-     * 6. PageSeeder            → halaman statis (kebijakan privasi, syarat, FAQ)
-     * 7. DefaultPagesSeeder    → halaman utama dengan page builder (kontak, layanan, tentang)
-     * 8. BlogSeeder            → artikel/blog contoh
+     * 4. MenuSeeder            → menu navigasi (header, footer, social)
+     * 5. PageSeeder            → halaman statis (kebijakan privasi, syarat, FAQ)
+     * 6. DefaultPagesSeeder    → halaman utama dengan page builder (kontak, layanan, tentang)
+     * 7. BlogSeeder            → artikel/blog contoh
      */
     public function run(): void
     {
@@ -28,7 +27,6 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SettingsSeeder::class,
             CategorySeeder::class,
-            ThemeSeeder::class,
             MenuSeeder::class,
             PageSeeder::class,
             DefaultPagesSeeder::class,
