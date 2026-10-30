@@ -23,7 +23,7 @@
 @section('content')
 
 {{-- Page Hero --}}
-<section class="bg-gradient-to-br from-dark via-dark-lighter to-dark relative overflow-hidden py-16 md:py-20">
+<section class="bg-slate-800 relative overflow-hidden py-16 md:py-20">
     <div class="tech-grid-pattern absolute inset-0"></div>
     <div class="absolute top-0 left-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -80,7 +80,7 @@
                                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                                 >
                             @else
-                                <div class="w-full h-48 bg-gradient-to-br from-primary-light to-slate-100 flex items-center justify-center">
+                                <div class="w-full h-48 bg-primary-light flex items-center justify-center">
                                     <svg class="w-12 h-12 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                                     </svg>
@@ -123,7 +123,7 @@
                             {{-- Footer --}}
                             <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                    <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0">
                                         {{ strtoupper(substr($blog->author?->name ?? 'A', 0, 1)) }}
                                     </div>
                                     <div>

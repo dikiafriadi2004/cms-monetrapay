@@ -23,7 +23,7 @@
             </nav>
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-black text-white transition-all"
-               style="background:linear-gradient(135deg,var(--theme-primary,#FF5722),var(--theme-secondary,#FF8A65))">
+               style="background:var(--theme-primary,#FF5722)">
                 {{ $ctaText }} 🚀
             </a>
             @endif
@@ -43,7 +43,7 @@
             @endforeach
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="block mt-3 px-4 py-3 rounded-full text-sm font-black text-white text-center"
-               style="background:linear-gradient(135deg,var(--theme-primary,#FF5722),var(--theme-secondary,#FF8A65))">{{ $ctaText }}</a>
+               style="background:var(--theme-primary,#FF5722)">{{ $ctaText }}</a>
             @endif
         </div>
     </div>

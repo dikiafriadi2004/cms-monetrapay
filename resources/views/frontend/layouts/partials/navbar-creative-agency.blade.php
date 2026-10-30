@@ -21,7 +21,7 @@
             </nav>
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-black text-white"
-               style="background:linear-gradient(135deg,var(--theme-primary,#FF6B6B),var(--theme-secondary,#4ECDC4))">
+               style="background:var(--theme-primary,#FF6B6B)">
                 {{ $ctaText }} →
             </a>
             @endif
@@ -41,7 +41,7 @@
             @endforeach
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="block mt-4 px-4 py-3 rounded-full text-sm font-black text-white text-center"
-               style="background:linear-gradient(135deg,var(--theme-primary,#FF6B6B),var(--theme-secondary,#4ECDC4))">{{ $ctaText }}</a>
+               style="background:var(--theme-primary,#FF6B6B)">{{ $ctaText }}</a>
             @endif
         </div>
     </div>

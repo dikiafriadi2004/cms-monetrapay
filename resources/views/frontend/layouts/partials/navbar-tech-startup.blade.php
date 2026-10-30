@@ -2,12 +2,12 @@
 @php $logo = \App\Models\Setting::get('logo','general'); @endphp
 <header class="sticky top-0 z-50 transition-all duration-300"
         :style="scrolled ? 'box-shadow:0 2px 24px rgba(102,126,234,0.12)' : ''"
-        style="background:rgba(248,250,255,0.92);backdrop-filter:blur(12px);border-bottom:2px solid transparent;border-image:linear-gradient(90deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2)) 1">
+        style="background:rgba(248,250,255,0.92);backdrop-filter:blur(12px);border-bottom:2px solid var(--theme-primary,#667EEA)">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="{{ url('/') }}" class="font-bold text-lg shrink-0" style="font-family:'Space Grotesk',sans-serif">
                 @if($logo) <img src="{{ Storage::url($logo) }}" class="h-9 w-auto" alt="{{ $siteName }}">
-                @else <span style="background:linear-gradient(135deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ $siteName ?? 'MonetraPay' }}</span> @endif
+                @else <span style="color:var(--theme-primary,#667EEA)">{{ $siteName ?? 'MonetraPay' }}</span> @endif
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
@@ -20,7 +20,7 @@
             </nav>
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-               style="background:linear-gradient(135deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2));box-shadow:0 4px 24px rgba(102,126,234,0.35)">
+               style="background:var(--theme-primary,#667EEA);box-shadow:0 4px 24px rgba(102,126,234,0.35)">
                 {{ $ctaText }} ✦
             </a>
             @endif
@@ -38,7 +38,7 @@
             @endforeach
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="block mt-3 px-4 py-3 rounded-xl text-sm font-bold text-white text-center"
-               style="background:linear-gradient(135deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2))">{{ $ctaText }}</a>
+               style="background:var(--theme-primary,#667EEA)">{{ $ctaText }}</a>
             @endif
         </div>
     </div>

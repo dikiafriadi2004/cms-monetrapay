@@ -44,7 +44,7 @@
                     <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 pb-6 border-b border-slate-100">
                         @if ($blog->author)
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-sm">
+                            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-sm">
                                 <span class="text-sm font-bold text-white">{{ strtoupper(substr($blog->author->name, 0, 1)) }}</span>
                             </div>
                             <div>

@@ -9,7 +9,7 @@
     $sectionBg = match($bgStyle) {
         'light'  => 'background:color-mix(in srgb,var(--theme-primary,#3D9E7A) 6%,white)',
         'dark'   => 'background:#1e293b',
-        default  => 'background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))',
+        default  => 'background:var(--theme-primary,#3D9E7A)',
     };
     $textClass = $bgStyle === 'dark' || $bgStyle === 'gradient' ? 'text-white' : 'text-slate-800';
     $subClass  = $bgStyle === 'dark' || $bgStyle === 'gradient' ? 'text-white/75' : 'text-slate-500';

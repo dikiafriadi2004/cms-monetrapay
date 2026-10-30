@@ -1,11 +1,11 @@
 {{-- Tech Startup Footer: ultra dark, gradient accents --}}
 <footer>
     <x-frontend.ad-slot position="footer" />
-    <div style="background:#0f0f1a;border-top:3px solid transparent;border-image:linear-gradient(90deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2)) 1">
+    <div style="background:#0f0f1a;border-top:3px solid var(--theme-primary,#667EEA)">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-14">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
                 <div class="md:col-span-2">
-                    <div class="font-bold text-xl mb-3" style="font-family:'Space Grotesk',sans-serif;background:linear-gradient(135deg,var(--theme-primary,#667EEA),var(--theme-secondary,#764BA2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ $siteName ?? 'MonetraPay' }}</div>
+                    <div class="font-bold text-xl mb-3" style="font-family:'Space Grotesk',sans-serif;color:var(--theme-primary,#667EEA)">{{ $siteName ?? 'MonetraPay' }}</div>
                     <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.4)">{{ $footerSettings['tagline'] ?? '' }}</p>
                 </div>
                 <div>

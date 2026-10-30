@@ -46,7 +46,7 @@
             </div>
 
             {{-- Contact widget --}}
-            <div class="rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))">
+            <div class="rounded-2xl p-6 text-white" style="background:var(--theme-primary,#3D9E7A)">
                 <h3 class="font-bold mb-2">Ada Pertanyaan?</h3>
                 <p class="text-sm text-white/80 mb-4">Hubungi tim kami untuk informasi lebih lanjut.</p>
                 <a href="{{ url('/kontak') }}"

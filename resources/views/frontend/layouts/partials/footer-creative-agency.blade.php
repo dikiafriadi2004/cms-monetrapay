@@ -1,7 +1,7 @@
 {{-- Creative Agency Footer: gradient dark, 3-col --}}
 <footer>
     <x-frontend.ad-slot position="footer" />
-    <div style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+    <div style="background:#1a1a2e">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-14">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
                 <div>

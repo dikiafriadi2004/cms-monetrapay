@@ -87,7 +87,7 @@
                 <div class="flex flex-wrap items-center gap-4 mb-10">
                     <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
                        class="group relative inline-flex items-center gap-2 px-8 py-4 bg-secondary text-white font-bold rounded-2xl text-base overflow-hidden shadow-xl shadow-secondary/30 hover:shadow-secondary/50 transition-all duration-300 hover:-translate-y-0.5">
-                        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                        <span class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                         <span class="relative">{{ $homepage['hero_cta_text'] ?? 'Daftar Jadi Agen' }}</span>
                         <svg class="w-5 h-5 relative group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -127,7 +127,7 @@
             <div class="order-2 flex justify-center lg:justify-end animate-on-scroll delay-200">
                 <div class="relative">
                     {{-- Glow behind phone --}}
-                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/15 rounded-full blur-3xl scale-90"></div>
+                    <div class="absolute inset-0 bg-primary/15 rounded-full blur-3xl scale-90"></div>
 
                     {{-- Floating badges --}}
                     <div class="absolute -left-6 top-12 z-20 hidden sm:block">
@@ -194,7 +194,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {{-- Service 1: Pulsa --}}
             <article class="animate-on-scroll delay-100 service-card group bg-white rounded-2xl p-8 border border-slate-100 hover:border-primary/20 shadow-sm transition-all duration-300">
-                <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/20">
+                <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">{{ $homepage['service_1_title'] ?? 'Pulsa All Operator' }}</h3>
@@ -202,7 +202,7 @@
             </article>
             {{-- Service 2: PPOB --}}
             <article class="animate-on-scroll delay-200 service-card group bg-white rounded-2xl p-8 border border-slate-100 hover:border-blue-200 shadow-sm transition-all duration-300">
-                <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/20">
+                <div class="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">{{ $homepage['service_2_title'] ?? 'PPOB & Tagihan' }}</h3>
@@ -210,7 +210,7 @@
             </article>
             {{-- Service 3: Top-Up Game --}}
             <article class="animate-on-scroll delay-300 service-card group bg-white rounded-2xl p-8 border border-slate-100 hover:border-purple-200 shadow-sm transition-all duration-300">
-                <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/20">
+                <div class="w-14 h-14 bg-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">{{ $homepage['service_3_title'] ?? 'Top-Up Game' }}</h3>
@@ -218,7 +218,7 @@
             </article>
             {{-- Service 4: E-Money --}}
             <article class="animate-on-scroll delay-400 service-card group bg-white rounded-2xl p-8 border border-slate-100 hover:border-orange-200 shadow-sm transition-all duration-300">
-                <div class="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-orange-500/20">
+                <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-orange-500/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">{{ $homepage['service_4_title'] ?? 'E-Money & E-Wallet' }}</h3>
@@ -229,7 +229,7 @@
 </section>
 
 {{-- Stats Section --}}
-<section class="py-20 md:py-24 bg-gradient-to-br from-dark via-dark-lighter to-dark relative overflow-hidden">
+<section class="py-20 md:py-24 bg-slate-800 relative overflow-hidden">
     <div class="tech-grid-pattern absolute inset-0"></div>
     <div class="absolute top-0 left-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -264,11 +264,11 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
             {{-- Connecting line (desktop only) --}}
-            <div class="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-secondary/20"></div>
+            <div class="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-primary/20"></div>
 
             {{-- Step 1 --}}
             <div class="text-center animate-on-scroll relative">
-                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-primary/30">
+                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-primary/30">
                     1
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">Daftar Akun</h3>
@@ -277,7 +277,7 @@
 
             {{-- Step 2 --}}
             <div class="text-center animate-on-scroll delay-200 relative">
-                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-primary/30">
+                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-primary/30">
                     2
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">Deposit Saldo</h3>
@@ -286,7 +286,7 @@
 
             {{-- Step 3 --}}
             <div class="text-center animate-on-scroll delay-400 relative">
-                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-secondary to-secondary-dark rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-secondary/30">
+                <div class="relative inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full text-white text-xl font-bold mb-6 shadow-lg shadow-secondary/30">
                     3
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-3">Mulai Transaksi</h3>
@@ -311,7 +311,7 @@
                 </div>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6">"Sejak pakai MonetraPay, omzet konter saya naik 3x lipat. Harga kompetitif dan transaksi selalu lancar. Recommended banget!"</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-sm">A</div>
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
                     <div>
                         <p class="text-sm font-semibold text-slate-800">Ahmad Rizki</p>
                         <p class="text-xs text-slate-500">Pemilik Konter, Jakarta</p>
@@ -326,7 +326,7 @@
                 </div>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6">"Aplikasinya mudah digunakan, deposit cepat masuk, dan CS-nya responsif 24 jam. Cocok untuk yang baru mulai bisnis pulsa."</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-secondary-dark flex items-center justify-center text-white font-bold text-sm">S</div>
+                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm">S</div>
                     <div>
                         <p class="text-sm font-semibold text-slate-800">Siti Nurhaliza</p>
                         <p class="text-xs text-slate-500">Agen PPOB, Bandung</p>
@@ -341,7 +341,7 @@
                 </div>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6">"Fitur top-up game-nya lengkap banget. Pelanggan saya puas karena diamond ML dan UC PUBG selalu ready. Mantap!"</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white font-bold text-sm">B</div>
+                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm">B</div>
                     <div>
                         <p class="text-sm font-semibold text-slate-800">Budi Santoso</p>
                         <p class="text-xs text-slate-500">Reseller Game, Surabaya</p>
@@ -353,7 +353,7 @@
 </section>
 
 {{-- CTA Section --}}
-<section class="py-20 md:py-28 bg-gradient-to-br from-dark via-dark-lighter to-dark relative overflow-hidden">
+<section class="py-20 md:py-28 bg-slate-800 relative overflow-hidden">
     <div class="hero-pattern absolute inset-0"></div>
     <div class="tech-grid-pattern absolute inset-0"></div>
     {{-- Decorative elements --}}
@@ -404,7 +404,7 @@
                              class="w-full h-52 object-cover">
                     </div>
                     @else
-                    <div class="w-full h-52 bg-gradient-to-br from-primary-light via-slate-50 to-secondary-light flex items-center justify-center">
+                    <div class="w-full h-52 bg-slate-100 flex items-center justify-center">
                         <div class="text-center">
                             <div class="w-14 h-14 bg-white/60 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-sm">
                                 <svg class="w-7 h-7 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">

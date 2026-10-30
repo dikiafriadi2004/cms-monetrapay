@@ -36,7 +36,7 @@
                     <img src="{{ $thumbUrl }}" alt="{{ $title }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full flex items-center justify-center"
-                         style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))">
+                         style="background:var(--theme-primary,#3D9E7A)">
                     </div>
                 @endif
                 <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">

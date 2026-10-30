@@ -46,7 +46,7 @@
             <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 {{-- Photo / Avatar --}}
                 <div class="relative h-56 overflow-hidden"
-                     style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))">
+                     style="background:var(--theme-primary,#3D9E7A)">
                     @if($mPhoto)
                         <img src="{{ $mPhoto }}" alt="{{ $mName }}" class="w-full h-full object-cover">
                     @else

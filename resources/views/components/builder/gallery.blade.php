@@ -31,7 +31,7 @@
                     <img src="{{ $url }}" alt="{{ $alt }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-4xl"
-                         style="background:linear-gradient(135deg,color-mix(in srgb,var(--theme-primary,#3D9E7A) 20%,white),color-mix(in srgb,var(--theme-secondary,#FF6B35) 20%,white))">
+                         style="background:color-mix(in srgb,var(--theme-primary,#3D9E7A) 15%,white)">
                         🖼️
                     </div>
                 @endif

@@ -11,7 +11,7 @@
     $bgStyle = match($background) {
         'color'  => "background:{$bgValue};",
         'image'  => "background-image:url('{$bgValue}');background-size:cover;background-position:center;",
-        default  => 'background:linear-gradient(135deg,var(--theme-primary,#3D9E7A) 0%,var(--theme-secondary,#FF6B35) 100%);',
+        default  => 'background:var(--theme-primary,#3D9E7A);',
     };
 @endphp
 

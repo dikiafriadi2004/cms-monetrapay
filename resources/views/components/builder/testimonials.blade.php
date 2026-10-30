@@ -66,7 +66,7 @@
                         <img src="{{ $avatar }}" alt="{{ $name }}" class="w-11 h-11 rounded-full object-cover">
                     @else
                         <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                             style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))">
+                             style="background:var(--theme-primary,#3D9E7A)">
                             {{ $initials }}
                         </div>
                     @endif

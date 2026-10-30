@@ -7,7 +7,7 @@
         <div class="flex items-center justify-between h-16">
             <a href="{{ url('/') }}" class="font-bold text-lg shrink-0" style="font-family:'Poppins',sans-serif">
                 @if($logo) <img src="{{ Storage::url($logo) }}" class="h-9 w-auto" alt="{{ $siteName }}" style="filter:brightness(1.3)">
-                @else <span style="background:linear-gradient(135deg,var(--theme-primary,#9F7AEA),var(--theme-secondary,#63B3ED));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ $siteName ?? 'MonetraPay' }}</span> @endif
+                @else <span style="color:var(--theme-primary,#9F7AEA)">{{ $siteName ?? 'MonetraPay' }}</span> @endif
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 @foreach($primaryMenu as $item)
@@ -20,7 +20,7 @@
             </nav>
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-               style="background:linear-gradient(135deg,var(--theme-primary,#9F7AEA),var(--theme-secondary,#63B3ED));box-shadow:0 0 24px rgba(159,122,234,0.4)">
+               style="background:var(--theme-primary,#9F7AEA);box-shadow:0 0 24px rgba(159,122,234,0.4)">
                 {{ $ctaText }}
             </a>
             @endif
@@ -38,7 +38,7 @@
             @endforeach
             @if(!empty($ctaText))
             <a href="{{ $ctaUrl }}" class="block mt-3 px-4 py-3 rounded-xl text-sm font-bold text-white text-center"
-               style="background:linear-gradient(135deg,var(--theme-primary,#9F7AEA),var(--theme-secondary,#63B3ED))">{{ $ctaText }}</a>
+               style="background:var(--theme-primary,#9F7AEA)">{{ $ctaText }}</a>
             @endif
         </div>
     </div>

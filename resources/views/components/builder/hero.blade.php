@@ -29,7 +29,7 @@
     @elseif($bgType === 'color' && $bgValue)
         style="background-color:{{ $bgValue }};"
     @else
-        style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A) 0%,var(--theme-secondary,#FF6B35) 100%);"
+        style="background:var(--theme-primary,#3D9E7A);"
     @endif
 >
     {{-- Background overlay --}}

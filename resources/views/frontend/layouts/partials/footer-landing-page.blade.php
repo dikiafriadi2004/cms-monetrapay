@@ -3,7 +3,7 @@
     <x-frontend.ad-slot position="footer" />
     {{-- CTA before footer --}}
     @if(!empty($ctaText))
-    <div class="py-16 text-center px-4" style="background:linear-gradient(135deg,var(--theme-primary,#FF5722),var(--theme-secondary,#00BCD4))">
+    <div class="py-16 text-center px-4" style="background:var(--theme-primary,#FF5722)">
         <h2 class="text-2xl md:text-3xl font-black text-white mb-4" style="font-family:'Raleway',sans-serif">Siap Bergabung?</h2>
         <a href="{{ $ctaUrl }}" class="inline-flex items-center gap-2 px-10 py-4 rounded-full font-black text-base"
            style="background:white;color:var(--theme-primary,#FF5722)">{{ $ctaText }} 🚀</a>

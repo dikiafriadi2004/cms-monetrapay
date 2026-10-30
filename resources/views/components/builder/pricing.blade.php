@@ -32,12 +32,11 @@
                 $popular = !empty($plan['is_popular']);
                 $features = is_array($plan['features'] ?? null) ? $plan['features'] : [];
             @endphp
-            <div class="relative rounded-2xl border-2 {{ $popular ? 'border-transparent shadow-2xl scale-105' : 'border-slate-100 shadow-sm' }} overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                 @if($popular) style="background:linear-gradient(white,white) padding-box,linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35)) border-box" @endif>
+            <div class="relative rounded-2xl border-2 {{ $popular ? 'border-primary shadow-2xl scale-105' : 'border-slate-100 shadow-sm' }} overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
                 @if($popular)
                 <div class="text-center text-xs font-bold text-white py-2.5 tracking-wider"
-                     style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))">
+                     style="background:var(--theme-primary,#3D9E7A)">
                     ⭐ PALING POPULER
                 </div>
                 @endif
@@ -59,7 +58,7 @@
                     <a href="{{ $plan['button_link'] ?? url('/kontak') }}"
                        class="block w-full text-center py-3.5 rounded-xl font-bold text-sm transition-all duration-200 mb-8
                               {{ $popular ? 'text-white hover:opacity-90' : 'text-slate-700 bg-slate-100 hover:bg-slate-200' }}"
-                       @if($popular) style="background:linear-gradient(135deg,var(--theme-primary,#3D9E7A),var(--theme-secondary,#FF6B35))" @endif>
+                       @if($popular) style="background:var(--theme-primary,#3D9E7A)" @endif>
                         {{ $plan['button_text'] ?? 'Pilih Paket' }}
                     </a>
 
