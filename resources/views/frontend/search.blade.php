@@ -10,7 +10,7 @@
 
 @section('content')
 {{-- Hero search --}}
-<section class="bg-slate-50 py-12 md:py-16 border-b border-slate-100">
+<section class="bg-slate-50 pt-0 pb-12 md:pb-16 border-b border-slate-100">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Pencarian</h1>
         <p class="text-slate-500 text-sm mb-6">Cari artikel, halaman, atau topik yang Anda butuhkan</p>

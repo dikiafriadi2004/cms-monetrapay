@@ -20,7 +20,7 @@
     {{-- Fallback: content from editor, no sidebar, centered, conversion-focused --}}
     <div class="min-h-screen flex flex-col">
         {{-- Hero area --}}
-        <div class="py-20 md:py-32 text-center px-4"
+        <div class="pt-0 pb-20 md:pb-32 text-center px-4"
              style="background:var(--theme-primary,#3D9E7A)">
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">{{ $page->title }}</h1>
             @if($page->meta_description)

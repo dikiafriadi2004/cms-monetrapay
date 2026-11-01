@@ -19,7 +19,7 @@
 @else
 
 {{-- ═══ HERO ═══ --}}
-<section class="bg-white pt-12 pb-16 md:pt-16 md:pb-24">
+<section class="bg-white pt-0 pb-16 md:pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <x-frontend.breadcrumb :items="$breadcrumbs ?? []" />
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mt-8">

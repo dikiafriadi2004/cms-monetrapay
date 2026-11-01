@@ -19,7 +19,7 @@
     @endforeach
 @else
     @if(!empty(trim(strip_tags($page->content ?? ''))))
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12">
             <x-frontend.breadcrumb :items="$breadcrumbs ?? []" />
             <h1 class="text-3xl font-extrabold text-slate-800 mb-6">{{ $page->title }}</h1>
             <div class="prose prose-slate max-w-none">{!! $page->content !!}</div>

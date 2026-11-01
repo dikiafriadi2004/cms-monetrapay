@@ -7,7 +7,7 @@
 
 @section('content')
 {{-- Full-width hero bar --}}
-<div class="w-full bg-slate-900 py-12 px-4">
+<div class="w-full bg-slate-900 pt-0 pb-12 px-4">
     <div class="max-w-screen-xl mx-auto">
         <x-frontend.breadcrumb :items="$breadcrumbs ?? []" class="mb-3" />
         <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight">{{ $page->title }}</h1>
