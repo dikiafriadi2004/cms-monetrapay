@@ -4,16 +4,16 @@
         class="header-sticky border-b border-slate-100 transition-all duration-300 z-50">
     <x-frontend.ad-slot position="header" />
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-15 lg:h-16">
+        <div class="flex items-center justify-between h-14 lg:h-16">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center shrink-0 group">
                 @php $logo = \App\Models\Setting::get('logo', 'general'); @endphp
                 @if($logo)
                     <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-14 lg:h-16 w-auto max-w-[250px] object-contain transition-transform group-hover:scale-105">
+                         class="h-9 lg:h-11 w-auto max-w-[220px] object-contain transition-transform group-hover:scale-105">
                 @elseif(file_exists(public_path('assets/images/logo.png')))
                     <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-14 lg:h-16 w-auto max-w-[250px] object-contain transition-transform group-hover:scale-105">
+                         class="h-9 lg:h-11 w-auto max-w-[220px] object-contain transition-transform group-hover:scale-105">
                 @else
                     <span class="text-xl lg:text-2xl font-extrabold tracking-tight">
                         <span class="text-primary">Monetra</span><span class="text-secondary">Pay</span>

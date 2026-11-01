@@ -32,12 +32,12 @@
     @elseif(file_exists(public_path('assets/images/logo.png')))
     <link rel="preload" href="/assets/images/logo.png" as="image">
     @endif
-    @if(file_exists(public_path('assets/images/favico.png')))
-    <link rel="icon" href="/assets/images/favico.png" type="image/png">
-    @endif
     @php $faviconSetting = \App\Models\Setting::get('favicon', 'general'); @endphp
     @if($faviconSetting)
-    <link rel="icon" href="{{ Storage::url($faviconSetting) }}" type="image/png">
+        <link rel="icon" href="{{ Storage::url($faviconSetting) }}" type="image/png">
+        <link rel="shortcut icon" href="{{ Storage::url($faviconSetting) }}">
+    @else
+        <link rel="icon" href="/assets/images/favico.png" type="image/png">
     @endif
 
     {{-- RSS Feed discovery --}}
@@ -55,6 +55,7 @@
         @endphp
         <meta name="description" content="{{ $defaultDesc }}">
         <link rel="canonical" href="{{ $canonical }}">
+        <meta name="robots" content="index, follow">
         <meta property="og:title" content="{{ $defaultTitle }}">
         <meta property="og:description" content="{{ $defaultDesc }}">
         <meta property="og:url" content="{{ $canonical }}">

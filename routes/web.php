@@ -421,6 +421,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| Static Page Routes (named — must be before the catch-all)
+|--------------------------------------------------------------------------
+*/
+Route::get('/layanan', [PageFrontController::class, 'show'])->defaults('slug', 'layanan')->name('page.layanan');
+Route::get('/tentang-kami', [PageFrontController::class, 'show'])->defaults('slug', 'tentang-kami')->name('page.tentang-kami');
+Route::get('/kontak', [PageFrontController::class, 'show'])->defaults('slug', 'kontak')->name('page.kontak');
+Route::get('/faq', [PageFrontController::class, 'show'])->defaults('slug', 'faq')->name('page.faq');
+Route::get('/kebijakan-privasi', [PageFrontController::class, 'show'])->defaults('slug', 'kebijakan-privasi')->name('page.kebijakan-privasi');
+Route::get('/syarat-ketentuan', [PageFrontController::class, 'show'])->defaults('slug', 'syarat-ketentuan')->name('page.syarat-ketentuan');
+
+/*
+|--------------------------------------------------------------------------
 | Static Page Route (catch-all, must be LAST)
 |--------------------------------------------------------------------------
 */

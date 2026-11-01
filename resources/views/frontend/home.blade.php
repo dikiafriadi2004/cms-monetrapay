@@ -1,6 +1,6 @@
 ﻿@extends('frontend.layouts.app')
 
-@section('title', 'Beranda')
+@section('title', ($siteName ?? 'MonetraPay') . ' - Pulsa, PPOB, Top-Up Game & E-Money')
 
 @section('seo')
 @php
@@ -11,9 +11,9 @@
         ? url(Storage::url($homepage['hero_image']))
         : (!empty($logo) ? url(Storage::url($logo)) : '');
 @endphp
-<title>{{ $homeTitle }}</title>
 <meta name="description" content="{{ $homeDesc }}">
 <link rel="canonical" href="{{ $homeUrl }}">
+<meta name="robots" content="index, follow">
 <meta property="og:title" content="{{ $homeTitle }}">
 <meta property="og:description" content="{{ $homeDesc }}">
 <meta property="og:url" content="{{ $homeUrl }}">
@@ -348,8 +348,8 @@
             <p class="text-slate-500 max-w-2xl mx-auto text-lg">Proses pendaftaran cepat dan langsung bisa bertransaksi.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
-            {{-- Connecting line (desktop only) --}}
-            <div class="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-primary/20"></div>
+            {{-- Connecting line (desktop only) — top-8 = setengah tinggi circle w-16 --}}
+            <div class="hidden md:block absolute top-8 left-[calc(16.67%+32px)] right-[calc(16.67%+32px)] h-0.5 bg-primary/20"></div>
 
             {{-- Step 1 --}}
             <div class="text-center animate-on-scroll relative">

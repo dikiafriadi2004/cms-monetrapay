@@ -21,7 +21,14 @@ class PageFrontController extends Controller
     {
         $page = Page::where('slug', $slug)
             ->where('status', 'published')
-            ->firstOrFail();
+            ->first();
+
+        // Page not found — show a graceful "coming soon" page instead of 500
+        if (! $page) {
+            return response()->view('frontend.page.not-found', [
+                'slug' => $slug,
+            ], 404);
+        }
 
         // GrapesJS pages — has gjs_css set means designed with Visual Editor
         if (!empty($page->gjs_css)) {

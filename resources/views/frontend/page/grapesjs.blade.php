@@ -2,6 +2,32 @@
 
 @section('title', $page->meta_title ?: $page->title)
 
+@section('seo')
+@php
+    $pageTitle = $page->meta_title ?: $page->title;
+    $pageDesc = $page->meta_description ?? '';
+    $pageCanonical = $canonicalUrl ?? url('/' . $page->slug);
+    $pageImage = !empty($page->og_image)
+        ? url(Storage::url($page->og_image))
+        : (!empty($logo ?? null) ? url(Storage::url($logo)) : '');
+@endphp
+<meta name="description" content="{{ $pageDesc }}">
+<link rel="canonical" href="{{ $pageCanonical }}">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="{{ $pageTitle }}">
+<meta property="og:description" content="{{ $pageDesc }}">
+<meta property="og:url" content="{{ $pageCanonical }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+@if($pageImage)
+<meta property="og:image" content="{{ $pageImage }}">
+<meta name="twitter:image" content="{{ $pageImage }}">
+@endif
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $pageTitle }}">
+<meta name="twitter:description" content="{{ $pageDesc }}">
+@endsection
+
 @section('content')
 @if($page->gjs_css)
 <style>
