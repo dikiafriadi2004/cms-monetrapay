@@ -1,7 +1,7 @@
 ﻿{{-- ===== NAVBAR ===== --}}
 <header role="banner"
-        :class="scrolled ? 'shadow-md shadow-slate-200/60 bg-white' : 'bg-white/98 backdrop-blur-md'"
-        class="header-sticky border-b border-slate-100 transition-all duration-300 z-50">
+        :class="scrolled ? 'shadow-md shadow-slate-200/60' : 'shadow-sm'"
+        class="header-sticky bg-white transition-all duration-300 z-50 border-b border-slate-100">
     <x-frontend.ad-slot position="header" />
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-12 lg:h-14">
