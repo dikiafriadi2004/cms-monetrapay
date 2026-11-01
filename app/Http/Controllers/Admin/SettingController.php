@@ -255,38 +255,48 @@ class SettingController extends Controller
             return $file->store('settings', 'public');
         }
 
-        $mime = $file->getMimeType();
-        $src = match(true) {
-            str_contains($mime, 'png')  => imagecreatefrompng($file->path()),
-            str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->path()),
-            str_contains($mime, 'gif')  => imagecreatefromgif($file->path()),
-            str_contains($mime, 'webp') => imagecreatefromwebp($file->path()),
-            default => null,
-        };
+        try {
+            $mime = $file->getMimeType();
+            $src = match(true) {
+                str_contains($mime, 'png')  => imagecreatefrompng($file->path()),
+                str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->path()),
+                str_contains($mime, 'gif')  => imagecreatefromgif($file->path()),
+                str_contains($mime, 'webp') => imagecreatefromwebp($file->path()),
+                default => null,
+            };
+        } catch (\Throwable $e) {
+            // GD failed to parse file (corrupted, wrong mime, etc.) — store as-is
+            return $file->store('settings', 'public');
+        }
 
         if (!$src) {
             return $file->store('settings', 'public');
         }
 
-        $dst = imagecreatetruecolor(32, 32);
-        imagealphablending($dst, false);
-        imagesavealpha($dst, true);
-        $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
-        imagefill($dst, 0, 0, $transparent);
+        try {
+            $dst = imagecreatetruecolor(32, 32);
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+            imagefill($dst, 0, 0, $transparent);
 
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
 
-        $path = 'settings/favicon-32.png';
-        $fullPath = Storage::disk('public')->path($path);
+            $path = 'settings/favicon-32.png';
+            $fullPath = Storage::disk('public')->path($path);
 
-        // Ensure directory exists
-        if (!is_dir(dirname($fullPath))) {
-            mkdir(dirname($fullPath), 0755, true);
+            if (!is_dir(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+
+            imagepng($dst, $fullPath, 9);
+        } catch (\Throwable $e) {
+            // Resize failed — clean up and store original
+            return $file->store('settings', 'public');
+        } finally {
+            if (isset($src) && is_resource($src)) imagedestroy($src);
+            if (isset($dst) && is_resource($dst)) imagedestroy($dst);
         }
-
-        imagepng($dst, $fullPath, 9);
-        imagedestroy($src);
-        imagedestroy($dst);
 
         return $path;
     }
