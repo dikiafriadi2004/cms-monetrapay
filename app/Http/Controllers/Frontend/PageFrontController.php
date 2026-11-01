@@ -76,27 +76,36 @@ class PageFrontController extends Controller
      */
     protected function showWithPageBuilder(Page $page)
     {
-        // Load visible components ordered
+        // If page was built with GrapesJS (has gjs_components set, even empty string means GrapesJS was used)
+        if (isset($page->gjs_components) && !empty($page->gjs_components)) {
+            // SEO data
+            $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+            $metaTags       = $this->seoService->getMetaTags($page);
+            $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+            $twitterTags    = $this->seoService->getTwitterCardTags($page);
+            $structuredData = $this->seoService->getStructuredData($page);
+            $breadcrumbs    = $this->buildBreadcrumbs($page);
+
+            return view('frontend.page.grapesjs', compact(
+                'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+                'ogTags', 'twitterTags', 'structuredData',
+            ));
+        }
+
+        // Load visible components ordered (legacy page builder)
         $page->load('visibleComponents');
 
         // SEO data
-        $canonicalUrl = $this->seoService->getCanonicalUrl($page);
-        $metaTags = $this->seoService->getMetaTags($page);
-        $ogTags = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
-        $twitterTags = $this->seoService->getTwitterCardTags($page);
+        $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+        $metaTags       = $this->seoService->getMetaTags($page);
+        $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+        $twitterTags    = $this->seoService->getTwitterCardTags($page);
         $structuredData = $this->seoService->getStructuredData($page);
-
-        // Build breadcrumb
-        $breadcrumbs = $this->buildBreadcrumbs($page);
+        $breadcrumbs    = $this->buildBreadcrumbs($page);
 
         return view('frontend.page.builder', compact(
-            'page',
-            'breadcrumbs',
-            'canonicalUrl',
-            'metaTags',
-            'ogTags',
-            'twitterTags',
-            'structuredData',
+            'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+            'ogTags', 'twitterTags', 'structuredData',
         ));
     }
 

@@ -43,6 +43,9 @@ class Page extends Model
         'meta_keywords',
         'order',
         'user_id',
+        'gjs_css',
+        'gjs_components',
+        'gjs_styles',
     ];
 
     protected function casts(): array
@@ -50,6 +53,9 @@ class Page extends Model
         return [
             'order' => 'integer',
             'use_page_builder' => 'boolean',
+            'gjs_components' => 'string',
+            'gjs_css'        => 'string',
+            'gjs_styles'     => 'string',
         ];
     }
 

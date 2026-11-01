@@ -133,6 +133,13 @@
                                     </div>
                                 @else
                                     <div class="flex items-center justify-end gap-2">
+                                        @if($page->use_page_builder)
+                                        <a href="{{ route('admin.pages.grapesjs', $page) }}"
+                                           class="text-sm text-teal-600 hover:text-teal-800 font-medium"
+                                           title="Visual Drag & Drop Editor">
+                                            🎨 Visual
+                                        </a>
+                                        @endif
                                         <a href="{{ route('admin.pages.edit', $page) }}"
                                            class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                                             Edit

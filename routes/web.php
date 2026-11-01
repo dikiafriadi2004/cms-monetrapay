@@ -410,6 +410,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('pages/{page}/builder/preview', [\App\Http\Controllers\Admin\PageBuilderController::class, 'preview'])->name('page-builder.preview');
         Route::get('page-builder/components', [\App\Http\Controllers\Admin\PageBuilderController::class, 'components'])->name('page-builder.components');
         Route::delete('page-builder/components/{component}', [\App\Http\Controllers\Admin\PageBuilderController::class, 'deleteComponent'])->name('page-builder.delete-component');
+        Route::get('pages/{page}/builder/grapesjs', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsEdit'])->name('pages.grapesjs');
+        Route::get('pages/{page}/builder/grapesjs/load', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsLoad'])->name('pages.grapesjs.load');
+        Route::post('pages/{page}/builder/grapesjs/save', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsSave'])->name('pages.grapesjs.save');
     });
 
     // Notifications (AJAX endpoint - needs session/web middleware, not API)

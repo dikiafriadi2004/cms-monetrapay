@@ -168,4 +168,65 @@ class PageBuilderController extends Controller
             return $this->handleError($e, 'Failed to delete component.');
         }
     }
+
+    /**
+     * Show GrapesJS visual editor for a page.
+     */
+    public function grapesjsEdit(Page $page): View|RedirectResponse
+    {
+        if (!$page || !$page->exists) {
+            return redirect()->route('admin.pages.index')
+                ->with('error', 'Page not found.');
+        }
+
+        if (!$page->use_page_builder) {
+            return redirect()->route('admin.pages.edit', $page->id)
+                ->with('warning', 'Please enable "Use Page Builder" for this page first.');
+        }
+
+        return view('admin.page-builder.grapesjs', compact('page'));
+    }
+
+    /**
+     * Save GrapesJS editor data.
+     */
+    public function grapesjsSave(Request $request, Page $page): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'gjs_html'       => 'nullable|string',
+                'gjs_css'        => 'nullable|string',
+                'gjs_components' => 'nullable|string',
+                'gjs_styles'     => 'nullable|string',
+            ]);
+
+            $page->update([
+                'content'        => $validated['gjs_html'] ?? '',
+                'gjs_css'        => $validated['gjs_css'] ?? '',
+                'gjs_components' => $validated['gjs_components'] ?? '',
+                'gjs_styles'     => $validated['gjs_styles'] ?? '',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Halaman berhasil disimpan!',
+            ]);
+        } catch (\Throwable $e) {
+            return $this->handleError($e, 'Gagal menyimpan halaman GrapesJS.');
+        }
+    }
+
+    /**
+     * Load GrapesJS editor data for a page.
+     */
+    public function grapesjsLoad(Page $page): JsonResponse
+    {
+        return response()->json([
+            'success'        => true,
+            'gjs_html'       => $page->content ?? '',
+            'gjs_css'        => $page->gjs_css ?? '',
+            'gjs_components' => $page->gjs_components ?? '',
+            'gjs_styles'     => $page->gjs_styles ?? '',
+        ]);
+    }
 }
