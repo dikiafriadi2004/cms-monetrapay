@@ -101,13 +101,16 @@
     $currentPath = request()->path();
     $isBlog = str_starts_with($currentPath, 'blog');
 
-    // Use MenuService for dynamic menus
-    $menuService     = app(\App\Services\MenuService::class);
-    $primaryMenu     = $menuService->getMenuByLocation('header') ?? [];
-    $footerMenuItems = $menuService->getMenuByLocation('footer') ?? [];
-    $socialMenuItems = $menuService->getMenuByLocation('social') ?? [];
+    // Primary and footer menus are injected by FrontendComposer (via $headerMenu / $footerMenu).
+    // Map to the variable names expected by navbar and footer partials.
+    $primaryMenu     = $headerMenu  ?? [];
+    $footerMenuItems = $footerMenu  ?? [];
+    // Social menu items are not provided by FrontendComposer as menu-item arrays;
+    // $socialLinks (from FrontendComposer) contains settings values, not menu items.
+    // Keep an empty array so footer partials don't error if they reference the variable.
+    $socialMenuItems = [];
 
-    // CTA button from Settings (fallback to defaults)
+    // CTA button from Settings (fallback to defaults) — not provided by FrontendComposer
     $ctaText = \App\Models\Setting::get('navbar_cta_text', 'general') ?: 'Daftar Jadi Agen';
     $ctaUrl  = \App\Models\Setting::get('navbar_cta_url',  'general') ?: url('/kontak');
 @endphp

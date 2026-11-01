@@ -562,12 +562,12 @@ function pageBuilder() {
         rows: [],
 
         layouts: [
-            {id: '100',       label: '1 Kol'},
-            {id: '50/50',     label: '50/50'},
-            {id: '30/70',     label: '30/70'},
-            {id: '70/30',     label: '70/30'},
-            {id: '33/33/33',  label: '3 Kol'},
-            {id: '25/75',     label: '25/75'},
+            {id: '100',       label: '1 Kol',  cols: 1},
+            {id: '50/50',     label: '50/50',  cols: 2},
+            {id: '30/70',     label: '30/70',  cols: 2},
+            {id: '70/30',     label: '70/30',  cols: 2},
+            {id: '33/33/33',  label: '3 Kol',  cols: 3},
+            {id: '25/75',     label: '25/75',  cols: 2},
         ],
 
         widgetSearch:     '',
@@ -629,8 +629,9 @@ function pageBuilder() {
 
         // ── Row helpers ───────────────────────────────────────────
         _makeColumns(layoutId) {
-            const layout = this.layouts.find(l => l.id === layoutId) || {cols:[100]};
-            return layout.cols.map(() => ({ id: uid('col'), widgets: [] }));
+            const layout = this.layouts.find(l => l.id === layoutId) || {cols: 1};
+            const count = typeof layout.cols === 'number' ? layout.cols : 1;
+            return Array.from({length: count}, () => ({ id: uid('col'), widgets: [] }));
         },
 
         addRow(layoutId) {
@@ -652,9 +653,8 @@ function pageBuilder() {
 
         setRowLayout(rowIdx, layoutId) {
             const row       = this.rows[rowIdx];
-            const oldLayout = this.layouts.find(l => l.id === row.layout) || {cols:[100]};
-            const newLayout = this.layouts.find(l => l.id === layoutId)   || {cols:[100]};
-            const newCols   = newLayout.cols.length;
+            const newLayout = this.layouts.find(l => l.id === layoutId) || {cols: 1};
+            const newCols   = typeof newLayout.cols === 'number' ? newLayout.cols : 1;
             const oldCols   = row.columns;
 
             const newColumns = [];
@@ -760,24 +760,65 @@ function pageBuilder() {
 
         // ── SortableJS ────────────────────────────────────────────
         _sortableInstances: [],
+        _sidebarListeners: [],
 
         initSortable() {
             // Destroy old instances
             this._sortableInstances.forEach(s => s.destroy());
             this._sortableInstances = [];
 
-            // Sidebar widgets: clone-only source
+            // Remove old native sidebar listeners to avoid duplicates
+            this._sidebarListeners.forEach(({el, type, fn}) => el.removeEventListener(type, fn));
+            this._sidebarListeners = [];
+
+            // ── Native HTML5 drag & drop: sidebar → canvas ────────
             const sidebarItems = document.querySelectorAll('.sidebar-widget-item');
             sidebarItems.forEach(el => {
-                // Use native dragstart instead of Sortable for sidebar; handled below
+                const onDragStart = (event) => {
+                    event.dataTransfer.setData('widget-type', el.dataset.widgetType);
+                    event.dataTransfer.effectAllowed = 'copy';
+                };
+                el.addEventListener('dragstart', onDragStart);
+                this._sidebarListeners.push({el, type: 'dragstart', fn: onDragStart});
             });
 
-            // Column drop zones
+            // ── Column drop zones ─────────────────────────────────
             const zones = document.querySelectorAll('.widget-dropzone');
             zones.forEach(zone => {
                 const rowIdx = parseInt(zone.dataset.rowIdx);
                 const colIdx = parseInt(zone.dataset.colIdx);
 
+                // Native drop handlers for sidebar items
+                const onDragOver = (event) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = 'copy';
+                    zone.classList.add('border-primary', 'bg-primary/5');
+                };
+                const onDragLeave = (event) => {
+                    // Only remove highlight when truly leaving this zone
+                    if (!zone.contains(event.relatedTarget)) {
+                        zone.classList.remove('border-primary', 'bg-primary/5');
+                    }
+                };
+                const onDrop = (event) => {
+                    event.preventDefault();
+                    zone.classList.remove('border-primary', 'bg-primary/5');
+                    const widgetType = event.dataTransfer.getData('widget-type');
+                    if (widgetType) {
+                        this.addWidget(rowIdx, colIdx, widgetType);
+                    }
+                };
+
+                zone.addEventListener('dragover',   onDragOver);
+                zone.addEventListener('dragleave',  onDragLeave);
+                zone.addEventListener('drop',       onDrop);
+                this._sidebarListeners.push(
+                    {el: zone, type: 'dragover',  fn: onDragOver},
+                    {el: zone, type: 'dragleave', fn: onDragLeave},
+                    {el: zone, type: 'drop',      fn: onDrop},
+                );
+
+                // SortableJS for reorder / move between columns
                 const instance = Sortable.create(zone, {
                     group:      { name: 'widgets', pull: true, put: true },
                     handle:     '.widget-drag-handle',
@@ -785,30 +826,6 @@ function pageBuilder() {
                     ghostClass: 'opacity-30',
                     chosenClass:'shadow-xl',
                     dataIdAttr: 'data-widget-id',
-
-                    onAdd: (evt) => {
-                        // Dropped from sidebar (no data-widget-id yet) or from another column
-                        const el        = evt.item;
-                        const widgetType = el.dataset.widgetType;
-
-                        if (widgetType) {
-                            // Came from sidebar: remove the clone Sortable inserted, add to state
-                            el.parentNode.removeChild(el);
-                            const newWidget = {
-                                id:         uid('w'),
-                                type:       widgetType,
-                                content:    {},
-                                settings:   {},
-                                is_visible: true,
-                            };
-                            this.rows[rowIdx].columns[colIdx].widgets.splice(evt.newIndex, 0, newWidget);
-                            const widgetIdx = evt.newIndex;
-                            this.selectWidget(rowIdx, colIdx, widgetIdx);
-                            this.unsavedChanges = true;
-                            this.$nextTick(() => this.initSortable());
-                        }
-                        // Moves between columns are handled by onEnd
-                    },
 
                     onEnd: (evt) => {
                         const fromZone = evt.from;
@@ -839,24 +856,6 @@ function pageBuilder() {
 
                 this._sortableInstances.push(instance);
             });
-
-            // Sidebar as clone source using Sortable
-            const sidebarEl = document.getElementById('sidebar-widgets');
-            if (sidebarEl) {
-                // Destroy any existing sidebar sortable
-                if (this._sidebarSortable) {
-                    this._sidebarSortable.destroy();
-                }
-                this._sidebarSortable = Sortable.create(sidebarEl, {
-                    group:      { name: 'widgets', pull: 'clone', put: false },
-                    sort:       false,
-                    animation:  150,
-                    ghostClass: 'opacity-30',
-                    chosenClass:'opacity-70',
-                    // Wrap each direct child that has data-widget-type
-                });
-                this._sortableInstances.push(this._sidebarSortable);
-            }
         },
 
         // ── Save ──────────────────────────────────────────────────
