@@ -46,6 +46,12 @@
         'https://maps.google.com/maps?q=' . $mapsLat . ',' . $mapsLng . '&z=' . $mapsZoom . '&output=embed',
         $page->content ?? ''
     );
+    // Replace @csrf literal dengan hidden input CSRF token yang benar
+    $pageContent = str_replace(
+        '@csrf',
+        '<input type="hidden" name="_token" value="' . csrf_token() . '">',
+        $pageContent
+    );
 @endphp
 
 <div class="gjs-page-content">

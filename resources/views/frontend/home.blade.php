@@ -45,7 +45,7 @@
 @section('content')
 
 {{-- ═══════════════ HERO SECTION ═══════════════ --}}
-<section class="relative overflow-hidden bg-primary-light">
+<section class="relative overflow-hidden" style="background-color:#f0fdf9;">
     {{-- Subtle background shapes --}}
     <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/8 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/8 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
