@@ -4,7 +4,7 @@
         class="header-sticky border-b border-slate-100 transition-all duration-300 z-50">
     <x-frontend.ad-slot position="header" />
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-14 lg:h-16">
+        <div class="flex items-center justify-between h-12 lg:h-14">
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center shrink-0 group">
                 @php $logo = \App\Models\Setting::get('logo', 'general'); @endphp

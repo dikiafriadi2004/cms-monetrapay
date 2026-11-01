@@ -153,6 +153,14 @@
 /* Safety net: hide ad-container if it renders with no children */
 .ad-container:empty {
     display: none;
+    margin: 0;
+    padding: 0;
+    height: 0;
+}
+
+/* Ensure no gap between sticky header and first content section */
+main[role="main"] > *:first-child {
+    margin-top: 0 !important;
 }
 
 .ad-slot img {
