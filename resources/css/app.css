@@ -204,8 +204,11 @@ main[role="main"] > *:first-child {
 
 /* ===== STICKY HEADER ===== */
 .header-sticky {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 50;
     transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }

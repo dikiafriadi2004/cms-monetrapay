@@ -124,7 +124,7 @@
 @include('frontend.layouts.partials.navbar')
 
 {{-- Main Content --}}
-<main role="main" class="flex-1">
+<main role="main" class="flex-1 pt-12 lg:pt-14">
     @yield('content')
 </main>
 
