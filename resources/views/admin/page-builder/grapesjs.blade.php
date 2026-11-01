@@ -65,6 +65,13 @@
             overflow: hidden;
         }
 
+        /* Force blocks panel visible on left */
+        .gjs-pn-panels { display: flex; height: 100%; }
+        .gjs-pn-panel.gjs-pn-views-container { width: 250px !important; min-width: 250px; }
+        .gjs-blocks-c { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
+        .gjs-block { width: 100px !important; min-height: 90px; padding: 12px 8px; }
+        .gjs-block__media svg { width: 32px; height: 32px; }
+
         /* Override GrapesJS panel colors to match brand */
         .gjs-one-bg { background-color: #1e2533 !important; }
         .gjs-two-bg { background-color: #232b3a !important; }
@@ -237,10 +244,24 @@ var editor = grapesjs.init({
     pluginsOpts: editorPluginsOpts,
     canvas: {
         styles: [
-            'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+            'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
         ],
         scripts: [],
+        customBadgeLabel: function(component) { return component.getName(); },
     },
+    protectedCss: `
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #334155;
+            line-height: 1.6;
+            background: #fff;
+        }
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: inherit; }
+        section, div { box-sizing: border-box; }
+        [data-gjs-type="wrapper"] { min-height: 100vh; }
+    `,
     deviceManager: {
         devices: [
             { name: 'Desktop', width: '' },
@@ -275,6 +296,11 @@ editor.on('change:changesCount', function() {
     document.getElementById('save-status').textContent = 'Ada perubahan yang belum disimpan';
 });
 
+// Auto-open blocks panel on load
+editor.on('load', function() {
+    editor.runCommand('open-blocks');
+});
+
 // Device commands
 editor.Commands.add('set-device-desktop', { run: function(e) { e.setDevice('Desktop'); } });
 editor.Commands.add('set-device-tablet',  { run: function(e) { e.setDevice('Tablet'); } });
@@ -292,16 +318,19 @@ function loadContent() {
         if (data.success) {
             if (data.gjs_components && data.gjs_components.length > 2) {
                 try {
-                    editor.loadProjectData(JSON.parse(data.gjs_components));
+                    var projectData = JSON.parse(data.gjs_components);
+                    editor.loadProjectData(projectData);
                 } catch (e) {
-                    if (data.gjs_html) editor.setComponents(data.gjs_html);
+                    if (data.gjs_html) {
+                        editor.setComponents(data.gjs_html);
+                    }
                 }
             } else if (data.gjs_html) {
+                // Load HTML directly — GrapesJS will parse it into components
                 editor.setComponents(data.gjs_html);
             }
-            if (data.gjs_css) {
-                editor.setStyle(data.gjs_css);
-            }
+            // Don't set gjs_css as editor style — it's just the @import font,
+            // which is already handled by protectedCss + canvas.styles
         }
     })
     .catch(function(e) {

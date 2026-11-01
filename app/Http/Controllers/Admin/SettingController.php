@@ -119,6 +119,10 @@ class SettingController extends Controller
                 'whatsapp_float_enabled' => ['nullable'],
                 'whatsapp_number'        => ['nullable', 'max:20', 'regex:/^[0-9]+$/'],
                 'whatsapp_text'          => ['nullable', 'max:200'],
+                'maps_lat'               => ['nullable', 'max:20'],
+                'maps_lng'               => ['nullable', 'max:20'],
+                'maps_zoom'              => ['nullable', 'integer', 'min:1', 'max:20'],
+                'office_address'         => ['nullable', 'max:255'],
             ],
             'homepage' => [
                 'hero_title' => ['nullable', 'max:255'],

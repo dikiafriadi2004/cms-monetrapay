@@ -133,16 +133,14 @@
                                     </div>
                                 @else
                                     <div class="flex items-center justify-end gap-2">
-                                        @if($page->use_page_builder)
                                         <a href="{{ route('admin.pages.grapesjs', $page) }}"
-                                           class="text-sm text-teal-600 hover:text-teal-800 font-medium"
-                                           title="Visual Drag & Drop Editor">
-                                            🎨 Visual
+                                           class="text-sm text-teal-600 hover:text-teal-800 font-semibold"
+                                           title="Edit dengan Visual Editor">
+                                            🎨 Visual Editor
                                         </a>
-                                        @endif
                                         <a href="{{ route('admin.pages.edit', $page) }}"
                                            class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                            Edit
+                                            Pengaturan
                                         </a>
                                         <button type="button"
                                                 @click="deleteUrl = '{{ route('admin.pages.destroy', $page) }}'; deleteItemName = '{{ addslashes($page->title) }}'; showDeleteModal = true"

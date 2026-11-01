@@ -15,6 +15,10 @@ class SettingsSeeder extends Seeder
             ['group' => 'general', 'key' => 'tagline',               'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
             ['group' => 'general', 'key' => 'contact_email',         'value' => 'support@monetrapay.com'],
             ['group' => 'general', 'key' => 'contact_phone',         'value' => '+62 812-3456-7890'],
+            ['group' => 'general', 'key' => 'maps_lat',              'value' => '-6.2088'],
+            ['group' => 'general', 'key' => 'maps_lng',              'value' => '106.8456'],
+            ['group' => 'general', 'key' => 'maps_zoom',             'value' => '15'],
+            ['group' => 'general', 'key' => 'office_address',        'value' => 'Jakarta Selatan, DKI Jakarta 12190'],
             ['group' => 'general', 'key' => 'logo',                  'value' => null],
             ['group' => 'general', 'key' => 'favicon',               'value' => null],
             // Navbar CTA — ubah teks & URL sesuai kebutuhan
@@ -42,7 +46,7 @@ class SettingsSeeder extends Seeder
 
             // ── FOOTER ────────────────────────────────────────────────
             ['group' => 'footer', 'key' => 'copyright_text',       'value' => '© ' . date('Y') . ' MonetraPay. All rights reserved.'],
-            ['group' => 'footer', 'key' => 'additional_content',   'value' => 'Terdaftar dan diawasi oleh Bank Indonesia'],
+            ['group' => 'footer', 'key' => 'additional_content',   'value' => ' '],
 
             // ── MAINTENANCE ───────────────────────────────────────────
             ['group' => 'maintenance', 'key' => 'maintenance_mode','value' => '0'],

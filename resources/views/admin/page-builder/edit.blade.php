@@ -75,6 +75,11 @@ $previewUrl = url('/' . $page->slug);
             Preview
         </a>
 
+        <a href="{{ route('admin.pages.grapesjs', $page) }}"
+           class="px-3 py-1.5 text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-lg transition-colors inline-flex items-center gap-1.5">
+            🎨 Visual Editor
+        </a>
+
         <button @click="savePage()" :disabled="saving"
                 class="px-4 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

@@ -74,6 +74,42 @@
                 @error('contact_phone') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
+
+        {{-- Google Maps Koordinat --}}
+        <div class="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">📍 Lokasi Kantor (Google Maps)</h4>
+            <p class="text-[11px] text-slate-400 mb-3">Masukkan koordinat kantor untuk ditampilkan di halaman Kontak. Cari koordinat di <a href="https://maps.google.com" target="_blank" class="text-primary hover:underline">Google Maps</a> → klik kanan lokasi → salin koordinat.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                    <label for="maps_lat" class="block text-xs font-semibold text-slate-700 mb-1.5">Latitude</label>
+                    <input type="text" name="maps_lat" id="maps_lat"
+                           value="{{ old('maps_lat', $settings['maps_lat'] ?? '-6.2088') }}"
+                           placeholder="-6.2088">
+                    <p class="mt-1 text-[11px] text-slate-400">Contoh: -6.2088</p>
+                </div>
+                <div>
+                    <label for="maps_lng" class="block text-xs font-semibold text-slate-700 mb-1.5">Longitude</label>
+                    <input type="text" name="maps_lng" id="maps_lng"
+                           value="{{ old('maps_lng', $settings['maps_lng'] ?? '106.8456') }}"
+                           placeholder="106.8456">
+                    <p class="mt-1 text-[11px] text-slate-400">Contoh: 106.8456</p>
+                </div>
+                <div>
+                    <label for="maps_zoom" class="block text-xs font-semibold text-slate-700 mb-1.5">Zoom Level</label>
+                    <select name="maps_zoom" id="maps_zoom">
+                        @foreach([12=>'12 - Kota',13=>'13',14=>'14',15=>'15 - Default',16=>'16',17=>'17 - Detail',18=>'18 - Sangat Detail'] as $v=>$l)
+                            <option value="{{ $v }}" {{ old('maps_zoom', $settings['maps_zoom'] ?? '15') == $v ? 'selected' : '' }}>{{ $l }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3">
+                <label for="office_address" class="block text-xs font-semibold text-slate-700 mb-1.5">Alamat Kantor (teks)</label>
+                <input type="text" name="office_address" id="office_address"
+                       value="{{ old('office_address', $settings['office_address'] ?? '') }}"
+                       placeholder="Jl. Sudirman No. 1, Jakarta Selatan 12190">
+            </div>
+        </div>
     </div>
 
     {{-- Section: Navbar CTA --}}

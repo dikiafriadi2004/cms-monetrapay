@@ -85,17 +85,39 @@
 
                 {{-- CTA Buttons --}}
                 <div class="flex flex-wrap items-center gap-4 mb-10">
-                    <a href="{{ $homepage['hero_cta_url'] ?? url('/kontak') }}"
-                       class="group relative inline-flex items-center gap-2 px-8 py-4 bg-secondary text-white font-bold rounded-2xl text-base overflow-hidden shadow-xl shadow-secondary/30 hover:shadow-secondary/50 transition-all duration-300 hover:-translate-y-0.5">
-                        <span class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                        <span class="relative">{{ $homepage['hero_cta_text'] ?? 'Daftar Jadi Agen' }}</span>
-                        <svg class="w-5 h-5 relative group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    {{-- Google Play --}}
+                    <a href="{{ $homepage['hero_cta_url'] ?? '#' }}"
+                       class="group inline-flex items-center gap-3 px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                        {{-- Google Play icon --}}
+                        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.18 23.76c.32.18.68.22 1.04.12l11.2-11.2-2.83-2.83-9.41 13.91z" fill="#EA4335"/>
+                            <path d="M20.82 10.45l-2.99-1.73-3.18 3.16 3.18 3.18 2.99-1.73a1.78 1.78 0 000-2.88z" fill="#FBBC04"/>
+                            <path d="M4.22.12a1.78 1.78 0 00-1.04 1.6v20.56c0 .67.37 1.27.97 1.56L15.59 12 4.22.12z" fill="#4285F4"/>
+                            <path d="M4.22.12L15.59 12l-3.18-3.18L4.22.12z" fill="#34A853"/>
                         </svg>
+                        <div class="text-left leading-tight">
+                            <p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Unduh di</p>
+                            <p class="text-sm font-bold">Google Play</p>
+                        </div>
                     </a>
+
+                    {{-- App Store --}}
+                    <a href="{{ $homepage['hero_cta_secondary_url'] ?? '#' }}"
+                       class="group inline-flex items-center gap-3 px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                        {{-- Apple icon --}}
+                        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        <div class="text-left leading-tight">
+                            <p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Unduh di</p>
+                            <p class="text-sm font-bold">App Store</p>
+                        </div>
+                    </a>
+
+                    {{-- Lihat Layanan --}}
                     <a href="{{ url('/layanan') }}"
-                       class="inline-flex items-center gap-2 px-7 py-4 text-primary font-semibold text-base rounded-2xl border-2 border-primary/30 hover:border-primary hover:bg-primary hover:text-white transition-all duration-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center gap-2 px-6 py-3.5 text-primary font-semibold text-sm rounded-2xl border-2 border-primary/30 hover:border-primary hover:bg-primary/5 transition-all duration-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                         Lihat Layanan
@@ -181,7 +203,70 @@
     </div>
 </section>
 
-{{-- Services Section --}}
+{{-- ═══════════════ MARQUEE PRODUK ═══════════════ --}}
+<section class="py-16 bg-white border-y border-slate-100">
+    <div class="max-w-3xl mx-auto px-4 text-center mb-12">
+        <h2 class="text-2xl font-bold text-slate-800">Produk Terlengkap & Terpercaya</h2>
+        <p class="text-base text-slate-400 mt-2">Kami mendukung semua provider dan e-wallet populer di Indonesia.</p>
+    </div>
+
+    {{-- Marquee wrapper --}}
+    @php
+    $brands = [
+        ['name'=>'Telkomsel', 'logo'=>asset('assets/images/brands/telkomsel.png'), 'bg'=>null],
+        ['name'=>'Indosat',   'logo'=>asset('assets/images/brands/indosat.jpg'),   'bg'=>null],
+        ['name'=>'XL',        'logo'=>asset('assets/images/brands/xl.svg'),        'bg'=>null],
+        ['name'=>'DANA',      'logo'=>asset('assets/images/brands/dana.svg'),      'bg'=>null],
+        ['name'=>'GoPay',     'logo'=>asset('assets/images/brands/gopay.webp'),    'bg'=>null],
+        ['name'=>'OVO',       'logo'=>asset('assets/images/brands/ovo.svg'),       'bg'=>null],
+        ['name'=>'ShopeePay', 'logo'=>asset('assets/images/brands/shopee.svg'),    'bg'=>null],
+        ['name'=>'LinkAja',   'logo'=>asset('assets/images/brands/linkaja.svg'),   'bg'=>null],
+        ['name'=>'Tri',       'logo'=>asset('assets/images/brands/tri.png'),       'bg'=>'#0099CC'],
+    ];
+    $items = array_merge($brands, $brands, $brands, $brands);
+    @endphp
+
+    <div class="relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-40 z-10 pointer-events-none" style="background:linear-gradient(to right,white 60%,transparent);"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-40 z-10 pointer-events-none" style="background:linear-gradient(to left,white 60%,transparent);"></div>
+
+        <div class="marquee-track flex items-center">
+            @foreach($items as $brand)
+            <div class="shrink-0 flex items-center justify-center" style="height:72px; padding:0 28px;">
+                @if($brand['bg'])
+                    {{-- Logo putih: beri background warna brand, grayscale bersama container --}}
+                    <div style="background:{{ $brand['bg'] }}; border-radius:10px; padding:6px 14px; filter:grayscale(1) opacity(0.45); transition:all 0.3s; cursor:default;"
+                         onmouseover="this.style.filter='grayscale(0) opacity(1)';this.style.transform='scale(1.08)'"
+                         onmouseout="this.style.filter='grayscale(1) opacity(0.45)';this.style.transform='scale(1)'">
+                        <img src="{{ $brand['logo'] }}" alt="{{ $brand['name'] }}"
+                             style="height:34px; width:auto; max-width:140px; object-fit:contain; display:block;">
+                    </div>
+                @else
+                    <img src="{{ $brand['logo'] }}"
+                         alt="{{ $brand['name'] }}"
+                         class="object-contain transition-all duration-300"
+                         style="height:38px; width:auto; max-width:160px; filter:grayscale(1) opacity(0.45);"
+                         onmouseover="this.style.filter='grayscale(0) opacity(1)';this.style.transform='scale(1.08)'"
+                         onmouseout="this.style.filter='grayscale(1) opacity(0.45)';this.style.transform='scale(1)'">
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<style>
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 35s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+}
+</style>
 
 {{-- Services Section --}}
 <section id="layanan" class="py-20 md:py-28 bg-white">

@@ -8,10 +8,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen bg-[#0f172a] flex items-center justify-center px-4 font-sans antialiased"
+<body class="h-screen bg-[#0f172a] flex items-center justify-center px-4 font-sans antialiased overflow-hidden"
       style="background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 50px 50px;">
 
-    {{-- Decorative blobs --}}
+    {{-- Decorative blobs — clipped by overflow-hidden on body --}}
     <div class="absolute top-0 left-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
@@ -56,7 +56,7 @@
                         <label for="email" class="block text-sm font-bold text-slate-700 mb-1.5">Email</label>
                         <input type="email" id="email" name="email" value="{{ old('email') }}"
                                required autofocus autocomplete="email"
-                               placeholder="admin@monetrapay.com"
+                               placeholder="Email"
                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all text-sm">
                     </div>
 

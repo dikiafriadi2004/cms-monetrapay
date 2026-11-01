@@ -23,7 +23,12 @@ class PageFrontController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
 
-        // Check if page uses page builder
+        // GrapesJS pages — has gjs_css set means designed with Visual Editor
+        if (!empty($page->gjs_css)) {
+            return $this->showWithGrapesJs($page);
+        }
+
+        // Legacy page builder
         if ($page->use_page_builder) {
             return $this->showWithPageBuilder($page);
         }
@@ -72,12 +77,30 @@ class PageFrontController extends Controller
     }
 
     /**
-     * Show page with page builder components
+     * Show page designed with GrapesJS Visual Editor
+     */
+    protected function showWithGrapesJs(Page $page)
+    {
+        $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+        $metaTags       = $this->seoService->getMetaTags($page);
+        $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+        $twitterTags    = $this->seoService->getTwitterCardTags($page);
+        $structuredData = $this->seoService->getStructuredData($page);
+        $breadcrumbs    = $this->buildBreadcrumbs($page);
+
+        return view('frontend.page.grapesjs', compact(
+            'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+            'ogTags', 'twitterTags', 'structuredData',
+        ));
+    }
+
+    /**
+     * Show page with page builder components (legacy)
      */
     protected function showWithPageBuilder(Page $page)
     {
-        // If page was built with GrapesJS (has gjs_components set, even empty string means GrapesJS was used)
-        if (isset($page->gjs_components) && !empty($page->gjs_components)) {
+        // If page was built with GrapesJS (has gjs_css set means GrapesJS was used)
+        if (!empty($page->gjs_css)) {
             // SEO data
             $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
             $metaTags       = $this->seoService->getMetaTags($page);
