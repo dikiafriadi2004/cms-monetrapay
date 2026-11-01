@@ -28,32 +28,67 @@
             {{-- Logo --}}
             <div>
                 <label for="logo" class="block text-xs font-semibold text-slate-700 mb-1.5">Logo Website</label>
-                @if(!empty($settings['logo']))
-                    <div class="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3">
-                        <img src="{{ Storage::url($settings['logo']) }}" alt="Logo" class="h-12 w-auto max-w-[120px] object-contain">
-                        <span class="text-xs text-slate-500 ml-auto">Logo aktif — upload baru untuk mengganti</span>
+                {{-- Preview logo yang sudah tersimpan --}}
+                <div id="logo-preview-wrap" class="mb-3 p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-4 {{ empty($settings['logo']) ? 'hidden' : '' }}">
+                    <div class="w-32 h-14 flex items-center justify-center bg-white rounded-lg border border-slate-200 overflow-hidden shrink-0">
+                        <img id="logo-preview-img"
+                             src="{{ !empty($settings['logo']) ? Storage::url($settings['logo']) : '' }}"
+                             alt="Logo" class="max-h-12 max-w-[120px] w-auto object-contain">
                     </div>
-                @endif
-                <input type="file" name="logo" id="logo" accept=".png,.jpg,.jpeg,.svg,.webp">
-                <p class="mt-1 text-[11px] text-slate-500">PNG, JPG, SVG, WebP. Maks 5MB. Rekomendasi: logo horizontal tinggi 40–56px; gunakan SVG/PNG transparan jika tersedia.</p>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-slate-700" id="logo-preview-name">
+                            {{ !empty($settings['logo']) ? basename($settings['logo']) : '' }}
+                        </p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">{{ !empty($settings['logo']) ? 'Logo aktif — upload baru untuk mengganti' : 'Preview file baru' }}</p>
+                    </div>
+                </div>
+                <input type="file" name="logo" id="logo" accept=".png,.jpg,.jpeg,.svg,.webp"
+                       onchange="previewImage(this, 'logo-preview-img', 'logo-preview-wrap', 'logo-preview-name')">
+                <p class="mt-1 text-[11px] text-slate-500">PNG, JPG, SVG, WebP. Maks 5MB. Rekomendasi: logo horizontal tinggi 40–56px.</p>
                 @error('logo') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Favicon --}}
             <div>
                 <label for="favicon" class="block text-xs font-semibold text-slate-700 mb-1.5">Favicon</label>
-                @if(!empty($settings['favicon']))
-                    <div class="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3">
-                        <img src="{{ Storage::url($settings['favicon']) }}" alt="Favicon" class="h-10 w-10 object-contain rounded border border-slate-200 bg-white p-1">
-                        <span class="text-xs text-slate-500 ml-auto">Favicon aktif — upload baru untuk mengganti</span>
+                {{-- Preview favicon yang sudah tersimpan --}}
+                <div id="favicon-preview-wrap" class="mb-3 p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-4 {{ empty($settings['favicon']) ? 'hidden' : '' }}">
+                    <div class="w-14 h-14 flex items-center justify-center bg-white rounded-lg border border-slate-200 overflow-hidden shrink-0">
+                        <img id="favicon-preview-img"
+                             src="{{ !empty($settings['favicon']) ? Storage::url($settings['favicon']) : '' }}"
+                             alt="Favicon" class="w-10 h-10 object-contain">
                     </div>
-                @endif
-                <input type="file" name="favicon" id="favicon" accept=".ico,.png,.jpg,.jpeg,.svg">
-                <p class="mt-1 text-[11px] text-slate-500">ICO, PNG, JPG, SVG. Maks 2MB. Rekomendasi: 512×512 PNG atau ICO square agar tajam di browser.</p>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-slate-700" id="favicon-preview-name">
+                            {{ !empty($settings['favicon']) ? basename($settings['favicon']) : '' }}
+                        </p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">{{ !empty($settings['favicon']) ? 'Favicon aktif — upload baru untuk mengganti' : 'Preview file baru' }}</p>
+                    </div>
+                </div>
+                <input type="file" name="favicon" id="favicon" accept=".ico,.png,.jpg,.jpeg,.svg"
+                       onchange="previewImage(this, 'favicon-preview-img', 'favicon-preview-wrap', 'favicon-preview-name')">
+                <p class="mt-1 text-[11px] text-slate-500">ICO, PNG, JPG, SVG. Maks 2MB. Rekomendasi: 512×512 PNG atau ICO square.</p>
                 @error('favicon') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
-    </div>
+
+        {{-- JS untuk preview gambar sebelum upload --}}
+        <script>
+        function previewImage(input, imgId, wrapId, nameId) {
+            const file = input.files[0];
+            if (!file) return;
+            const wrap = document.getElementById(wrapId);
+            const img  = document.getElementById(imgId);
+            const name = document.getElementById(nameId);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                if (name) name.textContent = file.name;
+                if (wrap) wrap.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+        </script>
 
     {{-- Section: Contact --}}
     <div class="pt-5 border-t border-slate-100">
