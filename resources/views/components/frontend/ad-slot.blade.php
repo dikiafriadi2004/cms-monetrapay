@@ -18,7 +18,9 @@
                 ->orWhere('end_date', '>=', today());
         })
         ->orderBy('created_at')
-        ->get();
+        ->get()
+        // Filter out ads with no actual content to avoid empty wrappers
+        ->filter(fn($ad) => !empty($ad->code) || !empty($ad->image));
 @endphp
 
 @if ($ads->isNotEmpty())
@@ -28,7 +30,7 @@
                 @if (!empty($ad->code))
                     {!! $ad->code !!}
                 @elseif (!empty($ad->image))
-                    <img src="{{ $ad->image }}" alt="{{ $ad->name }}" loading="lazy">
+                    <img src="{{ Storage::url($ad->image) }}" alt="{{ $ad->name }}" loading="lazy">
                 @endif
             </div>
         @endforeach

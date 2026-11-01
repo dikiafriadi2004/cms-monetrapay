@@ -35,8 +35,10 @@
     @php $faviconSetting = \App\Models\Setting::get('favicon', 'general'); @endphp
     @if($faviconSetting)
         <link rel="icon" href="{{ Storage::url($faviconSetting) }}" type="image/png">
-        <link rel="shortcut icon" href="{{ Storage::url($faviconSetting) }}">
+        <link rel="apple-touch-icon" href="{{ Storage::url($faviconSetting) }}">
     @else
+        {{-- SVG favicon sebagai fallback — ringan dan selalu muncul --}}
+        <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
         <link rel="icon" href="/assets/images/favico.png" type="image/png">
     @endif
 
