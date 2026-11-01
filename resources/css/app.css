@@ -150,6 +150,11 @@
     display: block;
 }
 
+/* Safety net: hide ad-container if it renders with no children */
+.ad-container:empty {
+    display: none;
+}
+
 .ad-slot img {
     max-width: 100%;
     height: auto;

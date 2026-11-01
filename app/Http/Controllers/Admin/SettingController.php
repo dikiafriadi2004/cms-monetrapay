@@ -211,8 +211,10 @@ class SettingController extends Controller
             $oldFavicon = Setting::get('favicon', 'general');
             if ($oldFavicon) {
                 Storage::disk('public')->delete($oldFavicon);
+                // Also delete old resized version
+                Storage::disk('public')->delete('settings/favicon-32.png');
             }
-            $validated['favicon'] = $request->file('favicon')->store('settings', 'public');
+            $validated['favicon'] = $this->resizeFavicon($request->file('favicon'));
         }
 
         return $validated;
@@ -241,5 +243,51 @@ class SettingController extends Controller
         }
 
         return $validated;
+    }
+
+    /**
+     * Resize an uploaded favicon to 32×32 PNG using GD.
+     * Falls back to a plain store() when GD is unavailable or the mime type is unsupported.
+     */
+    private function resizeFavicon(\Illuminate\Http\UploadedFile $file): string
+    {
+        if (!extension_loaded('gd')) {
+            return $file->store('settings', 'public');
+        }
+
+        $mime = $file->getMimeType();
+        $src = match(true) {
+            str_contains($mime, 'png')  => imagecreatefrompng($file->path()),
+            str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->path()),
+            str_contains($mime, 'gif')  => imagecreatefromgif($file->path()),
+            str_contains($mime, 'webp') => imagecreatefromwebp($file->path()),
+            default => null,
+        };
+
+        if (!$src) {
+            return $file->store('settings', 'public');
+        }
+
+        $dst = imagecreatetruecolor(32, 32);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+        imagefill($dst, 0, 0, $transparent);
+
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
+
+        $path = 'settings/favicon-32.png';
+        $fullPath = Storage::disk('public')->path($path);
+
+        // Ensure directory exists
+        if (!is_dir(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        imagepng($dst, $fullPath, 9);
+        imagedestroy($src);
+        imagedestroy($dst);
+
+        return $path;
     }
 }

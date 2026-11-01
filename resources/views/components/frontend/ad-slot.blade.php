@@ -20,7 +20,7 @@
         ->orderBy('created_at')
         ->get()
         // Filter out ads with no actual content to avoid empty wrappers
-        ->filter(fn($ad) => !empty($ad->code) || !empty($ad->image));
+        ->filter(fn($ad) => !empty(trim($ad->code ?? '')) || !empty(trim($ad->image ?? '')));
 @endphp
 
 @if ($ads->isNotEmpty())
