@@ -11,11 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @php
         $adminFavicon = \App\Models\Setting::get('favicon', 'general');
+        // Always look for resized variants in favicon/ directory
+        $adminFav32   = 'favicon/favicon-32.png';
+        $adminFavFile = Storage::disk('public')->exists($adminFav32) ? $adminFav32 : $adminFavicon;
     @endphp
     @if($adminFavicon)
-        @php $adminFavCacheBust = '?v=' . filemtime(Storage::disk('public')->path($adminFavicon)); @endphp
-        <link rel="icon" href="{{ Storage::url($adminFavicon) . $adminFavCacheBust }}" type="image/png">
-        <link rel="shortcut icon" href="{{ Storage::url($adminFavicon) . $adminFavCacheBust }}">
+        @php
+            $adminFavPath = Storage::disk('public')->path($adminFavFile ?? $adminFavicon);
+            $adminFavCacheBust = '?v=' . (file_exists($adminFavPath) ? filemtime($adminFavPath) : time());
+            $adminFavUrl = Storage::url($adminFavFile ?? $adminFavicon);
+        @endphp
+        <link rel="icon" href="{{ $adminFavUrl . $adminFavCacheBust }}" type="image/png">
+        <link rel="shortcut icon" href="{{ $adminFavUrl . $adminFavCacheBust }}">
     @else
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @endif
