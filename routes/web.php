@@ -340,9 +340,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('maintenance/clear-cache', [MaintenanceController::class, 'clearCache'])
         ->middleware('check.permission:setting.edit')
         ->name('maintenance.clear-cache');
-    Route::post('maintenance/regenerate-sitemap', [MaintenanceController::class, 'regenerateSitemap'])
-        ->middleware('check.permission:setting.edit')
-        ->name('maintenance.regenerate-sitemap');
 
     // Contact Submissions
     Route::middleware('check.permission:setting.view')->group(function () {
