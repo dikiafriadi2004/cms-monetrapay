@@ -201,10 +201,11 @@ class PageBuilderController extends Controller
             ]);
 
             $page->update([
-                'content'        => $validated['gjs_html'] ?? '',
-                'gjs_css'        => $validated['gjs_css'] ?? '',
-                'gjs_components' => $validated['gjs_components'] ?? '',
-                'gjs_styles'     => $validated['gjs_styles'] ?? '',
+                'content'          => $validated['gjs_html'] ?? '',
+                'gjs_css'          => $validated['gjs_css'] ?? '',
+                'gjs_components'   => $validated['gjs_components'] ?? '',
+                'gjs_styles'       => $validated['gjs_styles'] ?? '',
+                'use_page_builder' => true, // Mark as GrapesJS page only when actually saved
             ]);
 
             return response()->json([
