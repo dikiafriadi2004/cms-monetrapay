@@ -95,9 +95,9 @@
                 </tbody>
             </table>
         </div>
-        @if($subscribers->hasPages())
-            <div class="px-5 py-4 border-t border-slate-100">{{ $subscribers->links() }}</div>
-        @endif
+        <div class="px-5 border-t border-slate-100">
+            <x-admin.pagination :paginator="$subscribers" />
+        </div>
     </div>
 
     @include('components.admin.delete-modal')

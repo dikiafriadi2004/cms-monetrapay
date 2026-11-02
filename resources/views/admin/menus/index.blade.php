@@ -78,6 +78,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="px-6 border-t border-slate-200">
+            <x-admin.pagination :paginator="$menus" />
+        </div>
     </div>
 
     {{-- Delete Confirmation Modal --}}

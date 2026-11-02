@@ -123,9 +123,9 @@
                 </tbody>
             </table>
         </div>
-        @if($logs->hasPages())
-            <div class="px-5 py-4 border-t border-slate-100">{{ $logs->links() }}</div>
-        @endif
+        <div class="px-5 border-t border-slate-100">
+            <x-admin.pagination :paginator="$logs" />
+        </div>
     </div>
 </div>
 @endsection

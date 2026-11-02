@@ -164,8 +164,8 @@
 
         {{-- Pagination --}}
         @if($pages->hasPages())
-            <div class="px-6 py-4 border-t border-slate-200">
-                {{ $pages->links() }}
+            <div class="px-6 border-t border-slate-200">
+                <x-admin.pagination :paginator="$pages" />
             </div>
         @endif
     </div>

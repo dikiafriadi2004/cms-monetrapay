@@ -19,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $categories = Category::withCount('blogs')->orderBy('name')->get();
+        $categories = Category::withCount('blogs')->orderBy('name')->paginate(20)->withQueryString();
         $editCategory = null;
 
         if ($request->has('edit')) {

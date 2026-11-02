@@ -20,7 +20,8 @@ class NewsletterCampaignController extends Controller
     {
         $campaigns = NewsletterCampaign::with('user')
             ->orderByDesc('created_at')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         $activeCount = NewsletterSubscriber::active()->count();
 
