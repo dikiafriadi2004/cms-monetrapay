@@ -53,7 +53,7 @@
     <div class="absolute inset-0 pointer-events-none"
          style="background-image: radial-gradient(circle, rgba(61,158,122,0.12) 1px, transparent 1px); background-size: 32px 32px;"></div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-0 lg:min-h-[calc(100vh-56px)] flex items-center">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 lg:py-0 lg:min-h-[calc(100vh-56px)] flex items-center">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
 
             {{-- LEFT: Text --}}
