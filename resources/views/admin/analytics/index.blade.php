@@ -6,29 +6,13 @@
 <div class="space-y-6">
     {{-- Header --}}
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-slate-800">Analytics Dashboard</h1>
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">Analytics Dashboard</h1>
+            <p class="text-sm text-slate-500 mt-1">Data diambil dari database lokal</p>
+        </div>
     </div>
 
-    @if (!$isConfigured)
-        {{-- Not Configured Message --}}
-        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center">
-            <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-            <h2 class="text-lg font-semibold text-slate-700 mb-2">Google Analytics Belum Dikonfigurasi</h2>
-            <p class="text-sm text-slate-500 mb-4">
-                Masukkan Google Analytics Measurement ID di pengaturan SEO untuk mulai melihat data analitik.
-            </p>
-            <a href="{{ route('admin.settings.edit', 'seo') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Konfigurasi Sekarang
-            </a>
-        </div>
-    @elseif ($error)
+    @if ($error)
         {{-- Error Message --}}
         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
             <div class="flex items-center gap-2">
@@ -42,7 +26,7 @@
         {{-- Summary Cards --}}
         @if ($summary)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {{-- Total Users --}}
+            {{-- Total Subscriber Aktif --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -51,13 +35,13 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Users</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Subscriber Aktif</p>
                         <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['users']) }}</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Pageviews --}}
+            {{-- Total Konten Publik --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -67,7 +51,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Pageviews</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Konten Publik</p>
                         <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['pageviews']) }}</p>
                     </div>
                 </div>
@@ -105,12 +89,95 @@
                 </div>
             </div>
         </div>
+
+        {{-- DB Stats Section --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {{-- Blog Stats --}}
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Total Blog</p>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-500">Published</span>
+                    <span class="font-bold text-green-600">{{ number_format($summary['total_blogs_published']) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm mt-1">
+                    <span class="text-slate-500">Draft</span>
+                    <span class="font-bold text-amber-600">{{ number_format($summary['total_blogs_draft']) }}</span>
+                </div>
+            </div>
+
+            {{-- Comment Stats --}}
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Total Komentar</p>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-500">Approved</span>
+                    <span class="font-bold text-green-600">{{ number_format($summary['total_comments_approved']) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm mt-1">
+                    <span class="text-slate-500">Pending</span>
+                    <span class="font-bold text-amber-600">{{ number_format($summary['total_comments_pending']) }}</span>
+                </div>
+            </div>
+
+            {{-- Contact Stats --}}
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Pesan Kontak</p>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-500">Total</span>
+                    <span class="font-bold text-slate-700">{{ number_format($summary['total_contacts_total']) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm mt-1">
+                    <span class="text-slate-500">Belum Dibaca</span>
+                    <span class="font-bold text-rose-600">{{ number_format($summary['total_contacts_unread']) }}</span>
+                </div>
+            </div>
+
+            {{-- Subscriber Stats --}}
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700">Total Subscriber</p>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-500">Aktif</span>
+                    <span class="font-bold text-green-600">{{ number_format($summary['total_subscribers_active']) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm mt-1">
+                    <span class="text-slate-500">Total</span>
+                    <span class="font-bold text-slate-700">{{ number_format($summary['total_subscribers_total']) }}</span>
+                </div>
+            </div>
+        </div>
         @endif
 
         {{-- Daily Trend Chart --}}
         @if ($dailyTrend)
         <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-semibold text-slate-800 mb-4">Tren Pengunjung Harian (30 Hari)</h2>
+            <h2 class="text-lg font-semibold text-slate-800 mb-4">Artikel Dipublikasikan (30 Hari Terakhir)</h2>
             <div class="relative" style="height: 300px;">
                 <canvas id="dailyTrendChart"></canvas>
             </div>
@@ -120,14 +187,14 @@
         {{-- Top Pages --}}
         @if ($topPages)
         <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-semibold text-slate-800 mb-4">Top 10 Halaman</h2>
+            <h2 class="text-lg font-semibold text-slate-800 mb-4">5 Artikel Terbaru</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-slate-200">
                             <th class="text-left py-3 px-4 font-medium text-slate-600">#</th>
-                            <th class="text-left py-3 px-4 font-medium text-slate-600">Halaman</th>
-                            <th class="text-right py-3 px-4 font-medium text-slate-600">Pageviews</th>
+                            <th class="text-left py-3 px-4 font-medium text-slate-600">Judul Artikel</th>
+                            <th class="text-right py-3 px-4 font-medium text-slate-600">Peringkat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,7 +215,7 @@
 @endsection
 
 @section('scripts')
-@if ($isConfigured && $dailyTrend && !$error)
+@if ($dailyTrend && !$error)
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -167,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Pengunjung',
+                label: 'Artikel Dipublikasikan',
                 data: visitors,
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -203,7 +270,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        font: { size: 11 }
+                        font: { size: 11 },
+                        stepSize: 1,
+                        precision: 0
                     }
                 }
             },
