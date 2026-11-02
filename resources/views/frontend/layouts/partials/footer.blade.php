@@ -11,15 +11,12 @@
                     {{-- Logo --}}
                     @php $footerLogo = \App\Models\Setting::get('logo', 'general'); @endphp
                     @if($footerLogo)
-                        <img src="{{ Storage::url($footerLogo) }}" alt="{{ $siteName ?? 'MonetraPay' }}"
-                             class="h-10 w-auto mb-5 object-contain">
-                    @elseif(file_exists(public_path('assets/images/logo.png')))
-                        <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}"
+                        <img src="{{ Storage::url($footerLogo) }}" alt="{{ $siteName ?? config('app.name') }}"
                              class="h-10 w-auto mb-5 object-contain">
                     @else
                         <div class="mb-5">
                             <span class="text-2xl font-extrabold">
-                                <span class="text-primary">Monetra</span><span class="text-secondary">Pay</span>
+                                {{ $siteName ?? config('app.name') }}
                             </span>
                         </div>
                     @endif
@@ -136,7 +133,7 @@
             <div class="mt-12 pt-8 border-t border-white/8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-sm text-slate-500">
-                        {{ $footerSettings['copyright_text'] ?? '© ' . date('Y') . ' ' . ($siteName ?? 'MonetraPay') . '. All rights reserved.' }}
+                        {{ $footerSettings['copyright_text'] ?? '© ' . date('Y') . ' ' . ($siteName ?? config('app.name')) . '. All rights reserved.' }}
                     </p>
                     @if(!empty($footerSettings['footer_extra_content']))
                     <p class="text-sm text-slate-500 flex items-center gap-2">

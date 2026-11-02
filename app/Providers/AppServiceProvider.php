@@ -98,8 +98,23 @@ class AppServiceProvider extends ServiceProvider
         // Also share with all theme-specific layouts and partials
         View::composer('frontend.themes.*', FrontendComposer::class);
         View::composer('frontend.layouts.partials.*', FrontendComposer::class);
-        
+
         // Share notifications with admin layout
         View::composer('admin.layouts.app', NotificationComposer::class);
+
+        // Globally share brand identity (site_name, logo, favicon) from CMS settings
+        // so every view — including child pages that @extend the layout — can render
+        // the configured brand instead of a hardcoded fallback. Safe on fresh install
+        // (when the settings table does not exist yet) via try/catch.
+        try {
+            $siteName = Setting::get('site_name', 'general') ?? config('app.name');
+            $logo = Setting::get('logo', 'general');
+            $favicon = Setting::get('favicon', 'general');
+        } catch (\Throwable $e) {
+            $siteName = config('app.name');
+            $logo = null;
+            $favicon = null;
+        }
+        View::share(compact('siteName', 'logo', 'favicon'));
     }
 }

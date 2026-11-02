@@ -32,7 +32,7 @@ class TwoFactorController extends Controller
         }
 
         $qrCodeUrl = $this->google2fa->getQRCodeUrl(
-            config('app.name', 'MonetraPay'),
+            config('app.name'),
             $user->email,
             $user->two_factor_secret,
         );

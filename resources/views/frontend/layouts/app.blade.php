@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', $siteName ?? 'MonetraPay')</title>
+    <title>@yield('title', $siteName ?? config('app.name'))</title>
     {{-- Pre-paint dark mode application to avoid flash --}}
     <script>
         (function() {
@@ -29,8 +29,6 @@
     @php $logoPreload = \App\Models\Setting::get('logo', 'general'); @endphp
     @if($logoPreload)
     <link rel="preload" href="{{ Storage::url($logoPreload) }}" as="image">
-    @elseif(file_exists(public_path('assets/images/logo.png')))
-    <link rel="preload" href="/assets/images/logo.png" as="image">
     @endif
     @php
         $faviconBase = \App\Models\Setting::get('favicon', 'general');
@@ -47,19 +45,20 @@
         }
     @endphp
     @if(!empty($faviconBase))
-        @if($has32)<link rel="icon" type="image/png" sizes="32x32" href="{{ Storage::url($fav32) }}">@endif
-        @if($has16)<link rel="icon" type="image/png" sizes="16x16" href="{{ Storage::url($fav16) }}">@endif
-        @if($has180)<link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($fav180) }}">@endif
-        @if($has192)<link rel="icon" type="image/png" sizes="192x192" href="{{ Storage::url($fav192) }}">@endif
-        @if(!$has32 && !$has16)<link rel="icon" type="image/png" href="{{ Storage::url($faviconBase) }}">@endif
+        @php $favCacheBust = '?v=' . filemtime(Storage::disk('public')->path($fav32 ?? $faviconBase)); @endphp
+        <link rel="shortcut icon" href="{{ Storage::url($fav32 ?? $faviconBase) . $favCacheBust }}">
+        @if($has32)<link rel="icon" type="image/png" sizes="32x32" href="{{ Storage::url($fav32) . $favCacheBust }}">@endif
+        @if($has16)<link rel="icon" type="image/png" sizes="16x16" href="{{ Storage::url($fav16) . $favCacheBust }}">@endif
+        @if($has180)<link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($fav180) . $favCacheBust }}">@endif
+        @if($has192)<link rel="icon" type="image/png" sizes="192x192" href="{{ Storage::url($fav192) . $favCacheBust }}">@endif
+        @if(!$has32 && !$has16)<link rel="icon" type="image/png" href="{{ Storage::url($faviconBase) . $favCacheBust }}">@endif
     @else
-        {{-- SVG favicon sebagai fallback — ringan dan selalu muncul --}}
-        <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
-        <link rel="icon" href="/assets/images/favico.png" type="image/png">
+        {{-- Fallback favicon yang di-update otomatis saat upload via CMS --}}
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @endif
 
     {{-- RSS Feed discovery --}}
-    <link rel="alternate" type="application/rss+xml" title="{{ $siteName ?? 'MonetraPay' }} - Blog RSS" href="{{ url('/feed.xml') }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ $siteName ?? config('app.name') }} - Blog RSS" href="{{ url('/feed.xml') }}">
 
     {{-- Default SEO meta (overridable per page) --}}
     @hasSection('seo')
@@ -67,7 +66,7 @@
     @else
         @php
             $seoDefaults = \App\Models\Setting::getGroup('seo');
-            $defaultTitle = $seoDefaults['meta_title_default'] ?? ($siteName ?? 'MonetraPay');
+            $defaultTitle = $seoDefaults['meta_title_default'] ?? ($siteName ?? config('app.name'));
             $defaultDesc = $seoDefaults['meta_description_default'] ?? '';
             $canonical = url(request()->path() === '/' ? '/' : '/' . request()->path());
         @endphp
@@ -78,11 +77,9 @@
         <meta property="og:description" content="{{ $defaultDesc }}">
         <meta property="og:url" content="{{ $canonical }}">
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+        <meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
         @if(!empty($logo))
         <meta property="og:image" content="{{ url(Storage::url($logo)) }}">
-        @elseif(file_exists(public_path('assets/images/logo.png')))
-        <meta property="og:image" content="{{ url('/assets/images/logo.png') }}">
         @endif
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
@@ -91,8 +88,6 @@
         <meta name="twitter:description" content="{{ $defaultDesc }}">
         @if(!empty($logo))
         <meta name="twitter:image" content="{{ url(Storage::url($logo)) }}">
-        @elseif(file_exists(public_path('assets/images/logo.png')))
-        <meta name="twitter:image" content="{{ url('/assets/images/logo.png') }}">
         @endif
     @endif
 

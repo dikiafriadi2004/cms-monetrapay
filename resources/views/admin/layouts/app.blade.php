@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') - MonetraPay CMS</title>
+    <title>@yield('title', 'Admin') - {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,10 +13,11 @@
         $adminFavicon = \App\Models\Setting::get('favicon', 'general');
     @endphp
     @if($adminFavicon)
-        <link rel="icon" href="{{Storage::url($adminFavicon)}}" type="image/png">
-        <link rel="shortcut icon" href="{{Storage::url($adminFavicon)}}">
+        @php $adminFavCacheBust = '?v=' . filemtime(Storage::disk('public')->path($adminFavicon)); @endphp
+        <link rel="icon" href="{{ Storage::url($adminFavicon) . $adminFavCacheBust }}" type="image/png">
+        <link rel="shortcut icon" href="{{ Storage::url($adminFavicon) . $adminFavCacheBust }}">
     @else
-        <link rel="icon" href="/assets/images/favico.png" type="image/png">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -238,13 +239,12 @@
         <a href="{{ route('admin.dashboard') }}" class="flex items-center min-w-0">
             @php
                 $adminLogo = \App\Models\Setting::get('logo', 'general');
+                $adminSiteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
             @endphp
             @if($adminLogo)
-                <img src="{{ Storage::url($adminLogo) }}" alt="MonetraPay" class="h-12 w-auto max-w-[180px] object-contain">
-            @elseif(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="MonetraPay" class="h-12 w-auto max-w-[180px] object-contain">
+                <img src="{{ Storage::url($adminLogo) }}" alt="{{ $adminSiteName }}" class="h-12 w-auto max-w-[180px] object-contain">
             @else
-                <span class="text-lg font-extrabold"><span class="text-primary">Monetra</span><span class="text-secondary">Pay</span></span>
+                <span class="text-lg font-extrabold">{{ $adminSiteName }}</span>
             @endif
         </a>
         <button @click="sidebarOpen = false" class="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-colors">

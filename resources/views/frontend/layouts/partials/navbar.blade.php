@@ -9,14 +9,11 @@
             <a href="{{ url('/') }}" class="flex items-center shrink-0 group">
                 @php $logo = \App\Models\Setting::get('logo', 'general'); @endphp
                 @if($logo)
-                    <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? 'MonetraPay' }}"
-                         class="h-9 lg:h-11 w-auto max-w-[220px] object-contain transition-transform group-hover:scale-105">
-                @elseif(file_exists(public_path('assets/images/logo.png')))
-                    <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}"
+                    <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? config('app.name') }}"
                          class="h-9 lg:h-11 w-auto max-w-[220px] object-contain transition-transform group-hover:scale-105">
                 @else
                     <span class="text-xl lg:text-2xl font-extrabold tracking-tight">
-                        <span class="text-primary">Monetra</span><span class="text-secondary">Pay</span>
+                        {{ $siteName ?? config('app.name') }}
                     </span>
                 @endif
             </a>
@@ -99,10 +96,10 @@
          class="fixed top-0 left-0 bottom-0 z-50 w-[300px] bg-white shadow-2xl lg:hidden flex flex-col"
          role="navigation" aria-label="Mobile navigation">
         <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-            @if(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}" class="h-9 w-auto max-w-[145px]">
+            @if($logo)
+                <img src="{{ Storage::url($logo) }}" alt="{{ $siteName ?? config('app.name') }}" class="h-9 w-auto max-w-[145px]">
             @else
-                <span class="text-lg font-extrabold"><span class="text-primary">Monetra</span><span class="text-secondary">Pay</span></span>
+                <span class="text-lg font-extrabold">{{ $siteName ?? config('app.name') }}</span>
             @endif
             <button @click="mobileMenuOpen = false" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>

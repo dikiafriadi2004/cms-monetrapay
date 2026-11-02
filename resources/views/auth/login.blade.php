@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Login — MonetraPay CMS</title>
+    @php
+        try {
+            $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
+            $logo = \App\Models\Setting::get('logo', 'general');
+        } catch (\Throwable $e) {
+            $siteName = config('app.name');
+            $logo = null;
+        }
+    @endphp
+    <title>Login — {{ $siteName }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -18,17 +27,12 @@
     <div class="relative w-full max-w-md">
         {{-- Logo --}}
         <div class="text-center mb-8">
-            @php $loginLogo = \App\Models\Setting::get('logo', 'general'); @endphp
-            @if($loginLogo)
-                <img src="{{ Storage::url($loginLogo) }}" alt="MonetraPay" class="h-12 w-auto mx-auto mb-4">
-            @elseif(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="MonetraPay" class="h-12 w-auto mx-auto mb-4">
+            @if($logo)
+                <img src="{{ Storage::url($logo) }}" alt="{{ $siteName }}" class="h-12 w-auto mx-auto mb-4">
             @else
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/20 border border-primary/30 mb-4">
-                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                </div>
+                <span class="text-2xl font-extrabold text-white inline-block mb-4">{{ $siteName }}</span>
             @endif
-            <h1 class="text-xl font-extrabold text-white">MonetraPay CMS</h1>
+            <h1 class="text-xl font-extrabold text-white">{{ $siteName }}</h1>
             <p class="text-slate-400 text-sm mt-1">Masuk ke panel administrasi</p>
         </div>
 
@@ -104,11 +108,11 @@
                 if (togglePassword && passwordInput) {
                     togglePassword.addEventListener('click', function(e) {
                         e.preventDefault();
-                        
+
                         // Toggle the type attribute
                         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                         passwordInput.setAttribute('type', type);
-                        
+
                         // Toggle the button text
                         if (type === 'text') {
                             showText.classList.add('hidden');
@@ -127,7 +131,7 @@
         <div class="text-center mt-6 space-y-2">
             <a href="{{ url('/') }}" class="inline-flex items-center text-xs font-semibold text-primary hover:text-secondary transition-colors">← Kembali ke website</a>
             <p class="text-slate-400 text-xs">
-                &copy; {{ date('Y') }} MonetraPay CMS. Versi {{ config('app.version', '1.0') }}.
+                &copy; {{ date('Y') }} {{ $siteName }}. Versi {{ config('app.version', '1.0') }}.
             </p>
         </div>
     </div>

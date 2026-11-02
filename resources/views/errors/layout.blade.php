@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
     <title>@yield('code') - @yield('title')</title>
-    @if(file_exists(public_path('assets/images/favico.png')))
-    <link rel="icon" href="/assets/images/favico.png" type="image/png">
+    @php
+        try {
+            $errorFavicon = \App\Models\Setting::get('favicon', 'general');
+        } catch (\Throwable $e) {
+            $errorFavicon = null;
+        }
+    @endphp
+    @if($errorFavicon)
+    <link rel="icon" href="{{ Storage::url($errorFavicon) }}" type="image/png">
+    @else
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

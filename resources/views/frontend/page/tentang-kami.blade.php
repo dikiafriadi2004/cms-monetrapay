@@ -55,13 +55,14 @@
             <div class="animate-on-scroll delay-200 flex justify-center">
                 <div class="relative">
                     <div class="w-72 h-72 md:w-96 md:h-96 bg-primary/8 rounded-3xl flex items-center justify-center">
-                        @php $heroLogo = \App\Models\Setting::get('logo', 'general'); @endphp
+                        @php
+                            $heroLogo = \App\Models\Setting::get('logo', 'general');
+                            $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
+                        @endphp
                         @if($heroLogo)
-                            <img src="{{ Storage::url($heroLogo) }}" alt="{{ $siteName ?? 'MonetraPay' }}" class="w-48 md:w-64 object-contain drop-shadow-xl">
-                        @elseif(file_exists(public_path('assets/images/logo.png')))
-                            <img src="/assets/images/logo.png" alt="{{ $siteName ?? 'MonetraPay' }}" class="w-48 md:w-64 object-contain drop-shadow-xl">
+                            <img src="{{ Storage::url($heroLogo) }}" alt="{{ $siteName }}" class="w-48 md:w-64 object-contain drop-shadow-xl">
                         @else
-                            <span class="text-4xl font-extrabold"><span class="text-primary">Monetra</span><span class="text-secondary">Pay</span></span>
+                            <span class="text-4xl font-extrabold">{{ $siteName }}</span>
                         @endif
                     </div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-secondary/10 rounded-2xl"></div>

@@ -88,12 +88,14 @@ class SettingController extends Controller
         // Apply latest config (in case settings just saved this request)
         app(MailConfigService::class)->apply();
 
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
+
         try {
             Mail::raw(
-                "Halo!\n\nIni adalah email test dari MonetraPay CMS.\n\nJika Anda menerima email ini, konfigurasi SMTP berfungsi dengan benar.\n\n— MonetraPay",
-                function ($message) use ($validated) {
+                "Halo!\n\nIni adalah email test dari {$siteName}.\n\nJika Anda menerima email ini, konfigurasi SMTP berfungsi dengan benar.\n\n— {$siteName}",
+                function ($message) use ($validated, $siteName) {
                     $message->to($validated['email'])
-                        ->subject('Test Email dari MonetraPay CMS - '.now()->format('H:i'));
+                        ->subject('Test Email dari '.$siteName.' - '.now()->format('H:i'));
                 }
             );
         } catch (\Throwable $e) {
@@ -280,11 +282,14 @@ class SettingController extends Controller
                     ->save($outputPath);
             }
 
+            // Also copy to public/favicon.ico so browsers that auto-request /favicon.ico get the right file
+            $faviconIcoPath = public_path('favicon.ico');
+            copy(Storage::disk('public')->path('favicon/favicon-32.png'), $faviconIcoPath);
+
             return 'favicon/favicon-32.png';
         } catch (\Throwable $e) {
             // Intervention Image failed — fall back to GD native 32×32
         }
-
         // ── GD fallback ───────────────────────────────────────────────────────
         if (!extension_loaded('gd')) {
             return $file->store('settings', 'public');
@@ -324,6 +329,9 @@ class SettingController extends Controller
             }
 
             imagepng($dst, $fullPath, 9);
+
+            // Also copy to public/favicon.ico
+            copy($fullPath, public_path('favicon.ico'));
         } catch (\Throwable $e) {
             return $file->store('settings', 'public');
         } finally {
