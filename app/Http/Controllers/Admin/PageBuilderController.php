@@ -179,9 +179,9 @@ class PageBuilderController extends Controller
                 ->with('error', 'Page not found.');
         }
 
+        // Auto-enable page builder when opening GrapesJS editor
         if (!$page->use_page_builder) {
-            return redirect()->route('admin.pages.edit', $page->id)
-                ->with('warning', 'Please enable "Use Page Builder" for this page first.');
+            $page->update(['use_page_builder' => true]);
         }
 
         return view('admin.page-builder.grapesjs', compact('page'));
