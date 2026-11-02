@@ -348,8 +348,8 @@
         <a href="{{ route('admin.newsletter.campaigns.index') }}" class="{{ request()->routeIs('admin.newsletter.campaigns.*')
             ? 'flex items-center gap-2.5 pl-8 pr-3 py-1.5 rounded-lg text-xs font-semibold text-primary bg-primary/10'
             : 'flex items-center gap-2.5 pl-8 pr-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors' }}">
-            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-            Kirim Blast
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Email Campaign
         </a>
         @endcan
 
