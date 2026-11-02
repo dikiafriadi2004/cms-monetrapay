@@ -285,41 +285,41 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('settings.email-test');
 
     // User Management Routes
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:user.view')->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
     });
-    Route::middleware('check.permission:setting.create')->group(function () {
+    Route::middleware('check.permission:user.create')->group(function () {
         Route::get('users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('users', [UserController::class, 'store'])->name('users.store');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:user.edit')->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::match(['put', 'patch'], 'users/{user}', [UserController::class, 'update'])->name('users.update');
     });
     Route::delete('users/{user}', [UserController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:user.delete')
         ->name('users.destroy');
     Route::get('users/{user}', [UserController::class, 'show'])
-        ->middleware('check.permission:setting.view')
+        ->middleware('check.permission:user.view')
         ->name('users.show');
 
     // Role Management Routes
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:role.view')->group(function () {
         Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
     });
-    Route::middleware('check.permission:setting.create')->group(function () {
+    Route::middleware('check.permission:role.create')->group(function () {
         Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');
         Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:role.edit')->group(function () {
         Route::get('roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
         Route::match(['put', 'patch'], 'roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     });
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:role.delete')
         ->name('roles.destroy');
     Route::get('roles/{role}', [RoleController::class, 'show'])
-        ->middleware('check.permission:setting.view')
+        ->middleware('check.permission:role.view')
         ->name('roles.show');
 
     // Analytics Routes
@@ -342,16 +342,16 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('maintenance.clear-cache');
 
     // Contact Submissions
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:contact.view')->group(function () {
         Route::get('contacts', [ContactSubmissionController::class, 'index'])->name('contacts.index');
         Route::get('contacts/{contact}', [ContactSubmissionController::class, 'show'])->name('contacts.show');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:contact.edit')->group(function () {
         Route::post('contacts/{contact}/toggle-read', [ContactSubmissionController::class, 'toggleRead'])->name('contacts.toggle-read');
         Route::post('contacts/{contact}/reply', [ContactSubmissionController::class, 'reply'])->name('contacts.reply');
     });
     Route::delete('contacts/{contact}', [ContactSubmissionController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:contact.delete')
         ->name('contacts.destroy');
 
     // Audit Log
@@ -373,19 +373,23 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('comments.destroy');
 
     // Newsletter subscribers
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:newsletter.view')->group(function () {
         Route::get('newsletter', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('newsletter.index');
         Route::get('newsletter/export', [App\Http\Controllers\Admin\NewsletterController::class, 'export'])->name('newsletter.export');
-        // Campaign blast routes
+        // Campaign view routes
         Route::get('newsletter/campaigns', [NewsletterCampaignController::class, 'index'])->name('newsletter.campaigns.index');
+        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
+    });
+    Route::middleware('check.permission:newsletter.create')->group(function () {
         Route::get('newsletter/campaigns/create', [NewsletterCampaignController::class, 'create'])->name('newsletter.campaigns.create');
         Route::post('newsletter/campaigns', [NewsletterCampaignController::class, 'store'])->name('newsletter.campaigns.store');
-        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
         Route::post('newsletter/campaigns/{campaign}/send', [NewsletterCampaignController::class, 'send'])->name('newsletter.campaigns.send')->middleware('throttle:3,1');
-        Route::delete('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'destroy'])->name('newsletter.campaigns.destroy');
     });
+    Route::delete('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'destroy'])
+        ->middleware('check.permission:newsletter.delete')
+        ->name('newsletter.campaigns.destroy');
     Route::delete('newsletter/{subscriber}', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:newsletter.delete')
         ->name('newsletter.destroy');
 
     // Export/Import Tools
