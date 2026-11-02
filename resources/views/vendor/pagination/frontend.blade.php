@@ -60,13 +60,6 @@
 
     </div>
 
-    {{-- Info text --}}
-    <p class="text-xs text-slate-400">
-        Halaman <span class="font-semibold text-slate-600">{{ $paginator->currentPage() }}</span>
-        dari <span class="font-semibold text-slate-600">{{ $paginator->lastPage() }}</span>
-        &nbsp;·&nbsp;
-        <span class="font-semibold text-slate-600">{{ $paginator->total() }}</span> artikel
-    </p>
 
 </nav>
 @endif
