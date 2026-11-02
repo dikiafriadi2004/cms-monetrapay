@@ -39,15 +39,18 @@
             $fav16  = $favDir . '/favicon-16.png';
             $fav32  = $favDir . '/favicon-32.png';
             $fav180 = $favDir . '/favicon-180.png';
+            $fav192 = $favDir . '/favicon-192.png';
             $has16  = Storage::disk('public')->exists($fav16);
             $has32  = Storage::disk('public')->exists($fav32);
             $has180 = Storage::disk('public')->exists($fav180);
+            $has192 = Storage::disk('public')->exists($fav192);
         }
     @endphp
     @if(!empty($faviconBase))
         @if($has32)<link rel="icon" type="image/png" sizes="32x32" href="{{ Storage::url($fav32) }}">@endif
         @if($has16)<link rel="icon" type="image/png" sizes="16x16" href="{{ Storage::url($fav16) }}">@endif
         @if($has180)<link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($fav180) }}">@endif
+        @if($has192)<link rel="icon" type="image/png" sizes="192x192" href="{{ Storage::url($fav192) }}">@endif
         @if(!$has32 && !$has16)<link rel="icon" type="image/png" href="{{ Storage::url($faviconBase) }}">@endif
     @else
         {{-- SVG favicon sebagai fallback — ringan dan selalu muncul --}}

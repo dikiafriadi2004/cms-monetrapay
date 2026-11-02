@@ -263,7 +263,6 @@ class SettingController extends Controller
 
         try {
             $manager = new ImageManager(new Driver());
-            $image   = $manager->read($file->path());
 
             $sizes = [
                 'favicon/favicon-16.png'  => 16,
