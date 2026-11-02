@@ -9,6 +9,8 @@ use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class SettingController extends Controller
 {
@@ -211,9 +213,9 @@ class SettingController extends Controller
             $oldFavicon = Setting::get('favicon', 'general');
             if ($oldFavicon) {
                 Storage::disk('public')->delete($oldFavicon);
-                // Also delete old resized version
-                Storage::disk('public')->delete('settings/favicon-32.png');
             }
+            // Delete the entire favicon/ directory so no stale files remain
+            Storage::disk('public')->deleteDirectory('favicon');
             $validated['favicon'] = $this->resizeFavicon($request->file('favicon'));
         }
 
@@ -246,26 +248,59 @@ class SettingController extends Controller
     }
 
     /**
-     * Resize an uploaded favicon to 32×32 PNG using GD.
-     * Falls back to a plain store() when GD is unavailable or the mime type is unsupported.
+     * Resize an uploaded favicon to multiple sizes using Intervention Image v3.
+     * Generates 16×16, 32×32, 180×180, 192×192 variants in storage/app/public/favicon/.
+     * Falls back to GD native 32×32 into settings/ if Intervention Image fails.
+     *
+     * Returns the path of the 32×32 variant (used as the DB reference value).
      */
     private function resizeFavicon(\Illuminate\Http\UploadedFile $file): string
     {
+        $faviconDir = Storage::disk('public')->path('favicon');
+        if (!is_dir($faviconDir)) {
+            mkdir($faviconDir, 0755, true);
+        }
+
+        try {
+            $manager = new ImageManager(new Driver());
+            $image   = $manager->read($file->path());
+
+            $sizes = [
+                'favicon/favicon-16.png'  => 16,
+                'favicon/favicon-32.png'  => 32,
+                'favicon/favicon-180.png' => 180,
+                'favicon/favicon-192.png' => 192,
+            ];
+
+            foreach ($sizes as $relativePath => $size) {
+                $outputPath = Storage::disk('public')->path($relativePath);
+                // Clone so original is not mutated between iterations
+                $manager->read($file->path())
+                    ->cover($size, $size)
+                    ->toPng()
+                    ->save($outputPath);
+            }
+
+            return 'favicon/favicon-32.png';
+        } catch (\Throwable $e) {
+            // Intervention Image failed — fall back to GD native 32×32
+        }
+
+        // ── GD fallback ───────────────────────────────────────────────────────
         if (!extension_loaded('gd')) {
             return $file->store('settings', 'public');
         }
 
         try {
             $mime = $file->getMimeType();
-            $src = match(true) {
+            $src  = match (true) {
                 str_contains($mime, 'png')  => imagecreatefrompng($file->path()),
                 str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->path()),
                 str_contains($mime, 'gif')  => imagecreatefromgif($file->path()),
                 str_contains($mime, 'webp') => imagecreatefromwebp($file->path()),
-                default => null,
+                default                     => null,
             };
         } catch (\Throwable $e) {
-            // GD failed to parse file (corrupted, wrong mime, etc.) — store as-is
             return $file->store('settings', 'public');
         }
 
@@ -282,7 +317,7 @@ class SettingController extends Controller
 
             imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
 
-            $path = 'settings/favicon-32.png';
+            $path     = 'settings/favicon-32.png';
             $fullPath = Storage::disk('public')->path($path);
 
             if (!is_dir(dirname($fullPath))) {
@@ -291,7 +326,6 @@ class SettingController extends Controller
 
             imagepng($dst, $fullPath, 9);
         } catch (\Throwable $e) {
-            // Resize failed — clean up and store original
             return $file->store('settings', 'public');
         } finally {
             if (isset($src) && is_resource($src)) imagedestroy($src);

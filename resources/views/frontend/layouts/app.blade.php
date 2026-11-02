@@ -32,10 +32,23 @@
     @elseif(file_exists(public_path('assets/images/logo.png')))
     <link rel="preload" href="/assets/images/logo.png" as="image">
     @endif
-    @php $faviconSetting = \App\Models\Setting::get('favicon', 'general'); @endphp
-    @if($faviconSetting)
-        <link rel="icon" href="{{ Storage::url($faviconSetting) }}" type="image/png">
-        <link rel="apple-touch-icon" href="{{ Storage::url($faviconSetting) }}">
+    @php
+        $faviconBase = \App\Models\Setting::get('favicon', 'general');
+        if ($faviconBase) {
+            $favDir = dirname($faviconBase);
+            $fav16  = $favDir . '/favicon-16.png';
+            $fav32  = $favDir . '/favicon-32.png';
+            $fav180 = $favDir . '/favicon-180.png';
+            $has16  = Storage::disk('public')->exists($fav16);
+            $has32  = Storage::disk('public')->exists($fav32);
+            $has180 = Storage::disk('public')->exists($fav180);
+        }
+    @endphp
+    @if(!empty($faviconBase))
+        @if($has32)<link rel="icon" type="image/png" sizes="32x32" href="{{ Storage::url($fav32) }}">@endif
+        @if($has16)<link rel="icon" type="image/png" sizes="16x16" href="{{ Storage::url($fav16) }}">@endif
+        @if($has180)<link rel="apple-touch-icon" sizes="180x180" href="{{ Storage::url($fav180) }}">@endif
+        @if(!$has32 && !$has16)<link rel="icon" type="image/png" href="{{ Storage::url($faviconBase) }}">@endif
     @else
         {{-- SVG favicon sebagai fallback — ringan dan selalu muncul --}}
         <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
