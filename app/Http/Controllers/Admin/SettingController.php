@@ -304,8 +304,13 @@ class SettingController extends Controller
 
         // ── GD native fallback ────────────────────────────────────────────────
         if (! extension_loaded('gd')) {
-            Log::error('resizeFavicon: GD extension not loaded, storing original file.');
-            return $file->store('settings', 'public');
+            Log::error('resizeFavicon: GD extension not loaded, storing original file in favicon/.');
+            // Store original in favicon/ so layout can find it
+            $originalPath = 'favicon/' . $file->hashName();
+            $file->storeAs('favicon', $file->hashName(), 'public');
+            // Also copy to favicon-32.png so layout finds it
+            copy($file->path(), Storage::disk('public')->path('favicon/favicon-32.png'));
+            return 'favicon/favicon-32.png';
         }
 
         try {
@@ -320,12 +325,15 @@ class SettingController extends Controller
         } catch (\Throwable $e) {
             Log::error('resizeFavicon: GD failed to open source image: ' . $e->getMessage()
                 . ' at ' . $e->getFile() . ':' . $e->getLine());
-            return $file->store('settings', 'public');
+            // Store original in favicon/ as last resort
+            copy($file->path(), Storage::disk('public')->path('favicon/favicon-32.png'));
+            return 'favicon/favicon-32.png';
         }
 
         if (! $src) {
             Log::error('resizeFavicon: GD could not create image resource (unsupported mime: ' . $file->getMimeType() . ').');
-            return $file->store('settings', 'public');
+            copy($file->path(), Storage::disk('public')->path('favicon/favicon-32.png'));
+            return 'favicon/favicon-32.png';
         }
 
         $srcW = imagesx($src);
@@ -363,7 +371,9 @@ class SettingController extends Controller
             Log::error('resizeFavicon: GD resize failed: ' . $e->getMessage()
                 . ' at ' . $e->getFile() . ':' . $e->getLine());
             imagedestroy($src);
-            return $file->store('settings', 'public');
+            // Last resort — store original as favicon-32
+            copy($file->path(), Storage::disk('public')->path('favicon/favicon-32.png'));
+            return 'favicon/favicon-32.png';
         }
 
         imagedestroy($src);
