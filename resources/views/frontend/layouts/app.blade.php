@@ -45,7 +45,10 @@
         }
     @endphp
     @if(!empty($faviconBase))
-        @php $favCacheBust = '?v=' . filemtime(Storage::disk('public')->path($fav32 ?? $faviconBase)); @endphp
+        @php
+            $favCacheBustPath = Storage::disk('public')->path($fav32 ?? $faviconBase);
+            $favCacheBust = '?v=' . (file_exists($favCacheBustPath) ? filemtime($favCacheBustPath) : time());
+        @endphp
         <link rel="shortcut icon" href="{{ Storage::url($fav32 ?? $faviconBase) . $favCacheBust }}">
         @if($has32)<link rel="icon" type="image/png" sizes="32x32" href="{{ Storage::url($fav32) . $favCacheBust }}">@endif
         @if($has16)<link rel="icon" type="image/png" sizes="16x16" href="{{ Storage::url($fav16) . $favCacheBust }}">@endif
