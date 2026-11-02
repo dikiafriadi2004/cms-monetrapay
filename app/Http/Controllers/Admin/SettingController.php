@@ -321,7 +321,7 @@ class SettingController extends Controller
 
             imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
 
-            $path     = 'settings/favicon-32.png';
+            $path     = 'favicon/favicon-32.png';
             $fullPath = Storage::disk('public')->path($path);
 
             if (!is_dir(dirname($fullPath))) {
@@ -333,7 +333,7 @@ class SettingController extends Controller
             // Also copy to public/favicon.ico
             copy($fullPath, public_path('favicon.ico'));
         } catch (\Throwable $e) {
-            return $file->store('settings', 'public');
+            return $file->store('favicon', 'public');
         } finally {
             if (isset($src) && is_resource($src)) imagedestroy($src);
             if (isset($dst) && is_resource($dst)) imagedestroy($dst);

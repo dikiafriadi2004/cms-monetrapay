@@ -33,11 +33,11 @@
     @php
         $faviconBase = \App\Models\Setting::get('favicon', 'general');
         if ($faviconBase) {
-            $favDir = dirname($faviconBase);
-            $fav16  = $favDir . '/favicon-16.png';
-            $fav32  = $favDir . '/favicon-32.png';
-            $fav180 = $favDir . '/favicon-180.png';
-            $fav192 = $favDir . '/favicon-192.png';
+            // Resize files always saved to favicon/ directory
+            $fav16  = 'favicon/favicon-16.png';
+            $fav32  = 'favicon/favicon-32.png';
+            $fav180 = 'favicon/favicon-180.png';
+            $fav192 = 'favicon/favicon-192.png';
             $has16  = Storage::disk('public')->exists($fav16);
             $has32  = Storage::disk('public')->exists($fav32);
             $has180 = Storage::disk('public')->exists($fav180);
