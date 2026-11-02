@@ -376,14 +376,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::middleware('check.permission:newsletter.view')->group(function () {
         Route::get('newsletter', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('newsletter.index');
         Route::get('newsletter/export', [App\Http\Controllers\Admin\NewsletterController::class, 'export'])->name('newsletter.export');
-        // Campaign view routes
         Route::get('newsletter/campaigns', [NewsletterCampaignController::class, 'index'])->name('newsletter.campaigns.index');
-        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
     });
     Route::middleware('check.permission:newsletter.create')->group(function () {
+        // 'create' MUST be registered before {campaign} wildcard
         Route::get('newsletter/campaigns/create', [NewsletterCampaignController::class, 'create'])->name('newsletter.campaigns.create');
         Route::post('newsletter/campaigns', [NewsletterCampaignController::class, 'store'])->name('newsletter.campaigns.store');
         Route::post('newsletter/campaigns/{campaign}/send', [NewsletterCampaignController::class, 'send'])->name('newsletter.campaigns.send')->middleware('throttle:3,1');
+    });
+    Route::middleware('check.permission:newsletter.view')->group(function () {
+        // {campaign} wildcard AFTER static 'create' route
+        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
     });
     Route::delete('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'destroy'])
         ->middleware('check.permission:newsletter.delete')
