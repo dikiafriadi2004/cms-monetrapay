@@ -17,7 +17,7 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="{{ url('/') }}" class="font-black text-2xl" style="font-family:'Merriweather',Georgia,serif;color:var(--theme-primary,#1A5C38)">
             @if($logo) <img src="{{ Storage::url($logo) }}" class="h-12 w-auto" alt="{{ $siteName }}">
-            @else {{ $siteName ?? 'MonetraPay' }} @endif
+            @else {{ $siteName ?? config('app.name') }} @endif
         </a>
         @if(!empty($ctaText))
         <a href="{{ $ctaUrl }}" class="hidden lg:inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-white transition-all"

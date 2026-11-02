@@ -4,7 +4,7 @@
 
 @section('seo')
 @php
-    $catTitle = $category->name . ' - ' . ($siteName ?? 'MonetraPay');
+    $catTitle = $category->name . ' - ' . ($siteName ?? config('app.name'));
     $catDesc = $category->description ?? 'Artikel dalam kategori ' . $category->name;
     $catUrl = route('category.show', $category->slug);
 @endphp
@@ -15,7 +15,7 @@
 <meta property="og:description" content="{{ $catDesc }}">
 <meta property="og:url" content="{{ $catUrl }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $catTitle }}">
 <meta name="twitter:description" content="{{ $catDesc }}">

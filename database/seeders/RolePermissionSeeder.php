@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -64,13 +63,10 @@ class RolePermissionSeeder extends Seeder
         $authorRole = Role::firstOrCreate(['name' => 'Author', 'guard_name' => 'web']);
         $authorRole->syncPermissions($authorPermissions);
 
-        $adminEmail    = env('ADMIN_EMAIL',    'admin@monetrapay.com');
-        $adminPassword = env('ADMIN_PASSWORD', 'password');
-        $adminName     = env('ADMIN_NAME',     'Super Admin');
-
-        if (app()->environment('production') && $adminPassword === 'password') {
-            Log::warning('⚠️  Menggunakan password default "password" di production! Ganti segera via ADMIN_PASSWORD di .env');
-        }
+        // Kredensial super admin pertama — hardcoded di seeder, tidak perlu di .env.
+        $adminEmail    = 'admin@monetrapay.co.id';
+        $adminPassword = '20041992';
+        $adminName     = 'Diki Afriadi';
 
         $superAdmin = User::firstOrCreate(
             ['email' => $adminEmail],

@@ -18,7 +18,7 @@
 <meta property="og:description" content="{{ $pageDesc }}">
 <meta property="og:url" content="{{ $pageCanonical }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 @if($pageImage)
 <meta property="og:image" content="{{ $pageImage }}">
 <meta name="twitter:image" content="{{ $pageImage }}">

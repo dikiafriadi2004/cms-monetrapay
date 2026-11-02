@@ -8,7 +8,7 @@
         <label for="copyright_text" class="block text-xs font-semibold text-slate-700 mb-1.5">Teks Copyright</label>
         <input type="text" name="copyright_text" id="copyright_text"
                value="{{ old('copyright_text', $settings['copyright_text'] ?? '') }}"
-               maxlength="255" placeholder="© 2024 MonetraPay. All rights reserved.">
+               maxlength="255" placeholder="© 2024 Nama Brand. All rights reserved.">
         <p class="mt-1 text-[11px] text-slate-500">Maksimal 255 karakter</p>
         @error('copyright_text') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
     </div>

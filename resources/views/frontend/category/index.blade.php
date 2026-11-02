@@ -4,8 +4,8 @@
 
 @section('seo')
 @php
-    $catsTitle = 'Kategori - ' . ($siteName ?? 'MonetraPay');
-    $catsDesc = 'Jelajahi semua kategori artikel di MonetraPay.';
+    $catsTitle = 'Kategori - ' . ($siteName ?? config('app.name'));
+    $catsDesc = 'Jelajahi semua kategori artikel di sini.';
     $catsUrl = route('categories.index');
 @endphp
 <title>{{ $catsTitle }}</title>
@@ -15,7 +15,7 @@
 <meta property="og:description" content="{{ $catsDesc }}">
 <meta property="og:url" content="{{ $catsUrl }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 @endsection
 
 @section('content')

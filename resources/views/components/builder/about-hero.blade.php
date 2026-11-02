@@ -1,6 +1,6 @@
 @php
     $title       = $content['title']       ?? 'Membuat pembayaran digital terasa <span class="text-primary">mudah untuk semua orang.</span>';
-    $subtitle    = $content['subtitle']    ?? 'MonetraPay hadir untuk mempermudah masyarakat Indonesia dalam bertransaksi digital. Kami percaya bahwa layanan keuangan digital seharusnya dapat diakses oleh siapa saja, di mana saja.';
+    $subtitle    = $content['subtitle']    ?? 'Kami hadir untuk memudahkan transaksi digital Anda, kapan saja dan di mana saja.';
     $breadcrumb  = $content['breadcrumb']  ?? true;
     $stats = $content['stats'] ?? [
         ['value'=>'100K+','label'=>'Pengguna Aktif'],

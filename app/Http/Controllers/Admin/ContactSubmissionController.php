@@ -96,7 +96,7 @@ class ContactSubmissionController extends Controller
                     'adminName' => auth()->user()->name,
                 ],
                 function ($mail) use ($contact) {
-                    $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+                    $siteName = Setting::get('site_name', 'general') ?? config('app.name');
                     $mail->to($contact->email, $contact->name)
                         ->subject('Re: Pendaftaran Anda di '.$siteName)
                         ->replyTo(

@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
 
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             $url = url(route('password.reset', ['token' => $token, 'email' => $notifiable->email], false));
-            $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+            $siteName = Setting::get('site_name', 'general') ?? config('app.name');
             app(MailConfigService::class)->apply();
 
             return (new MailMessage)
@@ -103,17 +103,17 @@ class AppServiceProvider extends ServiceProvider
         View::composer('admin.layouts.app', NotificationComposer::class);
 
         // Globally share brand identity (site_name, logo, favicon) from CMS settings
-        // so every view — including child pages that @extend the layout — can render
-        // the configured brand instead of a hardcoded fallback. Safe on fresh install
-        // (when the settings table does not exist yet) via try/catch.
+        // for views NOT covered by FrontendComposer (admin, auth, error pages).
+        // FrontendComposer handles frontend views and already assigns siteName, logo, favicon.
+        // View::share runs first; FrontendComposer overwrites for frontend views — no conflict.
         try {
             $siteName = Setting::get('site_name', 'general') ?? config('app.name');
-            $logo = Setting::get('logo', 'general');
-            $favicon = Setting::get('favicon', 'general');
+            $logo     = Setting::get('logo', 'general');
+            $favicon  = Setting::get('favicon', 'general');
         } catch (\Throwable $e) {
             $siteName = config('app.name');
-            $logo = null;
-            $favicon = null;
+            $logo     = null;
+            $favicon  = null;
         }
         View::share(compact('siteName', 'logo', 'favicon'));
     }

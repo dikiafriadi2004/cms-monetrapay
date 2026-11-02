@@ -14,7 +14,7 @@
     <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <a href="{{ url('/') }}" class="font-black text-2xl" style="font-family:'Playfair Display',Georgia,serif;color:#1a1a1a">
             @if($logo) <img src="{{ Storage::url($logo) }}" class="h-10 w-auto" alt="{{ $siteName }}">
-            @else {{ $siteName ?? 'MonetraPay' }} @endif
+            @else {{ $siteName ?? config('app.name') }} @endif
         </a>
         <button @click="mobileMenuOpen=true" class="lg:hidden p-2" style="color:#1a1a1a">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>

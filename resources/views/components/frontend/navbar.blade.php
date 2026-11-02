@@ -1,4 +1,4 @@
-@props(['menuItems' => [], 'siteName' => 'MonetraPay'])
+@props(['menuItems' => [], 'siteName' => ''])
 
 <nav aria-label="Navigasi utama" x-data="{ mobileOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

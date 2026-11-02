@@ -13,7 +13,7 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div>
-                    <p class="font-black text-xl mb-2" style="font-family:'Raleway',sans-serif;color:var(--theme-primary,#FF5722)">{{ $siteName ?? 'MonetraPay' }}</p>
+                    <p class="font-black text-xl mb-2" style="font-family:'Raleway',sans-serif;color:var(--theme-primary,#FF5722)">{{ $siteName ?? config('app.name') }}</p>
                     <p class="text-sm" style="color:rgba(255,255,255,0.4)">{{ $footerSettings['tagline'] ?? '' }}</p>
                 </div>
                 <div>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <p class="text-xs text-center" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:1rem;color:rgba(255,255,255,0.2)">
-                {{ $footerSettings['copyright_text'] ?? '© '.date('Y').' '.($siteName??'MonetraPay') }}
+                {{ $footerSettings['copyright_text'] ?? '© '.date('Y').' '.(??config('app.name')) }}
             </p>
         </div>
     </div>

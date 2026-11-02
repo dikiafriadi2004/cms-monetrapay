@@ -1,11 +1,11 @@
 ﻿@extends('frontend.layouts.app')
 
-@section('title', 'Blog - ' . ($siteName ?? 'MonetraPay'))
+@section('title', 'Blog - ' . ($siteName ?? config('app.name')))
 
 @section('seo')
 @php
-    $blogTitle = 'Blog - ' . ($siteName ?? 'MonetraPay');
-    $blogDesc = 'Baca artikel terbaru seputar pulsa, PPOB, top-up game, dan e-money di blog MonetraPay.';
+    $blogTitle = 'Blog - ' . ($siteName ?? config('app.name'));
+    $blogDesc = 'Baca artikel terbaru di blog kami.';
     $blogUrl = url('/blog');
 @endphp
 <meta name="description" content="{{ $blogDesc }}">
@@ -14,7 +14,7 @@
 <meta property="og:description" content="{{ $blogDesc }}">
 <meta property="og:url" content="{{ $blogUrl }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $blogTitle }}">
 <meta name="twitter:description" content="{{ $blogDesc }}">

@@ -108,7 +108,7 @@
                 <label for="mail_from_name" class="block text-xs font-semibold text-slate-700 mb-1.5">From Name</label>
                 <input type="text" name="mail_from_name" id="mail_from_name"
                        value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}"
-                       maxlength="100" placeholder="MonetraPay">
+                       maxlength="100" placeholder="Nama Brand">
                 @error('mail_from_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>

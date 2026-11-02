@@ -25,7 +25,7 @@ class ContactNotification extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
 
         $envelope = new Envelope(
             from: new Address(

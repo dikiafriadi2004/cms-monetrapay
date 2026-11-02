@@ -13,7 +13,7 @@
         <div class="flex items-center justify-between h-14 gap-4">
             <a href="{{ url('/') }}" class="font-black text-xl shrink-0" style="color:var(--theme-primary,#27AE60);font-family:'Roboto',sans-serif">
                 @if($logo) <img src="{{ Storage::url($logo) }}" class="h-8 w-auto" alt="{{ $siteName }}">
-                @else {{ $siteName ?? 'MonetraPay' }} @endif
+                @else {{ $siteName ?? config('app.name') }} @endif
             </a>
             {{-- Tab-style nav --}}
             <nav class="hidden lg:flex items-center gap-0 border rounded-lg overflow-hidden" style="border-color:#e5e7eb">

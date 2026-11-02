@@ -1,10 +1,10 @@
 ﻿@extends('frontend.layouts.app')
 
-@section('title', ($siteName ?? 'MonetraPay') . ' - Pulsa, PPOB, Top-Up Game & E-Money')
+@section('title', ($siteName ?? config('app.name')) . ' - Pulsa, PPOB, Top-Up Game & E-Money')
 
 @section('seo')
 @php
-    $homeTitle = ($siteName ?? 'MonetraPay') . ' - Pulsa, PPOB, Top-Up Game & E-Money';
+    $homeTitle = ($siteName ?? config('app.name')) . ' - Pulsa, PPOB, Top-Up Game & E-Money';
     $homeDesc = $homepage['hero_subtitle'] ?? \App\Models\Setting::get('meta_description_default', 'seo') ?? 'MonetraPay - Aplikasi penjualan pulsa, PPOB, top-up game, dan e-money terpercaya.';
     $homeUrl = url('/');
     $homeImage = !empty($homepage['hero_image'])
@@ -18,7 +18,7 @@
 <meta property="og:description" content="{{ $homeDesc }}">
 <meta property="og:url" content="{{ $homeUrl }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 @if($homeImage)
 <meta property="og:image" content="{{ $homeImage }}">
 <meta name="twitter:image" content="{{ $homeImage }}">
@@ -30,7 +30,7 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'WebSite',
-    'name' => $siteName ?? 'MonetraPay',
+    'name' => $siteName ?? config('app.name'),
     'url' => $homeUrl,
     'description' => $homeDesc,
     'potentialAction' => [

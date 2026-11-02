@@ -16,7 +16,7 @@ class FeedController extends Controller
      */
     public function rss(): Response
     {
-        $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
         $description = Setting::get('meta_description_default', 'seo')
             ?? Setting::get('tagline', 'general')
             ?? 'Latest articles from '.$siteName;

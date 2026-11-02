@@ -141,7 +141,7 @@ function showToast(msg, type) {
 }
 
 // -----------------------------------------------
-// MonetraPay custom blocks
+// Custom page builder blocks
 // -----------------------------------------------
 @php $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name'); @endphp
 var monetraBlocks = [
@@ -150,7 +150,7 @@ var monetraBlocks = [
         label: 'Hero Section',
         category: '{{ $siteName }}',
         media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-        content: '<section style="background:linear-gradient(135deg,#0D9488,#0a7a70);padding:80px 20px;text-align:center;color:#fff;"><h1 style="font-size:3rem;font-weight:800;margin-bottom:16px;line-height:1.1;">Selamat Datang di MonetraPay</h1><p style="font-size:1.25rem;opacity:.9;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto;">Solusi pembayaran digital yang aman, cepat, dan terpercaya untuk bisnis Anda.</p><div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;"><a href="#" style="background:#F59E0B;color:#000;padding:14px 32px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;">Mulai Sekarang</a><a href="#" style="background:rgba(255,255,255,.15);color:#fff;padding:14px 32px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;border:2px solid rgba(255,255,255,.4);">Pelajari Lebih</a></div></section>',
+        content: '<section style="background:linear-gradient(135deg,#0D9488,#0a7a70);padding:80px 20px;text-align:center;color:#fff;"><h1 style="font-size:3rem;font-weight:800;margin-bottom:16px;line-height:1.1;">Selamat Datang di {{ $siteName }}</h1><p style="font-size:1.25rem;opacity:.9;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto;">Solusi pembayaran digital yang aman, cepat, dan terpercaya untuk bisnis Anda.</p><div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;"><a href="#" style="background:#F59E0B;color:#000;padding:14px 32px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;">Mulai Sekarang</a><a href="#" style="background:rgba(255,255,255,.15);color:#fff;padding:14px 32px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;border:2px solid rgba(255,255,255,.4);">Pelajari Lebih</a></div></section>',
     },
     {
         id: 'mp-feature-cards',
@@ -171,14 +171,14 @@ var monetraBlocks = [
         label: 'Testimonial',
         category: '{{ $siteName }}',
         media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-        content: '<section style="padding:60px 20px;background:#fff;"><h2 style="text-align:center;font-size:2rem;font-weight:700;margin-bottom:48px;color:#1e293b;">Kata Mereka</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:900px;margin:0 auto;"><div style="background:#f8fafc;border-radius:12px;padding:32px;border-left:4px solid #0D9488;"><p style="color:#475569;line-height:1.7;margin-bottom:20px;font-style:italic;">MonetraPay benar-benar mengubah cara kami mengelola pembayaran. Prosesnya cepat dan mudah!</p><div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;background:#0D9488;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;">A</div><div><div style="font-weight:700;color:#1e293b;font-size:.9rem;">Ahmad Fauzi</div><div style="color:#64748b;font-size:.8rem;">CEO, TechStart Indonesia</div></div></div></div><div style="background:#f8fafc;border-radius:12px;padding:32px;border-left:4px solid #F59E0B;"><p style="color:#475569;line-height:1.7;margin-bottom:20px;font-style:italic;">Laporan keuangan real-time dari MonetraPay sangat membantu pengambilan keputusan bisnis kami.</p><div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;background:#F59E0B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;flex-shrink:0;">S</div><div><div style="font-weight:700;color:#1e293b;font-size:.9rem;">Sari Dewi</div><div style="color:#64748b;font-size:.8rem;">CFO, Retail Modern</div></div></div></div></div></section>',
+        content: '<section style="padding:60px 20px;background:#fff;"><h2 style="text-align:center;font-size:2rem;font-weight:700;margin-bottom:48px;color:#1e293b;">Kata Mereka</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:900px;margin:0 auto;"><div style="background:#f8fafc;border-radius:12px;padding:32px;border-left:4px solid #0D9488;"><p style="color:#475569;line-height:1.7;margin-bottom:20px;font-style:italic;">{{ $siteName }} benar-benar mengubah cara kami mengelola pembayaran. Prosesnya cepat dan mudah!</p><div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;background:#0D9488;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;">A</div><div><div style="font-weight:700;color:#1e293b;font-size:.9rem;">Ahmad Fauzi</div><div style="color:#64748b;font-size:.8rem;">CEO, TechStart Indonesia</div></div></div></div><div style="background:#f8fafc;border-radius:12px;padding:32px;border-left:4px solid #F59E0B;"><p style="color:#475569;line-height:1.7;margin-bottom:20px;font-style:italic;">Laporan keuangan real-time dari {{ $siteName }} sangat membantu pengambilan keputusan bisnis kami.</p><div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;background:#F59E0B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;flex-shrink:0;">S</div><div><div style="font-weight:700;color:#1e293b;font-size:.9rem;">Sari Dewi</div><div style="color:#64748b;font-size:.8rem;">CFO, Retail Modern</div></div></div></div></div></section>',
     },
     {
         id: 'mp-cta',
         label: 'CTA Section',
         category: '{{ $siteName }}',
         media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-        content: '<section style="background:linear-gradient(135deg,#0D9488,#0a7a70);padding:64px 20px;text-align:center;color:#fff;"><h2 style="font-size:2.2rem;font-weight:800;margin-bottom:16px;">Siap Mulai Dengan MonetraPay?</h2><p style="font-size:1.1rem;opacity:.9;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;">Bergabung bersama ribuan bisnis yang sudah mempercayai MonetraPay.</p><a href="#" style="background:#F59E0B;color:#000;padding:14px 40px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;display:inline-block;">Daftar Gratis Sekarang</a></section>',
+        content: '<section style="background:linear-gradient(135deg,#0D9488,#0a7a70);padding:64px 20px;text-align:center;color:#fff;"><h2 style="font-size:2.2rem;font-weight:800;margin-bottom:16px;">Siap Mulai Dengan {{ $siteName }}?</h2><p style="font-size:1.1rem;opacity:.9;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;">Bergabung bersama ribuan bisnis yang sudah mempercayai {{ $siteName }}.</p><a href="#" style="background:#F59E0B;color:#000;padding:14px 40px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;display:inline-block;">Daftar Gratis Sekarang</a></section>',
     },
     {
         id: 'mp-2col',
@@ -281,7 +281,7 @@ var editor = grapesjs.init({
 });
 
 // -----------------------------------------------
-// Add MonetraPay custom blocks
+// Add custom page builder blocks
 // -----------------------------------------------
 monetraBlocks.forEach(function(block) {
     editor.BlockManager.add(block.id, {

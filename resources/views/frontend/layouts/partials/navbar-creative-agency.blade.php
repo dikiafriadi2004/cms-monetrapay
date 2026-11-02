@@ -6,7 +6,7 @@
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="font-black text-xl shrink-0" style="font-family:'Montserrat',sans-serif;color:var(--theme-primary,#FF6B6B)">
                 @if($logo) <img src="{{ Storage::url($logo) }}" class="h-10 w-auto" alt="{{ $siteName }}">
-                @else {{ $siteName ?? 'MonetraPay' }} @endif
+                @else {{ $siteName ?? config('app.name') }} @endif
             </a>
             {{-- Pill nav --}}
             <nav class="hidden lg:flex items-center gap-1">
@@ -35,7 +35,7 @@
         <div class="absolute inset-0 bg-black/50" @click="mobileMenuOpen=false"></div>
         <div class="relative bg-white w-72 h-full p-6 space-y-2 overflow-y-auto">
             <button @click="mobileMenuOpen=false" class="absolute top-4 right-4 p-2" style="color:var(--theme-primary,#FF6B6B)">✕</button>
-            <div class="font-black text-xl mb-6" style="font-family:'Montserrat',sans-serif;color:var(--theme-primary,#FF6B6B)">{{ $siteName ?? 'MonetraPay' }}</div>
+            <div class="font-black text-xl mb-6" style="font-family:'Montserrat',sans-serif;color:var(--theme-primary,#FF6B6B)">{{ $siteName ?? config('app.name') }}</div>
             @foreach($primaryMenu as $item)
             <a href="{{ $item['url'] }}" @click="mobileMenuOpen=false" class="block px-4 py-2.5 rounded-2xl text-sm font-bold" style="color:#374151">{{ $item['label'] }}</a>
             @endforeach

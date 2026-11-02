@@ -4,7 +4,7 @@
 
 @section('seo')
 <meta name="robots" content="noindex,follow">
-<title>{{ $query ? 'Pencarian: ' . $query : 'Pencarian' }} - {{ $siteName ?? 'MonetraPay' }}</title>
+<title>{{ $query ? 'Pencarian: ' . $query : 'Pencarian' }} - {{ $siteName ?? config('app.name') }}</title>
 <link rel="canonical" href="{{ url('/search') }}">
 @endsection
 

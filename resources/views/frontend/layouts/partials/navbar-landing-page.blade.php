@@ -9,7 +9,7 @@
                     <img src="{{ Storage::url($logo) }}" class="h-9 w-auto" alt="{{ $siteName }}"
                          :style="scrolled ? '' : 'filter:brightness(10) saturate(0)'">
                 @else
-                    <span :style="scrolled ? 'color:var(--theme-primary,#FF5722)' : 'color:white'">{{ $siteName ?? 'MonetraPay' }}</span>
+                    <span> ?? config('app.name')</span>
                 @endif
             </a>
             <nav class="hidden lg:flex items-center gap-1">

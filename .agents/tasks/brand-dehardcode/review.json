@@ -1,0 +1,9 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    "View::share + FrontendComposer double-assign — AppServiceProvider::boot() melakukan View::share(compact('siteName', 'logo', 'favicon')) untuk setiap request, sementara FrontendComposer::compose() juga assign variabel yang sama ke frontend views. Pisahkan: gunakan View::share hanya untuk views yang tidak di-cover composer (admin, auth, error), atau tambahkan $favicon ke FrontendComposer dan hapus duplikasi.",
+    "Demo block content strings masih hardcode 'MonetraPay' — Di grapesjs.blade.php, properti content: pada block mp-hero, mp-testimonial, dan mp-cta masih mengandung teks 'MonetraPay' secara literal. Ganti dengan {{ $siteName }} yang sudah di-inject, atau minimal pakai placeholder generik.",
+    "Sisa fallback 'MonetraPay' di controllers dan email templates di luar brief — ContactSubmissionController.php:99, NewsletterCampaignController.php:83, FeedController.php:19, ContactConfirmation.php, ContactNotification.php, ContactReply.php, dan beberapa email blade views masih menggunakan string literal 'MonetraPay' sebagai default. Ganti semua dengan config('app.name')."
+  ],
+  "reviewDoc": "/Users/dikiafriadi/Desktop/Monetra/Project/cms-monetrapay/.agents/tasks/brand-dehardcode/review.md"
+}

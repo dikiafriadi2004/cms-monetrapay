@@ -1,5 +1,5 @@
 @php
-    $siteName = \App\Models\Setting::get('site_name', 'general', 'MonetraPay');
+    $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
     $adminUrl = url('/admin/contacts/' . $submission->id);
     $waNumber = preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $submission->phone));
     $siteUrl = config('app.url', 'https://monetrapay.com');

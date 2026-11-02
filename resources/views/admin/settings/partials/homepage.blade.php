@@ -107,7 +107,7 @@
                 <label for="about_title" class="block text-xs font-semibold text-slate-700 mb-1.5">Judul About</label>
                 <input type="text" name="about_title" id="about_title"
                        value="{{ old('about_title', $settings['about_title'] ?? '') }}" maxlength="255"
-                       placeholder="Tentang MonetraPay">
+                       placeholder="Tentang Kami">
                 @error('about_title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>

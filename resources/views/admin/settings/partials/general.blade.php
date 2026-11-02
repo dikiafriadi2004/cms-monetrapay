@@ -8,7 +8,7 @@
                 <label for="site_name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Website</label>
                 <input type="text" name="site_name" id="site_name"
                        value="{{ old('site_name', $settings['site_name'] ?? '') }}"
-                       maxlength="100" placeholder="MonetraPay">
+                       maxlength="100" placeholder="Nama Situs">
                 <p class="mt-1 text-[11px] text-slate-500">Maksimal 100 karakter</p>
                 @error('site_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
@@ -205,7 +205,7 @@
             <div>
                 <label for="whatsapp_text" class="block text-xs font-semibold text-slate-700 mb-1.5">Pesan Default</label>
                 <textarea name="whatsapp_text" id="whatsapp_text" rows="2" maxlength="200"
-                          placeholder="Halo, saya ingin tahu lebih lanjut...">{{ old('whatsapp_text', $settings['whatsapp_text'] ?? 'Halo, saya ingin tahu lebih lanjut tentang layanan MonetraPay') }}</textarea>
+                          placeholder="Halo, saya ingin tahu lebih lanjut...">{{ old('whatsapp_text', $settings['whatsapp_text'] ?? 'Halo, saya ingin tahu lebih lanjut tentang layanan kami') }}</textarea>
                 <p class="mt-1 text-[11px] text-slate-400">Pesan yang sudah terisi saat pelanggan klik tombol. Maks 200 karakter.</p>
                 @error('whatsapp_text') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>

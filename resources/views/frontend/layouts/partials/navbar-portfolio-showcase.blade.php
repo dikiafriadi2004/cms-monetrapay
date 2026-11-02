@@ -6,7 +6,7 @@
         <div class="flex items-center justify-between h-16">
             <a href="{{ url('/') }}" class="font-bold text-xl shrink-0" style="font-family:'Oswald',sans-serif;letter-spacing:0.08em;color:#FFD700">
                 @if($logo) <img src="{{ Storage::url($logo) }}" class="h-9 w-auto" alt="{{ $siteName }}" style="filter:brightness(1.5)">
-                @else {{ $siteName ?? 'MonetraPay' }} @endif
+                @else {{ $siteName ?? config('app.name') }} @endif
             </a>
             <nav class="hidden lg:flex items-center gap-6">
                 @foreach($primaryMenu as $item)

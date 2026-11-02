@@ -5,7 +5,7 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-14">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
                 <div class="md:col-span-2">
-                    <div class="font-bold text-xl mb-3" style="font-family:'Poppins',sans-serif;color:var(--theme-primary,#9F7AEA)">{{ $siteName ?? 'MonetraPay' }}</div>
+                    <div class="font-bold text-xl mb-3" style="font-family:'Poppins',sans-serif;color:var(--theme-primary,#9F7AEA)">{{ $siteName ?? config('app.name') }}</div>
                     <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.4)">{{ $footerSettings['tagline'] ?? '' }}</p>
                 </div>
                 <div>
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <p class="text-xs text-center" style="border-top:1px solid rgba(255,255,255,0.05);padding-top:1.5rem;color:rgba(255,255,255,0.2)">
-                {{ $footerSettings['copyright_text'] ?? '© '.date('Y').' '.($siteName??'MonetraPay') }}
+                {{ $footerSettings['copyright_text'] ?? '© '.date('Y').' '.(??config('app.name')) }}
             </p>
         </div>
     </div>

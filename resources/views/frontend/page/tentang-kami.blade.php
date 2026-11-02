@@ -1,5 +1,5 @@
 ﻿@extends('frontend.layouts.app')
-@section('title', $page->meta_title ?: 'Tentang Kami - ' . ($siteName ?? 'MonetraPay'))
+@section('title', $page->meta_title ?: 'Tentang Kami - ' . ($siteName ?? config('app.name')))
 @section('seo')
 <x-seo-meta :title="$metaTags['title']" :description="$metaTags['description']" :keywords="$metaTags['keywords']" :canonicalUrl="$canonicalUrl" :ogTags="$ogTags" :twitterTags="$twitterTags" :structuredData="$structuredData"/>
 @endsection

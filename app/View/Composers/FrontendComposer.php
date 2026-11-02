@@ -35,6 +35,9 @@ class FrontendComposer
             // Logo
             $logo = Setting::get('logo', 'general');
 
+            // Favicon
+            $favicon = Setting::get('favicon', 'general');
+
             // Footer settings
             $footerSettings = [
                 'site_name' => $siteName,
@@ -50,6 +53,7 @@ class FrontendComposer
         } catch (\Exception $e) {
             $siteName = config('app.name');
             $logo = null;
+            $favicon = null;
             $gaId = null;
             $headerMenu = [];
             $footerMenu = [];
@@ -60,6 +64,7 @@ class FrontendComposer
         $view->with(compact(
             'siteName',
             'logo',
+            'favicon',
             'gaId',
             'headerMenu',
             'footerMenu',

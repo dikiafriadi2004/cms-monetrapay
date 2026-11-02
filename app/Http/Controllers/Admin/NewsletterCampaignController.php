@@ -80,7 +80,7 @@ class NewsletterCampaignController extends Controller
             'recipients_count' => $subscribers->count(),
         ]);
 
-        $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
         $sentCount = 0;
         $failed = 0;
 

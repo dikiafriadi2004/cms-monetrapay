@@ -37,7 +37,7 @@
                 <div>
                     <label for="subject" class="block text-xs font-semibold text-slate-700 mb-1.5">Subjek Email <span class="text-red-500">*</span></label>
                     <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required maxlength="255"
-                           placeholder="Contoh: Update Terbaru dari MonetraPay - Juni 2025">
+                           placeholder="Contoh: Update Terbaru - Juni 2025">
                     @error('subject') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
