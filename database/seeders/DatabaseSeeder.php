@@ -17,9 +17,10 @@ class DatabaseSeeder extends Seeder
      * 2. SettingsSeeder        → semua konfigurasi site (nama, kontak, social, dll)
      * 3. CategorySeeder        → kategori blog
      * 4. MenuSeeder            → menu navigasi (header, footer, social)
-     * 5. PageSeeder            → halaman statis (kebijakan privasi, syarat, FAQ)
-     * 6. DefaultPagesSeeder    → halaman utama dengan page builder (kontak, layanan, tentang)
-     * 7. BlogSeeder            → artikel/blog contoh
+     * 5. PageSeeder            → halaman statis dasar
+     * 6. LegalPageSeeder       → halaman legal (FAQ, Kebijakan Privasi, Syarat & Ketentuan)
+     * 7. DefaultPagesSeeder    → halaman utama dengan page builder (kontak, layanan, tentang)
+     * 8. BlogSeeder            → artikel/blog contoh
      */
     public function run(): void
     {
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             MenuSeeder::class,
             PageSeeder::class,
+            LegalPageSeeder::class,
             DefaultPagesSeeder::class,
             BlogSeeder::class,
             AdsSeeder::class,
