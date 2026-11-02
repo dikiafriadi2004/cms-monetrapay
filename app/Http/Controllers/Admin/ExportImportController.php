@@ -328,7 +328,7 @@ class ExportImportController extends Controller
         $this->authorize('setting.edit');
 
         try {
-            $filename = $request->input('file');
+            $filename = $request->input('file') ?? $request->query('file');
             $path = 'exports/' . basename($filename);
 
             if (Storage::disk('local')->exists($path)) {

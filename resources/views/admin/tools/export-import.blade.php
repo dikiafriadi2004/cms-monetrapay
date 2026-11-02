@@ -4,7 +4,7 @@
 @section('page-title', 'Export & Import')
 
 @section('content')
-<div class="space-y-6">
+<div x-data="{ showDeleteModal: false, deleteUrl: '', deleteItemName: '' }" class="space-y-6">
 
     {{-- Statistics Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -154,14 +154,11 @@
                                 <a href="{{ route('admin.tools.export.download', ['file' => $export['name']]) }}" class="text-primary hover:text-primary-dark font-semibold text-xs">
                                     Download
                                 </a>
-                                <form method="POST" action="{{ route('admin.tools.export.delete') }}" class="inline-block" onsubmit="return confirm('Hapus file ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="file" value="{{ $export['name'] }}">
-                                    <button type="submit" class="text-red-500 hover:text-red-700 font-semibold text-xs">
-                                        Hapus
-                                    </button>
-                                </form>
+                                <button type="button"
+                                        @click="deleteUrl = '{{ route('admin.tools.export.delete') }}?file={{ urlencode($export['name']) }}'; deleteItemName = '{{ addslashes($export['name']) }}'; showDeleteModal = true"
+                                        class="text-red-500 hover:text-red-700 font-semibold text-xs">
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -172,5 +169,7 @@
     </div>
     @endif
 
+    {{-- Delete Confirmation Modal --}}
+    @include('components.admin.delete-modal')
 </div>
 @endsection
