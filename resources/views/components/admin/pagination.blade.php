@@ -9,39 +9,43 @@
         $window['last'],
     ]);
 @endphp
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-1 py-4">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 px-1">
+
     {{-- Info --}}
-    <p class="text-sm text-slate-500 order-2 sm:order-1">
+    <p class="text-xs text-slate-400 order-2 sm:order-1">
         Menampilkan
-        <span class="font-semibold text-slate-700">{{ $paginator->firstItem() }}</span>–<span class="font-semibold text-slate-700">{{ $paginator->lastItem() }}</span>
-        dari <span class="font-semibold text-slate-700">{{ $paginator->total() }}</span> data
+        <span class="font-semibold text-slate-600">{{ $paginator->firstItem() }}</span>–<span class="font-semibold text-slate-600">{{ $paginator->lastItem() }}</span>
+        dari <span class="font-semibold text-slate-600">{{ $paginator->total() }}</span> data
     </p>
 
     {{-- Buttons --}}
-    <nav class="flex items-center gap-1 order-1 sm:order-2" aria-label="Pagination">
-        {{-- Previous --}}
+    <nav class="flex items-center gap-1.5 order-1 sm:order-2" aria-label="Pagination">
+
+        {{-- Prev --}}
         @if ($paginator->onFirstPage())
-            <button disabled class="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-semibold text-slate-400 bg-slate-100 cursor-not-allowed select-none">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Prev
-            </button>
+            <span class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-200 text-slate-300 cursor-not-allowed bg-white select-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </span>
         @else
-            <a href="{{ $paginator->previousPageUrl() }}" class="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Prev
+            <a href="{{ $paginator->previousPageUrl() }}"
+               class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 bg-white hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-150 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             </a>
         @endif
 
         {{-- Pages --}}
         @foreach ($elements as $element)
             @if ($element === '...')
-                <span class="inline-flex items-center justify-center w-9 h-9 text-sm text-slate-400 select-none">···</span>
+                <span class="w-8 h-8 flex items-center justify-center text-xs text-slate-400 select-none">···</span>
             @elseif (is_array($element))
                 @foreach ($element as $page => $url)
                     @if ($page == $paginator->currentPage())
-                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-bold text-white bg-primary shadow-sm shadow-primary/30 select-none">{{ $page }}</span>
+                        <span class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white text-xs font-bold shadow-sm shadow-primary/30 ring-2 ring-primary/20 select-none">{{ $page }}</span>
                     @else
-                        <a href="{{ $url }}" class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150">{{ $page }}</a>
+                        <a href="{{ $url }}"
+                           class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 text-xs font-medium bg-white hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-150 shadow-sm">
+                            {{ $page }}
+                        </a>
                     @endif
                 @endforeach
             @endif
@@ -49,16 +53,16 @@
 
         {{-- Next --}}
         @if ($paginator->hasMorePages())
-            <a href="{{ $paginator->nextPageUrl() }}" class="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150">
-                Next
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <a href="{{ $paginator->nextPageUrl() }}"
+               class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 bg-white hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-150 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
             </a>
         @else
-            <button disabled class="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-xs font-semibold text-slate-400 bg-slate-100 cursor-not-allowed select-none">
-                Next
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </button>
+            <span class="w-8 h-8 flex items-center justify-center rounded-full border border-slate-200 text-slate-300 cursor-not-allowed bg-white select-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </span>
         @endif
+
     </nav>
 </div>
 @endif
