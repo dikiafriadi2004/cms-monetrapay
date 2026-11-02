@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Services\MailConfigService;
 use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
@@ -252,46 +253,58 @@ class SettingController extends Controller
     /**
      * Resize an uploaded favicon to multiple sizes using Intervention Image v3.
      * Generates 16×16, 32×32, 180×180, 192×192 variants in storage/app/public/favicon/.
-     * Falls back to GD native 32×32 into settings/ if Intervention Image fails.
+     * Falls back to GD native for all four sizes if Intervention Image fails.
+     * Falls back to storing the original file in settings/ if both methods fail.
      *
      * Returns the path of the 32×32 variant (used as the DB reference value).
      */
     private function resizeFavicon(\Illuminate\Http\UploadedFile $file): string
     {
         $faviconDir = Storage::disk('public')->path('favicon');
-        if (!is_dir($faviconDir)) {
+        if (! is_dir($faviconDir)) {
             mkdir($faviconDir, 0755, true);
         }
 
+        $sizes = [
+            'favicon/favicon-16.png'  => 16,
+            'favicon/favicon-32.png'  => 32,
+            'favicon/favicon-180.png' => 180,
+            'favicon/favicon-192.png' => 192,
+        ];
+
+        // ── Intervention Image v3 ─────────────────────────────────────────────
         try {
             $manager = new ImageManager(new Driver());
 
-            $sizes = [
-                'favicon/favicon-16.png'  => 16,
-                'favicon/favicon-32.png'  => 32,
-                'favicon/favicon-180.png' => 180,
-                'favicon/favicon-192.png' => 192,
-            ];
-
             foreach ($sizes as $relativePath => $size) {
                 $outputPath = Storage::disk('public')->path($relativePath);
-                // Clone so original is not mutated between iterations
+                // Re-read on every iteration so the image object is not mutated between passes
                 $manager->read($file->path())
                     ->cover($size, $size)
                     ->toPng()
                     ->save($outputPath);
             }
 
-            // Also copy to public/favicon.ico so browsers that auto-request /favicon.ico get the right file
-            $faviconIcoPath = public_path('favicon.ico');
-            copy(Storage::disk('public')->path('favicon/favicon-32.png'), $faviconIcoPath);
+            // Copy to public/favicon.ico so browsers that auto-request /favicon.ico work
+            try {
+                copy(
+                    Storage::disk('public')->path('favicon/favicon-32.png'),
+                    public_path('favicon.ico')
+                );
+            } catch (\Throwable $copyErr) {
+                Log::error('resizeFavicon: failed to copy favicon.ico: ' . $copyErr->getMessage()
+                    . ' at ' . $copyErr->getFile() . ':' . $copyErr->getLine());
+            }
 
             return 'favicon/favicon-32.png';
         } catch (\Throwable $e) {
-            // Intervention Image failed — fall back to GD native 32×32
+            Log::error('resizeFavicon: Intervention Image failed: ' . $e->getMessage()
+                . ' at ' . $e->getFile() . ':' . $e->getLine());
         }
-        // ── GD fallback ───────────────────────────────────────────────────────
-        if (!extension_loaded('gd')) {
+
+        // ── GD native fallback ────────────────────────────────────────────────
+        if (! extension_loaded('gd')) {
+            Log::error('resizeFavicon: GD extension not loaded, storing original file.');
             return $file->store('settings', 'public');
         }
 
@@ -305,40 +318,56 @@ class SettingController extends Controller
                 default                     => null,
             };
         } catch (\Throwable $e) {
+            Log::error('resizeFavicon: GD failed to open source image: ' . $e->getMessage()
+                . ' at ' . $e->getFile() . ':' . $e->getLine());
             return $file->store('settings', 'public');
         }
 
-        if (!$src) {
+        if (! $src) {
+            Log::error('resizeFavicon: GD could not create image resource (unsupported mime: ' . $file->getMimeType() . ').');
             return $file->store('settings', 'public');
         }
+
+        $srcW = imagesx($src);
+        $srcH = imagesy($src);
 
         try {
-            $dst = imagecreatetruecolor(32, 32);
-            imagealphablending($dst, false);
-            imagesavealpha($dst, true);
-            $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
-            imagefill($dst, 0, 0, $transparent);
+            foreach ($sizes as $relativePath => $size) {
+                $outputPath = Storage::disk('public')->path($relativePath);
 
-            imagecopyresampled($dst, $src, 0, 0, 0, 0, 32, 32, imagesx($src), imagesy($src));
+                $dst = imagecreatetruecolor($size, $size);
+                imagealphablending($dst, false);
+                imagesavealpha($dst, true);
+                $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+                imagefill($dst, 0, 0, $transparent);
 
-            $path     = 'favicon/favicon-32.png';
-            $fullPath = Storage::disk('public')->path($path);
+                // Cover: crop to square centre then resample
+                $minDim = min($srcW, $srcH);
+                $cropX  = (int) (($srcW - $minDim) / 2);
+                $cropY  = (int) (($srcH - $minDim) / 2);
+                imagecopyresampled($dst, $src, 0, 0, $cropX, $cropY, $size, $size, $minDim, $minDim);
 
-            if (!is_dir(dirname($fullPath))) {
-                mkdir(dirname($fullPath), 0755, true);
+                imagepng($dst, $outputPath, 9);
+                imagedestroy($dst);
             }
 
-            imagepng($dst, $fullPath, 9);
-
-            // Also copy to public/favicon.ico
-            copy($fullPath, public_path('favicon.ico'));
+            // Copy to public/favicon.ico
+            try {
+                $favicon32 = Storage::disk('public')->path('favicon/favicon-32.png');
+                copy($favicon32, public_path('favicon.ico'));
+            } catch (\Throwable $copyErr) {
+                Log::error('resizeFavicon: GD fallback failed to copy favicon.ico: ' . $copyErr->getMessage()
+                    . ' at ' . $copyErr->getFile() . ':' . $copyErr->getLine());
+            }
         } catch (\Throwable $e) {
-            return $file->store('favicon', 'public');
-        } finally {
-            if (isset($src) && is_resource($src)) imagedestroy($src);
-            if (isset($dst) && is_resource($dst)) imagedestroy($dst);
+            Log::error('resizeFavicon: GD resize failed: ' . $e->getMessage()
+                . ' at ' . $e->getFile() . ':' . $e->getLine());
+            imagedestroy($src);
+            return $file->store('settings', 'public');
         }
 
-        return $path;
+        imagedestroy($src);
+
+        return 'favicon/favicon-32.png';
     }
 }
