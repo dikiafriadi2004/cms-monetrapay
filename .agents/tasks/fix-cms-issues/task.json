@@ -1,7 +1,0 @@
-{
-  "task_id": "fix-cms-issues",
-  "task_description": "Fix critical CMS issues: theme CSS variable injection, 5 professional theme layouts, rebuild 15 builder components with professional Tailwind design, and rebuild admin page builder into WordPress-like two-panel drag-drop editor",
-  "status": "pending",
-  "feature_order": ["FEAT-006", "FEAT-007", "FEAT-008", "FEAT-009"],
-  "blocked_reason": null
-}
