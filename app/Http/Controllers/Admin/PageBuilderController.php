@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Mews\Purifier\Facades\Purifier;
 
 class PageBuilderController extends Controller
 {
@@ -200,9 +201,19 @@ class PageBuilderController extends Controller
                 'gjs_styles'     => 'nullable|string',
             ]);
 
+            // Sanitize HTML: strip <script>, on* attributes, javascript: URIs
+            $cleanHtml = isset($validated['gjs_html'])
+                ? Purifier::clean($validated['gjs_html'], 'page_builder')
+                : '';
+
+            // Sanitize CSS: prevent </style> injection and javascript: in values
+            $rawCss = $validated['gjs_css'] ?? '';
+            $cleanCss = preg_replace('/<\/style\s*>/i', '', $rawCss);
+            $cleanCss = preg_replace('/javascript\s*:/i', '', $cleanCss);
+
             $page->update([
-                'content'          => $validated['gjs_html'] ?? '',
-                'gjs_css'          => $validated['gjs_css'] ?? '',
+                'content'          => $cleanHtml,
+                'gjs_css'          => $cleanCss,
                 'gjs_components'   => $validated['gjs_components'] ?? '',
                 'gjs_styles'       => $validated['gjs_styles'] ?? '',
                 'use_page_builder' => true, // Mark as GrapesJS page only when actually saved
