@@ -271,10 +271,13 @@ class PageController extends Controller
      * Get pages that can be used as parents.
      * Only pages at depth < 3 are eligible (so children would be at max depth 3).
      * Optionally exclude a page and its descendants (for edit form).
+     * Eager-loads up to 4 ancestor levels to avoid N+1 queries.
      */
     protected function getAvailableParentPages(?int $excludeId = null): Collection
     {
-        $query = Page::whereNull('deleted_at')->orderBy('title');
+        $query = Page::with('parent.parent.parent.parent')
+            ->whereNull('deleted_at')
+            ->orderBy('title');
 
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
@@ -304,13 +307,14 @@ class PageController extends Controller
 
     /**
      * Calculate the depth of a page in the hierarchy.
+     * Relies on already eager-loaded parent chain — no extra queries.
      */
     protected function getPageDepth(Page $page): int
     {
         $depth = 1;
         $current = $page;
 
-        while ($current->parent_id) {
+        while ($current->parent_id && $current->relationLoaded('parent') && $current->parent) {
             $depth++;
             $current = $current->parent;
 
@@ -324,6 +328,7 @@ class PageController extends Controller
 
     /**
      * Check if a page is a descendant of another page.
+     * Relies on already eager-loaded parent chain — no extra queries.
      */
     protected function isDescendantOf(Page $page, int $ancestorId): bool
     {
@@ -333,11 +338,12 @@ class PageController extends Controller
             if ($current->parent_id === $ancestorId) {
                 return true;
             }
-            $current = $current->parent;
 
-            if (! $current) {
+            if (! $current->relationLoaded('parent') || ! $current->parent) {
                 break;
             }
+
+            $current = $current->parent;
         }
 
         return false;

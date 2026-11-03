@@ -22,57 +22,82 @@ class MenuService
                 return null;
             }
 
-            $items = MenuItem::where('menu_id', $menu->id)
-                ->whereNull('parent_id')
-                ->orderBy('order')
-                ->get();
-
-            return $this->buildMenuTree($items);
+            return $this->buildTree($menu->id);
         });
     }
 
     /**
-     * Build menu tree for a specific menu ID
+     * Build menu tree for a specific menu ID.
+     * Single query loads all items + page/category relations, then builds
+     * the nested tree in PHP — eliminates N+1 queries.
      */
     public function buildTree(int $menuId): array
     {
-        $items = MenuItem::where('menu_id', $menuId)
-            ->whereNull('parent_id')
+        $allItems = MenuItem::where('menu_id', $menuId)
+            ->with(['page:id,slug,title', 'category:id,slug,name'])
             ->orderBy('order')
             ->get();
 
-        return $this->buildMenuTree($items, $menuId);
+        return $this->buildTreeFromCollection($allItems);
     }
 
     /**
-     * Build menu tree with nested children
+     * Build menu tree from an already-loaded flat collection.
+     * Groups by parent_id, resolves URLs from eager-loaded relations.
+     *
+     * @param  \Illuminate\Support\Collection<int,MenuItem>  $items  All items for this menu
+     * @param  int|null  $parentId
      */
-    protected function buildMenuTree($items, $menuId = null): array
+    protected function buildTreeFromCollection($items, ?int $parentId = null): array
     {
         $tree = [];
 
-        foreach ($items as $item) {
+        foreach ($items->where('parent_id', $parentId) as $item) {
             $node = [
-                'id' => $item->id,
-                'label' => $item->label,
-                'url' => $this->resolveUrl($item),
-                'target' => $item->target ?? '_self',
+                'id'        => $item->id,
+                'label'     => $item->label,
+                'url'       => $this->resolveUrl($item),
+                'target'    => $item->target ?? '_self',
                 'css_class' => $item->css_class,
-                'icon' => $item->icon,
-                'children' => [],
+                'icon'      => $item->icon,
+                'children'  => $this->buildTreeFromCollection($items, $item->id),
             ];
 
-            // Get children
-            $children = MenuItem::where('menu_id', $menuId ?? $item->menu_id)
-                ->where('parent_id', $item->id)
+            $tree[] = $node;
+        }
+
+        return $tree;
+    }
+
+    /**
+     * Build menu tree with nested children (legacy — kept for getMenuByLocation).
+     *
+     * @deprecated Use buildTreeFromCollection internally.
+     */
+    protected function buildMenuTree($items, $menuId = null): array
+    {
+        // $items here is a root-only subset; do a full single-query build instead
+        if ($menuId !== null) {
+            $allItems = MenuItem::where('menu_id', $menuId)
+                ->with(['page:id,slug,title', 'category:id,slug,name'])
                 ->orderBy('order')
                 ->get();
 
-            if ($children->isNotEmpty()) {
-                $node['children'] = $this->buildMenuTree($children, $menuId ?? $item->menu_id);
-            }
+            return $this->buildTreeFromCollection($allItems);
+        }
 
-            $tree[] = $node;
+        // Fallback: items is a small flat collection without parent info — legacy path
+        $tree = [];
+        foreach ($items as $item) {
+            $tree[] = [
+                'id'        => $item->id,
+                'label'     => $item->label,
+                'url'       => $this->resolveUrl($item),
+                'target'    => $item->target ?? '_self',
+                'css_class' => $item->css_class,
+                'icon'      => $item->icon,
+                'children'  => [],
+            ];
         }
 
         return $tree;
