@@ -11,6 +11,68 @@ use Spatie\Permission\Models\Role as PermissionRole;
 class UserController extends Controller
 {
     /**
+     * Role hierarchy (higher index = higher privilege).
+     * Actor may only assign roles strictly below their own level
+     * unless they hold the 'role.edit' permission.
+     */
+    protected array $roleHierarchy = [
+        'Author'      => 1,
+        'Editor'      => 2,
+        'Admin'       => 3,
+        'Super Admin' => 4,
+    ];
+
+    /**
+     * Return roles the current actor is allowed to assign.
+     */
+    protected function assignableRoles(): \Illuminate\Support\Collection
+    {
+        /** @var User $actor */
+        $actor = auth()->user();
+
+        // Super Admin or anyone with role.edit can assign any role
+        if ($actor->hasPermissionTo('role.edit')) {
+            return Role::orderBy('name')->get();
+        }
+
+        // Determine the actor's highest role level
+        $actorMaxLevel = 0;
+        foreach ($actor->getRoleNames() as $roleName) {
+            $level = $this->roleHierarchy[$roleName] ?? 0;
+            if ($level > $actorMaxLevel) {
+                $actorMaxLevel = $level;
+            }
+        }
+
+        // May only assign roles strictly below their own level
+        $allowed = array_keys(array_filter(
+            $this->roleHierarchy,
+            fn (int $level) => $level < $actorMaxLevel
+        ));
+
+        return Role::whereIn('name', $allowed)->orderBy('name')->get();
+    }
+
+    /**
+     * Abort 403 if the actor is not allowed to assign the given role name.
+     */
+    protected function authorizeRoleAssignment(string $roleName): void
+    {
+        /** @var User $actor */
+        $actor = auth()->user();
+
+        if ($actor->hasPermissionTo('role.edit')) {
+            return; // full access
+        }
+
+        $assignable = $this->assignableRoles()->pluck('name')->toArray();
+
+        if (! in_array($roleName, $assignable, true)) {
+            abort(403, 'Anda tidak berhak menetapkan role tersebut.');
+        }
+    }
+
+    /**
      * Display a listing of users with their roles.
      */
     public function index()
@@ -25,7 +87,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::orderBy('name')->get();
+        $roles = $this->assignableRoles();
 
         return view('admin.users.create', compact('roles'));
     }
@@ -53,6 +115,9 @@ class UserController extends Controller
             'role.exists' => 'Role yang dipilih tidak valid.',
         ]);
 
+        // Security: ensure actor may assign the chosen role
+        $this->authorizeRoleAssignment($validated['role']);
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -78,7 +143,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::orderBy('name')->get();
+        $roles = $this->assignableRoles();
         /** @var PermissionRole|null $role */
         $role = $user->roles->first();
         $userRole = $role?->name;
@@ -107,6 +172,9 @@ class UserController extends Controller
             'role.required' => 'Role wajib dipilih.',
             'role.exists' => 'Role yang dipilih tidak valid.',
         ]);
+
+        // Security: ensure actor may assign the chosen role
+        $this->authorizeRoleAssignment($validated['role']);
 
         $user->update([
             'name' => $validated['name'],
