@@ -88,6 +88,18 @@ Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'uns
 */
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/favicon.ico', function () {
+    $ico = public_path('favicon.ico');
+    if (file_exists($ico)) {
+        return response()->file($ico, ['Content-Type' => 'image/x-icon']);
+    }
+    // Fallback: serve favicon-32.png as ico
+    $png = \Illuminate\Support\Facades\Storage::disk('public')->path('favicon/favicon-32.png');
+    if (file_exists($png)) {
+        return response()->file($png, ['Content-Type' => 'image/png']);
+    }
+    abort(404);
+});
 Route::get('/feed.xml', [FeedController::class, 'rss'])->name('feed.rss');
 Route::get('/rss', fn () => redirect('/feed.xml', 301));
 
