@@ -17,8 +17,10 @@
             <h2 class="text-xl md:text-2xl font-bold text-white">Selamat datang kembali, {{ auth()->user()->name }} 👋</h2>
             <p class="text-slate-400 mt-1.5 text-sm">
                 {{ $postsThisMonth }} artikel dipublikasi bulan ini
+                @can('contact.view')
                 · {{ $contactsThisMonth }} kontak masuk bulan ini
                 · {{ $stats['contacts_unread'] }} belum dibaca
+                @endcan
             </p>
             <div class="mt-5 flex flex-wrap gap-2">
                 @can('blog.view')
@@ -38,7 +40,6 @@
             $statCards = [
                 ['label' => 'Artikel Publish', 'value' => $stats['blogs_published'], 'sub' => $stats['blogs_draft'].' draft', 'icon' => 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z', 'color' => 'blue'],
                 ['label' => 'Halaman', 'value' => $stats['pages_published'], 'sub' => $stats['pages_total'].' total', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'color' => 'green'],
-                ['label' => 'Kontak Masuk', 'value' => $stats['contacts_total'], 'sub' => $stats['contacts_unread'].' belum dibaca', 'icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'color' => 'orange'],
                 ['label' => 'Pengguna', 'value' => $stats['users'], 'sub' => $stats['categories'].' kategori', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'color' => 'purple'],
             ];
             $colors = [
@@ -64,7 +65,24 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+            @endforeach
+            @can('contact.view')
+            @php $c = $colors['orange']; @endphp
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-t-4 {{ $c['border'] }} hover:shadow-md transition-shadow">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Kontak Masuk</p>
+                        <p class="text-3xl font-extrabold text-slate-800 mt-2">{{ $stats['contacts_total'] }}</p>
+                        <p class="text-xs text-slate-400 mt-1">{{ $stats['contacts_unread'] }} belum dibaca</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl {{ $c['bg'] }} flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 {{ $c['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            @endcan
     </div>
 
     {{-- Operational Health --}}
@@ -197,6 +215,7 @@
         @endcan
 
         {{-- Recent contacts (sidebar) --}}
+        @can('contact.view')
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
@@ -205,11 +224,9 @@
                         <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-secondary rounded-full">{{ $stats['contacts_unread'] }}</span>
                     @endif
                 </h3>
-                @can('setting.view')
                 <a href="{{ route('admin.contacts.index') }}" class="text-xs font-semibold text-primary hover:text-primary-dark transition-colors flex items-center gap-1">
                     Semua <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                @endcan
             </div>
             <div class="p-2">
                 @forelse($recentContacts as $sub)
@@ -234,6 +251,7 @@
                 @endforelse
             </div>
         </div>
+        @endcan
     </div>
 
     {{-- Bottom Row: Recent Posts + Quick Actions --}}
