@@ -60,6 +60,10 @@ class SettingController extends Controller
 
         // Save each setting
         foreach ($validated as $key => $value) {
+            // Encrypt SMTP password at rest
+            if ($group === 'email' && $key === 'mail_password' && ! empty($value)) {
+                $value = encrypt($value);
+            }
             Setting::updateOrCreate(
                 ['group' => $group, 'key' => $key],
                 ['value' => $value]

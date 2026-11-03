@@ -54,7 +54,13 @@ class MailConfigService
         }
 
         if (! empty($email['mail_password'])) {
-            Config::set('mail.mailers.smtp.password', $email['mail_password']);
+            // Decrypt if stored encrypted; fall back to raw value for backward compatibility
+            try {
+                $mailPassword = decrypt($email['mail_password']);
+            } catch (\Throwable $e) {
+                $mailPassword = $email['mail_password'];
+            }
+            Config::set('mail.mailers.smtp.password', $mailPassword);
             $changed = true;
         }
 
