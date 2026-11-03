@@ -373,7 +373,7 @@ class FileManagerController extends Controller
             ]);
         } catch (\Throwable $e) {
             report($e);
-            return response()->json(['success' => false, 'message' => 'Gagal crop: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Gagal memproses crop. Silakan coba lagi.'], 500);
         }
     }
 

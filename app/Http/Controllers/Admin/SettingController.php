@@ -104,7 +104,11 @@ class SettingController extends Controller
                 }
             );
         } catch (\Throwable $e) {
-            return $this->respondError('Gagal mengirim email: '.$e->getMessage());
+            Log::error('SettingController::testEmail failed: '.$e->getMessage(), [
+                'exception' => get_class($e),
+                'to'        => $validated['email'],
+            ]);
+            return $this->respondError('Gagal mengirim email. Periksa konfigurasi SMTP dan coba lagi.');
         }
 
         return back()->with('success', 'Test email berhasil dikirim ke '.$validated['email'].'. Periksa inbox (atau folder spam).');
