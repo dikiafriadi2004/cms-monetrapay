@@ -117,9 +117,15 @@
                     <template x-for="file in recentUploads" :key="file.id">
                         <div
                             @click="selectImage(file.url)"
-                            class="cursor-pointer group relative aspect-square rounded-lg border-2 border-emerald-400 overflow-hidden hover:border-blue-500 transition"
+                            class="cursor-pointer group relative aspect-square rounded-lg border-2 border-emerald-400 overflow-hidden hover:border-blue-500 hover:shadow-md transition"
                         >
                             <img :src="file.thumbnail_url || file.url" :alt="file.original_name" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/25 transition flex items-center justify-center">
+                                <svg class="w-7 h-7 text-white opacity-0 group-hover:opacity-100 drop-shadow transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-1.5 py-1 opacity-0 group-hover:opacity-100 transition">
+                                <p class="text-[10px] text-white truncate text-center font-semibold">Klik untuk pilih</p>
+                            </div>
                         </div>
                     </template>
                 </div>
@@ -275,18 +281,21 @@
                     xhr.onload = () => {
                         this.uploading = false;
                         if (xhr.status === 200) {
-                            // Create a temporary preview URL for immediate display
-                            // Then reload page to show the properly saved image with thumbnail
-                            const objectUrl = URL.createObjectURL(file);
-                            this.recentUploads.unshift({
-                                id: Date.now(),
-                                url: objectUrl,
-                                thumbnail_url: objectUrl,
-                                original_name: file.name,
-                                _isTemp: true,
-                            });
-                            // Reload after a short delay to refresh with server URLs + thumbnails
-                            setTimeout(() => { window.location.reload(); }, 1500);
+                            try {
+                                const json = JSON.parse(xhr.responseText);
+                                if (json.success && json.file) {
+                                    // Use server URL so selectImage works properly
+                                    this.recentUploads.unshift({
+                                        id: Date.now(),
+                                        url: json.file.url,
+                                        thumbnail_url: json.file.thumbnail_url || json.file.url,
+                                        original_name: json.file.original_name || file.name,
+                                    });
+                                    return; // Don't reload — image is clickable immediately
+                                }
+                            } catch (e) {}
+                            // Fallback: reload to refresh grid
+                            window.location.reload();
                         } else {
                             alert('Upload gagal. Pastikan file adalah gambar dengan ukuran maksimal 10MB.');
                         }
