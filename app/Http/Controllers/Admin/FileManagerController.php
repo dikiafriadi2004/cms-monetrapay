@@ -163,7 +163,7 @@ class FileManagerController extends Controller
         }
 
         // Create media record
-        Media::create([
+        $media = Media::create([
             'folder_id' => $request->input('folder_id'),
             'user_id' => auth()->id(),
             'filename' => $filename,
@@ -179,6 +179,15 @@ class FileManagerController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'File berhasil diunggah.',
+                'file' => [
+                    'id'             => $media->id,
+                    'url'            => Storage::url($path),
+                    'thumbnail_url'  => $thumbnailPath ? Storage::url($thumbnailPath) : Storage::url($path),
+                    'webp_url'       => $webpPath ? Storage::url($webpPath) : null,
+                    'original_name'  => $originalName,
+                    'mime_type'      => $mimeType,
+                    'size'           => $size,
+                ],
             ]);
         }
 

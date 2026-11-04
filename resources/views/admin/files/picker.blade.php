@@ -280,9 +280,12 @@
 
                     xhr.onload = () => {
                         this.uploading = false;
+                        console.log('[Picker] Upload response status:', xhr.status);
+                        console.log('[Picker] Upload response:', xhr.responseText.substring(0, 500));
                         if (xhr.status === 200) {
                             try {
                                 const json = JSON.parse(xhr.responseText);
+                                console.log('[Picker] Upload JSON:', json);
                                 if (json.success && json.file) {
                                     // Use server URL so selectImage works properly
                                     this.recentUploads.unshift({
@@ -293,11 +296,24 @@
                                     });
                                     return; // Don't reload — image is clickable immediately
                                 }
-                            } catch (e) {}
+                            } catch (e) {
+                                console.error('[Picker] JSON parse error:', e);
+                            }
                             // Fallback: reload to refresh grid
                             window.location.reload();
+                        } else if (xhr.status === 419) {
+                            alert('CSRF token expired. Silakan refresh halaman dan coba lagi.');
+                        } else if (xhr.status === 422) {
+                            try {
+                                const err = JSON.parse(xhr.responseText);
+                                alert('Validasi gagal: ' + JSON.stringify(err.errors || err.message));
+                            } catch(e) {
+                                alert('Upload gagal (422): ' + xhr.responseText.substring(0, 200));
+                            }
+                        } else if (xhr.status === 403) {
+                            alert('Akses ditolak (403). Pastikan Anda memiliki permission file.create.');
                         } else {
-                            alert('Upload gagal. Pastikan file adalah gambar dengan ukuran maksimal 10MB.');
+                            alert('Upload gagal (status ' + xhr.status + '). Cek console untuk detail.');
                         }
                     };
 
