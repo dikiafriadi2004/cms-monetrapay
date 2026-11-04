@@ -13,12 +13,14 @@ class KontakPageSeeder extends Seeder
 
         $html = $this->kontakHtml();
 
-        $page = Page::where('slug', 'kontak')->first();
-
-        if (! $page) {
-            $this->command->warn('⚠️  Halaman dengan slug "kontak" tidak ditemukan. Seeder dibatalkan.');
-            return;
-        }
+        $page = Page::firstOrCreate(
+            ['slug' => 'kontak'],
+            [
+                'title'    => 'Kontak',
+                'status'   => 'published',
+                'template' => 'default',
+            ]
+        );
 
         $page->update([
             'use_page_builder' => true,

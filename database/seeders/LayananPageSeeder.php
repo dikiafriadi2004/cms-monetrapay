@@ -13,12 +13,14 @@ class LayananPageSeeder extends Seeder
 
         $html = $this->layananHtml();
 
-        $page = Page::where('slug', 'layanan')->first();
-
-        if (! $page) {
-            $this->command->warn('⚠️  Halaman dengan slug "layanan" tidak ditemukan. Seeder dibatalkan.');
-            return;
-        }
+        $page = Page::firstOrCreate(
+            ['slug' => 'layanan'],
+            [
+                'title'    => 'Layanan',
+                'status'   => 'published',
+                'template' => 'default',
+            ]
+        );
 
         $page->update([
             'use_page_builder' => true,
