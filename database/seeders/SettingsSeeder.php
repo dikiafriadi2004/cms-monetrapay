@@ -52,16 +52,17 @@ class SettingsSeeder extends Seeder
             ['group' => 'maintenance', 'key' => 'maintenance_mode','value' => '0'],
             ['group' => 'maintenance', 'key' => 'maintenance_message', 'value' => 'Kami sedang melakukan pemeliharaan. Kembali lagi sebentar.'],
 
-            // ── MAIL ──────────────────────────────────────────────────
-            // Konfigurasi ini bisa di-override dari Admin → Settings → Mail
-            ['group' => 'mail', 'key' => 'mail_driver',            'value' => 'smtp'],
-            ['group' => 'mail', 'key' => 'mail_host',              'value' => 'smtp.gmail.com'],
-            ['group' => 'mail', 'key' => 'mail_port',              'value' => '587'],
-            ['group' => 'mail', 'key' => 'mail_username',          'value' => ''],
-            ['group' => 'mail', 'key' => 'mail_password',          'value' => ''],
-            ['group' => 'mail', 'key' => 'mail_encryption',        'value' => 'tls'],
-            ['group' => 'mail', 'key' => 'mail_from_name',         'value' => 'MonetraPay'],
-            ['group' => 'mail', 'key' => 'mail_from_address',      'value' => 'noreply@monetrapay.com'],
+            // ── EMAIL ─────────────────────────────────────────────────
+            // Konfigurasi ini bisa di-override dari Admin → Settings → Email
+            // Group harus 'email' agar sesuai dengan SettingController->validGroups dan MailConfigService
+            ['group' => 'email', 'key' => 'mail_driver',           'value' => 'smtp'],
+            ['group' => 'email', 'key' => 'mail_host',             'value' => 'smtp.gmail.com'],
+            ['group' => 'email', 'key' => 'mail_port',             'value' => '587'],
+            ['group' => 'email', 'key' => 'mail_username',         'value' => ''],
+            ['group' => 'email', 'key' => 'mail_password',         'value' => ''],
+            ['group' => 'email', 'key' => 'mail_encryption',       'value' => 'tls'],
+            ['group' => 'email', 'key' => 'mail_from_name',        'value' => 'MonetraPay'],
+            ['group' => 'email', 'key' => 'mail_from_address',     'value' => 'noreply@monetrapay.com'],
 
             // ── HOMEPAGE HERO ─────────────────────────────────────────
             ['group' => 'homepage', 'key' => 'hero_title',         'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
