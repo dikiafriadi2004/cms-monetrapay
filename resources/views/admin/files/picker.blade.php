@@ -9,6 +9,22 @@
 </head>
 <body class="bg-slate-100">
     <div x-data="imagePicker()" class="p-4 min-h-screen">
+        {{-- Drag & Drop Overlay --}}
+        <div
+            x-show="isDragging"
+            x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            style="background:rgba(13,148,136,0.15);border:3px dashed #0D9488;"
+        >
+            <div class="bg-white rounded-xl shadow-2xl px-12 py-8 text-center">
+                <svg class="mx-auto w-16 h-16 text-primary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                <p class="text-lg font-semibold text-slate-700">Lepas file untuk mengupload</p>
+                <p class="text-sm text-slate-500 mt-1">Gambar akan langsung diupload</p>
+            </div>
+        </div>
+
         {{-- Header --}}
         <div class="flex items-center justify-between mb-4">
             <div>
@@ -94,6 +110,21 @@
             </div>
             @endif
 
+            {{-- Recently uploaded (shown immediately after upload, before page reload) --}}
+            <div x-show="recentUploads.length > 0" class="mb-3">
+                <p class="text-xs text-slate-500 mb-2">Baru diupload:</p>
+                <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                    <template x-for="file in recentUploads" :key="file.id">
+                        <div
+                            @click="selectImage(file.url)"
+                            class="cursor-pointer group relative aspect-square rounded-lg border-2 border-emerald-400 overflow-hidden hover:border-blue-500 transition"
+                        >
+                            <img :src="file.thumbnail_url || file.url" :alt="file.original_name" class="w-full h-full object-cover">
+                        </div>
+                    </template>
+                </div>
+            </div>
+
             {{-- Images Grid --}}
             @if($files->isNotEmpty())
             <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
@@ -154,6 +185,37 @@
             searchResults: null,
             uploading: false,
             uploadProgress: 0,
+            isDragging: false,
+            _dragCounter: 0,
+            recentUploads: [],
+
+            init() {
+                // Drag & drop on entire document
+                document.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    this._dragCounter++;
+                    this.isDragging = true;
+                });
+                document.addEventListener('dragleave', (e) => {
+                    this._dragCounter--;
+                    if (this._dragCounter <= 0) {
+                        this._dragCounter = 0;
+                        this.isDragging = false;
+                    }
+                });
+                document.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                document.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this._dragCounter = 0;
+                    this.isDragging = false;
+                    const files = e.dataTransfer.files;
+                    if (files.length) {
+                        this.uploadImage(files[0]);
+                    }
+                });
+            },
 
             selectImage(url) {
                 // Send selected image URL back to parent window (TinyMCE)
@@ -173,7 +235,7 @@
                 }
 
                 try {
-                    const response = await fetch(`{{ route('admin.files.search') }}?q=${encodeURIComponent(this.searchQuery)}`);
+                    const response = await fetch(`{{route('admin.files.search')}}?q=${encodeURIComponent(this.searchQuery)}`);
                     const data = await response.json();
                     // Filter only images
                     this.searchResults = data.files.filter(f => f.mime_type.startsWith('image/'));
@@ -185,16 +247,22 @@
             async uploadImage(file) {
                 if (!file) return;
 
+                // Validate image type client-side
+                if (!file.type.startsWith('image/')) {
+                    alert('Hanya file gambar yang diizinkan.');
+                    return;
+                }
+
                 this.uploading = true;
                 this.uploadProgress = 0;
 
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('folder_id', '{{ $currentFolder?->id ?? '' }}');
+                formData.append('folder_id', '{{$currentFolder?->id ?? ''}}');
 
                 try {
                     const xhr = new XMLHttpRequest();
-                    xhr.open('POST', '{{ route("admin.files.upload") }}');
+                    xhr.open('POST', '{{route("admin.files.upload")}}');
                     xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
                     xhr.setRequestHeader('Accept', 'application/json');
 
@@ -207,7 +275,18 @@
                     xhr.onload = () => {
                         this.uploading = false;
                         if (xhr.status === 200) {
-                            window.location.reload();
+                            // Create a temporary preview URL for immediate display
+                            // Then reload page to show the properly saved image with thumbnail
+                            const objectUrl = URL.createObjectURL(file);
+                            this.recentUploads.unshift({
+                                id: Date.now(),
+                                url: objectUrl,
+                                thumbnail_url: objectUrl,
+                                original_name: file.name,
+                                _isTemp: true,
+                            });
+                            // Reload after a short delay to refresh with server URLs + thumbnails
+                            setTimeout(() => { window.location.reload(); }, 1500);
                         } else {
                             alert('Upload gagal. Pastikan file adalah gambar dengan ukuran maksimal 10MB.');
                         }
