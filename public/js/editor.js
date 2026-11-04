@@ -1,4 +1,4 @@
-/**
+﻿/**
  * TinyMCE Editor Configuration
  *
  * Integrates TinyMCE with the File Manager for image picking,
@@ -201,11 +201,11 @@
             targetTextarea.parentNode.insertBefore(loadingIndicator, targetTextarea);
         }
 
-        // Check if TinyMCE is loaded — if not, show fallback after timeout
+        // Check if TinyMCE is loaded â€” if not, show fallback after timeout
         if (typeof tinymce === 'undefined') {
             console.warn('TinyMCE is not loaded. Editor initialization skipped.');
             if (loadingIndicator) {
-                loadingIndicator.innerHTML = '⚠ Editor tidak dapat dimuat. Anda masih bisa mengedit konten HTML secara langsung di bawah ini.';
+                loadingIndicator.innerHTML = 'âš  Editor tidak dapat dimuat. Anda masih bisa mengedit konten HTML secara langsung di bawah ini.';
                 loadingIndicator.style.background = '#fffbeb';
                 loadingIndicator.style.borderColor = '#fde68a';
                 loadingIndicator.style.color = '#92400e';
@@ -421,3 +421,4 @@
         initTinyMCE();
     }
 })();
+

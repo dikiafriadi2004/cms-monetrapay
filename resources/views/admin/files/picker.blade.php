@@ -196,6 +196,14 @@
             recentUploads: [],
 
             init() {
+                // Receive CSRF token from parent window (when loaded in iframe)
+                window.addEventListener('message', (e) => {
+                    if (e.data && e.data.type === 'csrf-token' && e.data.token) {
+                        const meta = document.querySelector('meta[name="csrf-token"]');
+                        if (meta) meta.setAttribute('content', e.data.token);
+                    }
+                });
+
                 // Drag & drop on entire document
                 document.addEventListener('dragenter', (e) => {
                     e.preventDefault();
@@ -225,11 +233,11 @@
 
             selectImage(url) {
                 // Send selected image URL back to parent window (TinyMCE)
-                if (window.parent && window.parent.postMessage) {
+                if (window.parent && window.parent !== window) {
                     window.parent.postMessage({ type: 'file-manager-select', url: url }, '*');
                 }
                 // Also try callback approach for TinyMCE
-                if (typeof window.parent.fileManagerCallback === 'function') {
+                if (window.parent && typeof window.parent.fileManagerCallback === 'function') {
                     window.parent.fileManagerCallback(url);
                 }
             },
@@ -262,15 +270,39 @@
                 this.uploading = true;
                 this.uploadProgress = 0;
 
+                // Get CSRF token - try multiple sources
+                const getCsrf = () => {
+                    // 1. From meta tag (most reliable)
+                    const meta = document.querySelector('meta[name="csrf-token"]');
+                    if (meta) return meta.content;
+                    // 2. From XSRF-TOKEN cookie
+                    const cookies = document.cookie.split(';');
+                    for (const c of cookies) {
+                        const [k, v] = c.trim().split('=');
+                        if (k === 'XSRF-TOKEN') return decodeURIComponent(v);
+                    }
+                    // 3. From parent window meta tag (when in iframe)
+                    try {
+                        const parentMeta = window.parent.document.querySelector('meta[name="csrf-token"]');
+                        if (parentMeta) return parentMeta.content;
+                    } catch(e) {}
+                    return '';
+                };
+
+                const csrf = getCsrf();
+
                 const formData = new FormData();
                 formData.append('file', file);
+                formData.append('_token', csrf);
                 formData.append('folder_id', '{{$currentFolder?->id ?? ''}}');
 
                 try {
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', '{{route("admin.files.upload")}}');
-                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
                     xhr.setRequestHeader('Accept', 'application/json');
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.withCredentials = true;
 
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
