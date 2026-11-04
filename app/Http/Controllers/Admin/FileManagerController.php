@@ -403,35 +403,49 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Search files by name (min 2 chars).
+     * Search files by name.
+     * - Empty query: returns 50 most recent media records.
+     * - 1 char query: returns empty result with prompt message.
+     * - 2+ char query: applies LIKE filter.
+     * Supports ?type=image to filter by image MIME types.
      * Returns JSON results for AJAX search.
      */
     public function search(Request $request)
     {
         $query = $request->input('q', '');
+        $type  = $request->input('type', '');
 
-        if (strlen($query) < 2) {
+        // Non-empty but too short — ask for at least 2 chars
+        if ($query !== '' && strlen($query) < 2) {
             return response()->json([
                 'files' => [],
                 'message' => 'Masukkan minimal 2 karakter untuk pencarian.',
             ]);
         }
 
-        $files = Media::where('original_name', 'like', '%'.$query.'%')
-            ->orderByDesc('created_at')
-            ->limit(50)
-            ->get()
-            ->map(function ($file) {
-                return [
-                    'id' => $file->id,
-                    'original_name' => $file->original_name,
-                    'mime_type' => $file->mime_type,
-                    'size' => $file->size,
-                    'url' => Storage::url($file->path),
-                    'thumbnail_url' => $file->thumbnail_path ? Storage::url($file->thumbnail_path) : null,
-                    'created_at' => $file->created_at->format('d M Y'),
-                ];
-            });
+        $builder = Media::query()->orderByDesc('created_at')->limit(50);
+
+        // Apply name filter only when a query is provided
+        if ($query !== '') {
+            $builder->where('original_name', 'like', '%'.$query.'%');
+        }
+
+        // Optional type filter
+        if ($type === 'image') {
+            $builder->where('mime_type', 'like', 'image/%');
+        }
+
+        $files = $builder->get()->map(function ($file) {
+            return [
+                'id'            => $file->id,
+                'original_name' => $file->original_name,
+                'mime_type'     => $file->mime_type,
+                'size'          => $file->size,
+                'url'           => Storage::url($file->path),
+                'thumbnail_url' => $file->thumbnail_path ? Storage::url($file->thumbnail_path) : null,
+                'created_at'    => $file->created_at->format('d M Y'),
+            ];
+        });
 
         return response()->json(['files' => $files]);
     }

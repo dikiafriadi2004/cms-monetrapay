@@ -58,74 +58,230 @@
     }
 
     /**
-     * Open the File Manager picker in a modal overlay.
+     * Open the File Manager picker in an inline AJAX modal overlay.
+     * Replaces the old iframe-based approach to avoid session/CSRF issues.
      */
     function openFileManagerPicker(callback) {
-        // Create modal overlay
+        var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+
+        // ── Build modal HTML ──────────────────────────────────────────────
         var overlay = document.createElement('div');
-        overlay.id = 'tinymce-file-picker-overlay';
+        overlay.id = 'fm-picker-overlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
-        // Create modal container
-        var modal = document.createElement('div');
-        modal.style.cssText = 'background:#fff;border-radius:12px;width:90%;max-width:900px;height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);';
+        overlay.innerHTML = [
+            '<div style="background:#fff;border-radius:12px;width:90%;max-width:900px;height:82vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.3);">',
+              // Header
+              '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e2e8f0;flex-shrink:0;">',
+                '<span style="font-weight:700;font-size:15px;color:#1e293b;">\uD83D\uDCC1 Pilih Gambar dari File Manager</span>',
+                '<div style="display:flex;align-items:center;gap:8px;">',
+                  '<label style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#3D9E7A;color:#fff;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">',
+                    '\u2B06 Upload',
+                    '<input type="file" id="fm-upload-input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;">',
+                  '</label>',
+                  '<button id="fm-close-btn" style="width:32px;height:32px;border:none;background:#f1f5f9;border-radius:8px;cursor:pointer;font-size:18px;color:#64748b;display:flex;align-items:center;justify-content:center;">&times;</button>',
+                '</div>',
+              '</div>',
+              // Search bar
+              '<div style="padding:10px 20px;border-bottom:1px solid #f1f5f9;flex-shrink:0;">',
+                '<input id="fm-search" type="text" placeholder="\uD83D\uDD0D Cari gambar..." style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;">',
+              '</div>',
+              // Upload progress
+              '<div id="fm-progress-bar" style="display:none;padding:8px 20px;background:#f0fdf4;border-bottom:1px solid #bbf7d0;flex-shrink:0;">',
+                '<div style="display:flex;align-items:center;gap:10px;">',
+                  '<span style="font-size:13px;color:#166534;">Mengupload...</span>',
+                  '<div style="flex:1;background:#d1fae5;border-radius:4px;height:6px;"><div id="fm-progress-fill" style="height:6px;background:#3D9E7A;border-radius:4px;width:0%;transition:width .2s;"></div></div>',
+                  '<span id="fm-progress-pct" style="font-size:12px;color:#166534;">0%</span>',
+                '</div>',
+              '</div>',
+              // Content area
+              '<div id="fm-content" style="flex:1;overflow-y:auto;padding:16px 20px;">',
+                '<div style="text-align:center;padding:40px;color:#94a3b8;font-size:14px;">Memuat gambar...</div>',
+              '</div>',
+              // Footer
+              '<div style="padding:10px 20px;border-top:1px solid #f1f5f9;flex-shrink:0;background:#f8fafc;">',
+                '<p id="fm-status" style="font-size:12px;color:#94a3b8;margin:0;">Klik gambar untuk menyisipkan ke editor</p>',
+              '</div>',
+            '</div>'
+        ].join('');
 
-        // Modal header
-        var header = document.createElement('div');
-        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #e2e8f0;flex-shrink:0;';
-        header.innerHTML = '<span style="font-weight:600;font-size:16px;color:#1e293b;">Pilih Gambar dari File Manager</span>';
-
-        var closeBtn = document.createElement('button');
-        closeBtn.type = 'button';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.style.cssText = 'font-size:24px;color:#64748b;background:none;border:none;cursor:pointer;padding:0 8px;line-height:1;';
-        closeBtn.onclick = function () {
-            cleanup();
-        };
-        header.appendChild(closeBtn);
-
-        // Iframe
-        var iframe = document.createElement('iframe');
-        var pickerMeta = document.querySelector('meta[name="file-picker-url"]');
-        iframe.src = pickerMeta ? pickerMeta.content : '/admin/files/picker';
-        iframe.style.cssText = 'flex:1;border:none;width:100%;';
-
-        modal.appendChild(header);
-        modal.appendChild(iframe);
-        overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
-        // Close on overlay click
-        overlay.addEventListener('click', function (e) {
-            if (e.target === overlay) {
-                cleanup();
+        // ── Helper functions ──────────────────────────────────────────────
+        function setStatus(msg, color) {
+            var el = document.getElementById('fm-status');
+            if (el) { el.textContent = msg; el.style.color = color || '#94a3b8'; }
+        }
+
+        function renderImages(images) {
+            var content = document.getElementById('fm-content');
+            if (!content) return;
+
+            if (!images || images.length === 0) {
+                content.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#94a3b8;">' +
+                    '<div style="font-size:48px;margin-bottom:12px;">\uD83D\uDDBC\uFE0F</div>' +
+                    '<p style="font-size:14px;font-weight:600;color:#64748b;">Belum ada gambar</p>' +
+                    '<p style="font-size:13px;margin-top:4px;">Klik tombol Upload untuk menambahkan gambar</p>' +
+                    '</div>';
+                return;
             }
+
+            var grid = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;">';
+            images.forEach(function(img) {
+                var thumb = img.thumbnail_url || img.url;
+                var name = img.original_name || img.name || 'image';
+                var safeUrl = img.url.replace(/\\/g, '/').replace(/'/g, "\\'");
+                grid += '<div onclick="window._fmSelectImage(\'' + safeUrl + '\')" ' +
+                    'style="cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid #e2e8f0;aspect-ratio:1;position:relative;background:#f8fafc;" ' +
+                    'onmouseover="this.style.borderColor=\'#3D9E7A\';this.querySelector(\'.fm-overlay\').style.opacity=1" ' +
+                    'onmouseout="this.style.borderColor=\'#e2e8f0\';this.querySelector(\'.fm-overlay\').style.opacity=0">' +
+                    '<img src="' + thumb + '" alt="' + name.replace(/"/g, '&quot;') + '" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">' +
+                    '<div class="fm-overlay" style="position:absolute;inset:0;background:rgba(61,158,122,0.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;">' +
+                    '<span style="color:#fff;font-size:24px;font-weight:700;">\u2713</span>' +
+                    '</div>' +
+                    '</div>';
+            });
+            grid += '</div>';
+            content.innerHTML = grid;
+        }
+
+        // Global select handler (accessible from inline onclick)
+        window._fmSelectImage = function(url) {
+            callback(url, { alt: '' });
+            cleanup();
+        };
+
+        // ── Load images via AJAX ──────────────────────────────────────────
+        function loadImages(search) {
+            var url = '/admin/files/search?q=' + encodeURIComponent(search || '') + '&type=image';
+            setStatus('Memuat gambar...');
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var images = (data.files || []).filter(function(f) {
+                    return f.mime_type && f.mime_type.startsWith('image/');
+                });
+                renderImages(images);
+                setStatus(images.length + ' gambar ditemukan \u2014 klik untuk menyisipkan');
+            })
+            .catch(function(e) {
+                var content = document.getElementById('fm-content');
+                if (content) {
+                    content.innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">Gagal memuat gambar: ' + e.message + '</div>';
+                }
+            });
+        }
+
+        // ── Upload handler ────────────────────────────────────────────────
+        function handleUpload(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { alert('Hanya file gambar yang diizinkan.'); return; }
+            if (file.size > 10 * 1024 * 1024) { alert('Ukuran file maksimal 10MB.'); return; }
+
+            var progressBar = document.getElementById('fm-progress-bar');
+            var progressFill = document.getElementById('fm-progress-fill');
+            var progressPct = document.getElementById('fm-progress-pct');
+            if (progressBar) progressBar.style.display = 'block';
+            setStatus('Mengupload ' + file.name + '...', '#166534');
+
+            var formData = new FormData();
+            formData.append('file', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/files/upload');
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.withCredentials = true;
+
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable && progressFill) {
+                    var pct = Math.round(e.loaded / e.total * 100);
+                    progressFill.style.width = pct + '%';
+                    if (progressPct) progressPct.textContent = pct + '%';
+                }
+            };
+
+            xhr.onload = function() {
+                if (progressBar) progressBar.style.display = 'none';
+                if (xhr.status === 200) {
+                    try {
+                        var json = JSON.parse(xhr.responseText);
+                        if (json.success && json.file && json.file.url) {
+                            setStatus('Upload berhasil! Klik gambar untuk menyisipkan.', '#166534');
+                            loadImages('');
+                            return;
+                        }
+                    } catch(ex) {}
+                } else if (xhr.status === 419) {
+                    setStatus('CSRF error (419) \u2014 coba refresh halaman', '#ef4444');
+                } else if (xhr.status === 422) {
+                    try {
+                        var err = JSON.parse(xhr.responseText);
+                        setStatus('Validasi gagal: ' + JSON.stringify(err.errors), '#ef4444');
+                    } catch(ex2) {
+                        setStatus('Upload gagal (422)', '#ef4444');
+                    }
+                } else {
+                    setStatus('Upload gagal (status ' + xhr.status + ')', '#ef4444');
+                }
+            };
+
+            xhr.onerror = function() {
+                if (progressBar) progressBar.style.display = 'none';
+                setStatus('Upload error \u2014 cek koneksi', '#ef4444');
+            };
+
+            xhr.send(formData);
+        }
+
+        // ── Event listeners ───────────────────────────────────────────────
+        var closeBtn = document.getElementById('fm-close-btn');
+        if (closeBtn) closeBtn.onclick = cleanup;
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) cleanup();
         });
 
-        // Close on Escape key
-        function handleKeydown(e) {
-            if (e.key === 'Escape') {
-                cleanup();
-            }
+        var uploadInput = document.getElementById('fm-upload-input');
+        if (uploadInput) {
+            uploadInput.onchange = function() {
+                if (this.files && this.files[0]) handleUpload(this.files[0]);
+                this.value = '';
+            };
         }
-        document.addEventListener('keydown', handleKeydown);
 
-        // Listen for postMessage from picker iframe
-        function handleMessage(e) {
-            if (e.data && e.data.type === 'file-manager-select' && e.data.url) {
-                callback(e.data.url);
-                cleanup();
-            }
+        var searchInput = document.getElementById('fm-search');
+        var searchTimer;
+        if (searchInput) {
+            searchInput.oninput = function() {
+                clearTimeout(searchTimer);
+                var q = this.value;
+                searchTimer = setTimeout(function() { loadImages(q); }, 350);
+            };
         }
-        window.addEventListener('message', handleMessage);
+
+        // Escape key to close
+        function handleKey(e) {
+            if (e.key === 'Escape') cleanup();
+        }
+        document.addEventListener('keydown', handleKey);
 
         function cleanup() {
-            window.removeEventListener('message', handleMessage);
-            document.removeEventListener('keydown', handleKeydown);
-            if (overlay.parentNode) {
-                overlay.parentNode.removeChild(overlay);
-            }
+            document.removeEventListener('keydown', handleKey);
+            delete window._fmSelectImage;
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         }
+
+        // ── Initial load ──────────────────────────────────────────────────
+        loadImages('');
     }
 
     /**
@@ -201,11 +357,11 @@
             targetTextarea.parentNode.insertBefore(loadingIndicator, targetTextarea);
         }
 
-        // Check if TinyMCE is loaded â€” if not, show fallback after timeout
+        // Check if TinyMCE is loaded â€" if not, show fallback after timeout
         if (typeof tinymce === 'undefined') {
             console.warn('TinyMCE is not loaded. Editor initialization skipped.');
             if (loadingIndicator) {
-                loadingIndicator.innerHTML = 'âš  Editor tidak dapat dimuat. Anda masih bisa mengedit konten HTML secara langsung di bawah ini.';
+                loadingIndicator.innerHTML = 'âš  Editor tidak dapat dimuat. Anda masih bisa mengedit konten HTML secara langsung di bawah ini.';
                 loadingIndicator.style.background = '#fffbeb';
                 loadingIndicator.style.borderColor = '#fde68a';
                 loadingIndicator.style.color = '#92400e';
@@ -421,4 +577,3 @@
         initTinyMCE();
     }
 })();
-
