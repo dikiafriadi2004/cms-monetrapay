@@ -163,19 +163,20 @@
                 },
                 credentials: 'same-origin'
             })
-            .then(function(r) { return r.json(); })
+            .then(function(r) {
+                if (!r.ok) { throw new Error('HTTP ' + r.status); }
+                var ct = r.headers.get('Content-Type') || '';
+                if (!ct.includes('application/json')) { throw new Error('Perlu login ulang (bukan JSON response)'); }
+                return r.json();
+            })
             .then(function(data) {
-                var images = (data.files || []).filter(function(f) {
-                    return f.mime_type && f.mime_type.startsWith('image/');
-                });
+                var images = (data.files || []);
                 renderImages(images);
-                setStatus(images.length + ' gambar ditemukan \u2014 klik untuk menyisipkan');
+                setStatus(images.length + ' gambar tersedia \u2014 klik untuk menyisipkan');
             })
             .catch(function(e) {
-                var content = document.getElementById('fm-content');
-                if (content) {
-                    content.innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">Gagal memuat gambar: ' + e.message + '</div>';
-                }
+                var cnt = document.getElementById('fm-content');
+                if (cnt) cnt.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#ef4444;font-weight:600;font-size:13px;">Gagal: ' + e.message + '</p><p style="font-size:12px;color:#64748b;margin-top:6px;">Refresh halaman jika perlu login ulang.</p></div>';
             });
         }
 
