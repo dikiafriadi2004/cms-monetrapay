@@ -5,17 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', $siteName ?? config('app.name'))</title>
-    {{-- Pre-paint dark mode application to avoid flash --}}
-    <script>
-        (function() {
-            try {
-                var t = localStorage.getItem('mp-theme');
-                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                }
-            } catch (e) {}
-        })();
-    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     @php
@@ -151,14 +141,14 @@
 @php
     $waEnabled = \App\Models\Setting::get('whatsapp_float_enabled', 'general');
     $waNumber  = \App\Models\Setting::get('whatsapp_number', 'general');
-    $waText    = \App\Models\Setting::get('whatsapp_text', 'general') ?: 'Halo, saya ingin tahu lebih lanjut';
+    $waText    = \App\Models\Setting::get('whatsapp_text', 'general') ?: 'Halo, saya ingin tahu lebih lanjut tentang MonetraPay';
 @endphp
 @if($waEnabled && $waNumber)
 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $waNumber) }}?text={{ urlencode($waText) }}"
    target="_blank"
    rel="noopener noreferrer"
    id="wa-float"
-   class="fixed z-50 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+   class="fixed z-40 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
    style="bottom:5.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:#25D366"
    aria-label="Chat via WhatsApp"
    title="Chat via WhatsApp">
@@ -195,5 +185,73 @@
     }, { passive: true });
 })();
 </script>
+{{-- Newsletter Popup (hanya frontend, hanya guest, hanya sekali per session) --}}
+@guest
+@php $isAdminRoute = str_starts_with(request()->path(), 'admin'); @endphp
+@if(!$isAdminRoute)
+<div id="newsletter-overlay"
+     class="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden"
+     role="dialog" aria-modal="true" aria-labelledby="newsletter-title">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-on-scroll">
+        <button onclick="closeNewsletterPopup()"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
+                aria-label="Tutup">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <div class="w-14 h-14 mx-auto mb-4 bg-primary-light rounded-2xl flex items-center justify-center">
+                <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <h2 id="newsletter-title" class="text-xl font-extrabold text-slate-800 mb-2">Dapatkan Tips Bisnis Digital</h2>
+            <p class="text-sm text-slate-500">Daftar sekarang dan dapatkan tips bisnis digital terkini langsung di inbox Anda. Gratis!</p>
+        </div>
+        <form action="/newsletter/subscribe" method="POST" class="space-y-3" onsubmit="handleNewsletterSubmit(event, this)">
+            @csrf
+            <input type="email" name="email" required placeholder="Masukkan email Anda..."
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary transition-all">
+            <button type="submit"
+                    class="w-full py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-dark transition-colors shadow-md shadow-primary/25">
+                Daftar Sekarang
+            </button>
+        </form>
+        <p class="text-center text-xs text-slate-400 mt-3">Tidak ada spam. Berhenti berlangganan kapan saja.</p>
+    </div>
+</div>
+<script>
+(function() {
+    var STORAGE_KEY = 'mp-newsletter-dismissed';
+    if (localStorage.getItem(STORAGE_KEY)) return;
+    setTimeout(function() {
+        var overlay = document.getElementById('newsletter-overlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    }, 30000);
+})();
+function closeNewsletterPopup() {
+    var overlay = document.getElementById('newsletter-overlay');
+    if (overlay) overlay.classList.add('hidden');
+    try { localStorage.setItem('mp-newsletter-dismissed', '1'); } catch(e) {}
+}
+function handleNewsletterSubmit(e, form) {
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json' },
+        body: data
+    }).then(function(r) {
+        try { localStorage.setItem('mp-newsletter-dismissed', '1'); } catch(e) {}
+        closeNewsletterPopup();
+    }).catch(function() {
+        closeNewsletterPopup();
+    });
+}
+document.getElementById('newsletter-overlay')?.addEventListener('click', function(e) {
+    if (e.target === this) closeNewsletterPopup();
+});
+</script>
+@endif
+@endguest
 </body>
 </html>
