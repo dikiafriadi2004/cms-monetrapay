@@ -394,12 +394,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Sejak pakai MonetraPay, omzet konter saya naik 3x lipat. Harga kompetitif dan transaksi selalu lancar. Recommended banget!"</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk. Omzet konter saya naik signifikan dalam 2 bulan!"</p>
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
                     <div>
-                        <p class="text-sm font-semibold text-slate-800">Ahmad Rizki</p>
-                        <p class="text-xs text-slate-500">Pemilik Konter, Jakarta</p>
+                        <p class="text-sm font-semibold text-slate-800">Ahmad Fauzi</p>
+                        <p class="text-xs text-slate-500">Agen Pulsa, Surabaya</p>
                     </div>
                 </div>
             </div>
@@ -409,12 +409,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Aplikasinya mudah digunakan, deposit cepat masuk, dan CS-nya responsif 24 jam. Cocok untuk yang baru mulai bisnis pulsa."</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Margin yang diberikan MonetraPay sangat kompetitif dibanding provider lain. Pelanggan saya senang karena harga jual saya tetap bisa bersaing. Proses deposit juga sangat cepat!"</p>
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm">S</div>
                     <div>
-                        <p class="text-sm font-semibold text-slate-800">Siti Nurhaliza</p>
-                        <p class="text-xs text-slate-500">Agen PPOB, Bandung</p>
+                        <p class="text-sm font-semibold text-slate-800">Siti Rahayu</p>
+                        <p class="text-xs text-slate-500">Reseller PPOB, Bandung</p>
                     </div>
                 </div>
             </div>
@@ -424,12 +424,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Fitur top-up game-nya lengkap banget. Pelanggan saya puas karena diamond ML dan UC PUBG selalu ready. Mantap!"</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Support 24/7 membuat saya merasa aman berjualan. Kalau ada kendala transaksi, tim MonetraPay langsung respons dan selesaikan masalah dengan cepat. Sangat profesional!"</p>
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm">B</div>
                     <div>
                         <p class="text-sm font-semibold text-slate-800">Budi Santoso</p>
-                        <p class="text-xs text-slate-500">Reseller Game, Surabaya</p>
+                        <p class="text-xs text-slate-500">Agen PPOB, Medan</p>
                     </div>
                 </div>
             </div>
