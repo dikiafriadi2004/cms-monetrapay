@@ -581,7 +581,7 @@ window.__editorMediaFiles = {!! json_encode($editorMediaFiles->toArray()) !!};
 window.__editorUploadUrl = '{{ route("admin.files.upload") }}';
 window.__editorSearchUrl = '{{ route("admin.files.search") }}';
 </script>
-<script src="{{ asset('js/editor.js') }}"></script>
+<script src="{{ asset('js/editor.js') }}?v={{ filemtime(public_path('js/editor.js')) }}"></script>
 @endif
 
 {{-- Session timeout warning --}}
