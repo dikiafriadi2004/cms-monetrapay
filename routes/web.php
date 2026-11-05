@@ -341,6 +341,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Analytics Routes
     Route::middleware('check.permission:analytics.view')->group(function () {
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::post('analytics/test-connection', [AnalyticsController::class, 'testConnection'])
+            ->name('analytics.test-connection');
     });
 
     // SEO Tools

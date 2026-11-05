@@ -33,6 +33,20 @@ class SettingController extends Controller
 
         $settings = Setting::getGroup($group);
 
+        // Decrypt ga_credentials_json for display (only pass a flag, not the actual value)
+        if ($group === 'seo' && !empty($settings['ga_credentials_json'])) {
+            try {
+                // Verify it decrypts successfully; we only pass a truthy non-JSON string to the view
+                // so the textarea shows the placeholder, not the raw encrypted value
+                decrypt($settings['ga_credentials_json']);
+                // Keep $settings['ga_credentials_json'] as truthy (non-empty) so the "tersimpan" badge shows
+                // but do NOT pass the decrypted JSON to the view for security
+                $settings['ga_credentials_json'] = '__encrypted__';
+            } catch (\Throwable $e) {
+                $settings['ga_credentials_json'] = '';
+            }
+        }
+
         return view('admin.settings.edit', compact('group', 'settings'));
     }
 
@@ -59,6 +73,20 @@ class SettingController extends Controller
         }
 
         // Save each setting
+        // Handle SEO group special fields
+        if ($group === 'seo') {
+            // Encrypt ga_credentials_json before saving
+            if (isset($validated['ga_credentials_json'])) {
+                $json = $validated['ga_credentials_json'];
+                if (empty($json) || str_contains($json, '(tersimpan')) {
+                    // Empty or unchanged placeholder: keep existing value, remove from update
+                    unset($validated['ga_credentials_json']);
+                } else {
+                    $validated['ga_credentials_json'] = encrypt($json);
+                }
+            }
+        }
+
         foreach ($validated as $key => $value) {
             // Encrypt SMTP password at rest
             if ($group === 'email' && $key === 'mail_password' && ! empty($value)) {
@@ -170,6 +198,19 @@ class SettingController extends Controller
                 'meta_title_default' => ['nullable', 'max:70'],
                 'meta_description_default' => ['nullable', 'max:160'],
                 'ga_measurement_id' => ['nullable', 'regex:/^G-[A-Za-z0-9]{1,15}$/'],
+                'ga_property_id'    => ['nullable', 'string', 'regex:/^properties\/\d+$/'],
+                'ga_credentials_json' => ['nullable', 'string', function ($attr, $value, $fail) {
+                    if ($value && !str_contains($value, '(tersimpan')) {
+                        $decoded = json_decode($value, true);
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            $fail('Format JSON tidak valid.');
+                            return;
+                        }
+                        if (!isset($decoded['type']) || $decoded['type'] !== 'service_account') {
+                            $fail('JSON harus berupa Service Account credentials (type: service_account).');
+                        }
+                    }
+                }],
                 'robots_txt' => ['nullable', 'string', 'max:5000'],
             ],
             'footer' => [

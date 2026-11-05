@@ -4,11 +4,29 @@
 
 @section('content')
 <div class="space-y-6">
+    @if(!$isConfigured)
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-2">
+        <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+                <h3 class="text-sm font-semibold text-blue-800">Hubungkan Google Analytics</h3>
+                <p class="text-xs text-blue-700 mt-1">Untuk menampilkan data pengunjung real dari Google Analytics, hubungkan Service Account credentials Anda.</p>
+                <a href="{{route('admin.settings.edit', 'seo')}}" class="inline-block mt-2 text-xs font-medium text-blue-700 underline hover:text-blue-900">Setup di Settings &rarr; SEO</a>
+            </div>
+        </div>
+    </div>
+    @endif
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-800">Analytics Dashboard</h1>
-            <p class="text-sm text-slate-500 mt-1">Data diambil dari database lokal</p>
+            <p class="text-sm mt-1 {{($summary['source'] ?? 'local') === 'google_analytics' ? 'text-green-600' : 'text-slate-500'}}">
+                {{($summary['source'] ?? 'local') === 'google_analytics'
+                    ? '&#x1F4CA; Data dari Google Analytics (real-time)'
+                    : 'Data dari Database Lokal'}}
+            </p>
         </div>
     </div>
 

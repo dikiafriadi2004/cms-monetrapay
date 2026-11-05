@@ -7,8 +7,10 @@ use App\Models\Comment;
 use App\Models\ContactSubmission;
 use App\Models\NewsletterSubscriber;
 use App\Models\Page;
+use App\Models\Setting;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AnalyticsService
@@ -19,11 +21,13 @@ class AnalyticsService
     protected int $cacheTtl = 60;
 
     /**
-     * Always configured — this implementation uses the local database.
+     * Returns true when GA4 credentials are configured in settings.
      */
     public function isConfigured(): bool
     {
-        return true;
+        $propertyId = Setting::get('ga_property_id', 'seo');
+        $credentialsJson = Setting::get('ga_credentials_json', 'seo');
+        return !empty($propertyId) && !empty($credentialsJson);
     }
 
     /**
@@ -81,7 +85,120 @@ class AnalyticsService
     }
 
     /**
-     * Fetch summary data from the local database.
+     * Fetch summary from GA4 API if configured, otherwise fallback to local DB.
+     */
+    protected function fetchSummaryFromApi(): array
+    {
+        $propertyId      = Setting::get('ga_property_id', 'seo');
+        $credentialsJson = Setting::get('ga_credentials_json', 'seo');
+
+        if (!$propertyId || !$credentialsJson) {
+            return $this->getLocalSummary();
+        }
+
+        try {
+            $credentials = json_decode(decrypt($credentialsJson), true);
+            $accessToken = $this->getGoogleAccessToken($credentials);
+
+            if (!$accessToken) {
+                return $this->getLocalSummary();
+            }
+
+            $response = Http::withToken($accessToken)
+                ->post("https://analyticsdata.googleapis.com/v1beta/{$propertyId}:runReport", [
+                    'dateRanges' => [['startDate' => '30daysAgo', 'endDate' => 'today']],
+                    'metrics'    => [
+                        ['name' => 'activeUsers'],
+                        ['name' => 'sessions'],
+                        ['name' => 'screenPageViews'],
+                        ['name' => 'bounceRate'],
+                        ['name' => 'averageSessionDuration'],
+                    ],
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $row  = $data['rows'][0]['metricValues'] ?? [];
+
+                // Merge GA4 real-time visitor metrics with local DB content counts
+                $local = $this->getLocalSummary();
+                return array_merge($local, [
+                    'users'        => (int) ($row[0]['value'] ?? 0),
+                    'sessions'     => (int) ($row[1]['value'] ?? 0),
+                    'pageviews'    => (int) ($row[2]['value'] ?? 0),
+                    'bounce_rate'  => round((float) ($row[3]['value'] ?? 0) * 100, 1),
+                    'avg_duration' => round((float) ($row[4]['value'] ?? 0)),
+                    'source'       => 'google_analytics',
+                ]);
+            }
+        } catch (\Throwable $e) {
+            Log::error('GA4 API error: ' . $e->getMessage());
+        }
+
+        return $this->getLocalSummary();
+    }
+
+    /**
+     * Generate a Google OAuth2 access token from a service account JWT.
+     */
+    private function getGoogleAccessToken(array $credentials): ?string
+    {
+        try {
+            $now     = time();
+            $header  = rtrim(strtr(base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT'])), '+/', '-_'), '=');
+            $payload = rtrim(strtr(base64_encode(json_encode([
+                'iss'   => $credentials['client_email'],
+                'scope' => 'https://www.googleapis.com/auth/analytics.readonly',
+                'aud'   => 'https://oauth2.googleapis.com/token',
+                'exp'   => $now + 3600,
+                'iat'   => $now,
+            ])), '+/', '-_'), '=');
+
+            $unsignedToken = $header . '.' . $payload;
+            $privateKey    = openssl_pkey_get_private($credentials['private_key']);
+            openssl_sign($unsignedToken, $signature, $privateKey, 'SHA256');
+            $jwt = $unsignedToken . '.' . rtrim(strtr(base64_encode($signature), '+/', '-_'), '=');
+
+            $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
+                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion'  => $jwt,
+            ]);
+
+            return $response->json('access_token');
+        } catch (\Throwable $e) {
+            Log::error('GA4 token error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Test GA4 API connectivity with the given credentials and property ID.
+     *
+     * @throws \RuntimeException on failure
+     */
+    public function testConnection(array $credentials, string $propertyId): bool
+    {
+        $accessToken = $this->getGoogleAccessToken($credentials);
+        if (!$accessToken) {
+            throw new \RuntimeException('Gagal mendapatkan access token. Periksa credentials JSON.');
+        }
+
+        $response = Http::withToken($accessToken)
+            ->post("https://analyticsdata.googleapis.com/v1beta/{$propertyId}:runReport", [
+                'dateRanges' => [['startDate' => 'yesterday', 'endDate' => 'today']],
+                'metrics'    => [['name' => 'activeUsers']],
+            ]);
+
+        if (!$response->successful()) {
+            $error = $response->json('error.message') ?? $response->body();
+            throw new \RuntimeException('GA4 API error: ' . $error);
+        }
+
+        return true;
+    }
+
+    /**
+     * Fetch summary data from the local database (fallback).
      *
      * @return array{
      *   users: int,
@@ -99,7 +216,7 @@ class AnalyticsService
      *   total_subscribers_total: int,
      * }
      */
-    protected function fetchSummaryFromApi(): array
+    protected function getLocalSummary(): array
     {
         $blogsPublished = Blog::where('status', 'published')->count();
         $blogsDraft     = Blog::where('status', 'draft')->count();
