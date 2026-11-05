@@ -227,7 +227,17 @@
                         var json = JSON.parse(xhr.responseText);
                         if (json.success && json.file && json.file.url) {
                             setStatus('Upload berhasil! Klik gambar untuk menyisipkan.', '#166534');
-                            loadImages('');
+                            // Add new file to cached list and re-render immediately
+                            if (!window.__editorMediaFiles) window.__editorMediaFiles = [];
+                            window.__editorMediaFiles.unshift({
+                                id: json.file.id,
+                                url: json.file.url,
+                                thumbnail_url: json.file.thumbnail_url || json.file.url,
+                                original_name: json.file.original_name || 'image',
+                                mime_type: json.file.mime_type || 'image/png'
+                            });
+                            renderImages(window.__editorMediaFiles);
+                            setStatus(window.__editorMediaFiles.length + ' gambar tersedia \u2014 klik untuk menyisipkan');
                             return;
                         }
                     } catch(ex) {}
@@ -588,5 +598,6 @@
         initTinyMCE();
     }
 })();
+
 
 

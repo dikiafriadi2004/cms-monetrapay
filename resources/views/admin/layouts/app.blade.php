@@ -577,7 +577,7 @@
     }
 @endphp
 <script>
-window.__editorMediaFiles = {!! json_encode($editorMediaFiles) !!};
+window.__editorMediaFiles = {!! json_encode($editorMediaFiles->toArray()) !!};
 window.__editorUploadUrl = '{{ route("admin.files.upload") }}';
 window.__editorSearchUrl = '{{ route("admin.files.search") }}';
 </script>
