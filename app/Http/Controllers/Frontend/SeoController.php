@@ -3,34 +3,76 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
+use App\Models\Page;
 use App\Models\Setting;
 use Illuminate\Http\Response;
 
 class SeoController extends Controller
 {
     /**
-     * Serve the sitemap.xml file.
-     * Returns the pre-generated sitemap from the public directory.
+     * Generate and serve a dynamic sitemap from the database.
      */
     public function sitemap(): Response
     {
-        $sitemapPath = public_path('sitemap.xml');
+        $xml = $this->buildSitemapXml();
 
-        if (! file_exists($sitemapPath)) {
-            // Generate a minimal sitemap if file doesn't exist
-            $content = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL;
-            $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL;
-            $content .= '    <url>'.PHP_EOL;
-            $content .= '        <loc>'.url('/').'</loc>'.PHP_EOL;
-            $content .= '    </url>'.PHP_EOL;
-            $content .= '</urlset>'.PHP_EOL;
-        } else {
-            $content = file_get_contents($sitemapPath);
-        }
-
-        return response($content, 200, [
+        return response($xml, 200, [
             'Content-Type' => 'application/xml',
         ]);
+    }
+
+    /**
+     * Build the full sitemap XML string.
+     */
+    public function buildSitemapXml(): string
+    {
+        $lines = [];
+        $lines[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        $lines[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        // Static pages
+        $staticPages = [
+            ['loc' => url('/'),             'priority' => '0.8'],
+            ['loc' => url('/blog'),         'priority' => '0.8'],
+            ['loc' => url('/tentang-kami'), 'priority' => '0.8'],
+            ['loc' => url('/layanan'),      'priority' => '0.8'],
+            ['loc' => url('/kontak'),       'priority' => '0.8'],
+        ];
+
+        foreach ($staticPages as $page) {
+            $lines[] = '    <url>';
+            $lines[] = '        <loc>' . htmlspecialchars($page['loc'], ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</loc>';
+            $lines[] = '        <changefreq>weekly</changefreq>';
+            $lines[] = '        <priority>' . $page['priority'] . '</priority>';
+            $lines[] = '    </url>';
+        }
+
+        // Published pages from the database
+        $pages = Page::where('status', 'published')->get(['slug', 'updated_at']);
+        foreach ($pages as $page) {
+            $lines[] = '    <url>';
+            $lines[] = '        <loc>' . htmlspecialchars(url('/' . $page->slug), ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</loc>';
+            $lines[] = '        <lastmod>' . $page->updated_at->toAtomString() . '</lastmod>';
+            $lines[] = '        <changefreq>monthly</changefreq>';
+            $lines[] = '        <priority>0.7</priority>';
+            $lines[] = '    </url>';
+        }
+
+        // Published blogs from the database
+        $blogs = Blog::where('status', 'published')->get(['slug', 'updated_at']);
+        foreach ($blogs as $blog) {
+            $lines[] = '    <url>';
+            $lines[] = '        <loc>' . htmlspecialchars(route('blog.show', $blog->slug), ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</loc>';
+            $lines[] = '        <lastmod>' . $blog->updated_at->toAtomString() . '</lastmod>';
+            $lines[] = '        <changefreq>monthly</changefreq>';
+            $lines[] = '        <priority>0.6</priority>';
+            $lines[] = '    </url>';
+        }
+
+        $lines[] = '</urlset>';
+
+        return implode(PHP_EOL, $lines);
     }
 
     /**

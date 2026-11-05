@@ -19,3 +19,4 @@ Schedule::command('cache:warm')->hourly();
 Schedule::command('queue:prune-batches --hours=48')->daily();
 Schedule::command('queue:flush')->daily(); // clear failed jobs >1 day old (optional)
 Schedule::command('blogs:publish-scheduled')->everyMinute();
+Schedule::command('sitemap:generate')->daily();
