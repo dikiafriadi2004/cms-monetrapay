@@ -86,8 +86,8 @@ class AnalyticsService
      * @return array{
      *   users: int,
      *   pageviews: int,
-     *   bounce_rate: float,
-     *   avg_session_duration: int,
+     *   comments: int,
+     *   contacts: int,
      *   total_blogs_published: int,
      *   total_blogs_draft: int,
      *   total_pages_published: int,
@@ -117,8 +117,8 @@ class AnalyticsService
         return [
             'users'                    => $subscribersActive,
             'pageviews'                => $blogsPublished + $pagesPublished,
-            'bounce_rate'              => 0.0,
-            'avg_session_duration'     => 0,
+            'comments'                 => $commentsApproved,
+            'contacts'                 => $contactsTotal,
             'total_blogs_published'    => $blogsPublished,
             'total_blogs_draft'        => $blogsDraft,
             'total_pages_published'    => $pagesPublished,

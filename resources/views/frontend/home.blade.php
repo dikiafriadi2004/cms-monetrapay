@@ -190,6 +190,39 @@
                         @if(!empty($homepage['hero_image']))
                             <img src="{{ Storage::url($homepage['hero_image']) }}" alt="{{ $siteName ?? config('app.name') }} App"
                                  class="w-72 xl:w-96 object-contain drop-shadow-2xl">
+                        @else
+                            {{-- Placeholder illustration when no image uploaded --}}
+                            <div class="w-64 xl:w-80 mx-auto">
+                                <svg viewBox="0 0 280 480" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-2xl">
+                                    <!-- Phone frame -->
+                                    <rect x="20" y="10" width="240" height="460" rx="30" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                                    <rect x="30" y="20" width="220" height="440" rx="22" fill="#0f172a"/>
+                                    <!-- Screen content -->
+                                    <rect x="40" y="50" width="200" height="80" rx="12" fill="#3D9E7A" opacity="0.9"/>
+                                    <rect x="55" y="65" width="80" height="12" rx="6" fill="white" opacity="0.9"/>
+                                    <rect x="55" y="83" width="120" height="8" rx="4" fill="white" opacity="0.6"/>
+                                    <rect x="55" y="97" width="60" height="8" rx="4" fill="#F59E0B" opacity="0.9"/>
+                                    <!-- Balance card -->
+                                    <rect x="40" y="145" width="200" height="70" rx="12" fill="#1e3a5f"/>
+                                    <rect x="55" y="158" width="90" height="8" rx="4" fill="white" opacity="0.5"/>
+                                    <rect x="55" y="172" width="130" height="16" rx="6" fill="white" opacity="0.9"/>
+                                    <rect x="55" y="194" width="70" height="8" rx="4" fill="#3D9E7A" opacity="0.8"/>
+                                    <!-- Menu items -->
+                                    <rect x="40" y="228" width="90" height="55" rx="10" fill="#1e293b"/>
+                                    <rect x="145" y="228" width="95" height="55" rx="10" fill="#1e293b"/>
+                                    <rect x="53" y="243" width="30" height="12" rx="6" fill="#3D9E7A" opacity="0.7"/>
+                                    <rect x="53" y="261" width="55" height="8" rx="4" fill="white" opacity="0.5"/>
+                                    <rect x="158" y="243" width="30" height="12" rx="6" fill="#F59E0B" opacity="0.7"/>
+                                    <rect x="158" y="261" width="55" height="8" rx="4" fill="white" opacity="0.5"/>
+                                    <!-- Transaction list -->
+                                    <rect x="40" y="296" width="200" height="12" rx="6" fill="#334155"/>
+                                    <rect x="40" y="316" width="170" height="10" rx="5" fill="#1e293b"/>
+                                    <rect x="40" y="334" width="150" height="10" rx="5" fill="#1e293b"/>
+                                    <rect x="40" y="352" width="160" height="10" rx="5" fill="#1e293b"/>
+                                    <!-- Home indicator -->
+                                    <rect x="110" y="450" width="60" height="4" rx="2" fill="#334155"/>
+                                </svg>
+                            </div>
                         @endif
                     </div>
                     <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 h-8 bg-primary/20 blur-2xl rounded-full"></div>
@@ -199,6 +232,40 @@
         </div>
     </div>
 </section>
+
+{{-- ═══════════════ ABOUT SECTION ═══════════════ --}}
+@if(!empty($homepage['about_title']) || !empty($homepage['about_description']) || !empty($homepage['about_image']))
+<section class="py-16 md:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {{-- Image --}}
+            @if(!empty($homepage['about_image']))
+            <div class="animate-on-scroll order-2 lg:order-1">
+                <img src="{{Storage::url($homepage['about_image'])}}"
+                     alt="{{$homepage['about_title'] ?? 'Tentang Kami'}}"
+                     class="w-full rounded-2xl shadow-lg object-cover">
+            </div>
+            @endif
+
+            {{-- Text --}}
+            <div class="animate-on-scroll order-1 lg:order-2 {{empty($homepage['about_image']) ? 'lg:col-span-2 text-center max-w-3xl mx-auto' : ''}}">
+                <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full uppercase tracking-widest mb-4">Tentang Kami</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 leading-tight mb-5">
+                    {{$homepage['about_title'] ?? 'Tentang MonetraPay'}}
+                </h2>
+                @if(!empty($homepage['about_description']))
+                <p class="text-slate-500 leading-relaxed text-lg mb-6">{{$homepage['about_description']}}</p>
+                @endif
+                <a href="{{url('/tentang-kami')}}"
+                   class="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-200">
+                    Pelajari Lebih Lanjut
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ═══════════════ MARQUEE PRODUK ═══════════════ --}}
 <section class="py-16 bg-white border-y border-slate-100">
@@ -450,7 +517,7 @@
             <p class="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
                 {{ $homepage['cta_description'] ?? 'Bergabung sebagai agen MonetraPay, kelola transaksi digital dalam satu dashboard, dan mulai dari deposit ringan.' }}
             </p>
-            <a href="{{ $homepage['cta_button_url'] ?? '#daftar' }}"
+            <a href="{{ $homepage['cta_button_url'] ?? url('/kontak') }}"
                class="btn-scale inline-flex items-center px-10 py-4 bg-secondary text-white font-bold rounded-xl hover:bg-secondary-dark transition-colors duration-200 shadow-lg shadow-secondary/30 text-lg">
                 {{ $homepage['cta_button_text'] ?? 'Daftar Jadi Agen' }}
                 <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>

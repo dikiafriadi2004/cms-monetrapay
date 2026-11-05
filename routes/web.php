@@ -142,6 +142,10 @@ Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->na
 | Modules: blog, page, category, menu, file, ad, setting, analytics
 | Operations: view, create, edit, delete
 */
+
+// Redirect /admin to dashboard
+Route::redirect('/admin', '/admin/dashboard')->name('admin');
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard (accessible to all authenticated users)

@@ -26,7 +26,7 @@
         {{-- Summary Cards --}}
         @if ($summary)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {{-- Total Subscriber Aktif --}}
+            {{-- Newsletter Aktif --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -35,13 +35,13 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Subscriber Aktif</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Newsletter Aktif</p>
                         <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['users']) }}</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Total Konten Publik --}}
+            {{-- Total Konten --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -51,40 +51,38 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Konten Publik</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Konten</p>
                         <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['pageviews']) }}</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Bounce Rate --}}
+            {{-- Komentar Disetujui --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Bounce Rate</p>
-                        <p class="text-2xl font-bold text-slate-800">{{ $summary['bounce_rate'] }}%</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Komentar Disetujui</p>
+                        <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['comments']) }}</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Avg Session Duration --}}
+            {{-- Total Pesan Masuk --}}
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Avg. Duration</p>
-                        <p class="text-2xl font-bold text-slate-800">
-                            {{ floor($summary['avg_session_duration'] / 60) }}m {{ $summary['avg_session_duration'] % 60 }}s
-                        </p>
+                        <p class="text-xs text-slate-500 uppercase tracking-wide">Total Pesan Masuk</p>
+                        <p class="text-2xl font-bold text-slate-800">{{ number_format($summary['contacts']) }}</p>
                     </div>
                 </div>
             </div>
