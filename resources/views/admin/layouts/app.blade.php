@@ -557,6 +557,30 @@
 @yield('scripts')
 <script src="{{ asset('js/seo-counter.js') }}"></script>
 @hasSection('uses-editor')
+@php
+    // Pre-load media files for TinyMCE file picker (avoids AJAX auth issues)
+    try {
+        $editorMediaFiles = \App\Models\Media::where('mime_type', 'like', 'image/%')
+            ->orderByDesc('created_at')
+            ->limit(100)
+            ->get()
+            ->map(fn($m) => [
+                'id'            => $m->id,
+                'url'           => \Illuminate\Support\Facades\Storage::url($m->path),
+                'thumbnail_url' => $m->thumbnail_path ? \Illuminate\Support\Facades\Storage::url($m->thumbnail_path) : \Illuminate\Support\Facades\Storage::url($m->path),
+                'original_name' => $m->original_name,
+                'mime_type'     => $m->mime_type,
+            ])
+            ->values();
+    } catch (\Throwable $e) {
+        $editorMediaFiles = collect();
+    }
+@endphp
+<script>
+window.__editorMediaFiles = {!! json_encode($editorMediaFiles) !!};
+window.__editorUploadUrl = '{{ route("admin.files.upload") }}';
+window.__editorSearchUrl = '{{ route("admin.files.search") }}';
+</script>
 <script src="{{ asset('js/editor.js') }}"></script>
 @endif
 

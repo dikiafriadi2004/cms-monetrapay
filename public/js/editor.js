@@ -153,31 +153,41 @@
 
         // ── Load images via AJAX ──────────────────────────────────────────
         function loadImages(search) {
-            var url = '/admin/files/search?q=' + encodeURIComponent(search || '') + '&type=image';
-            setStatus('Memuat gambar...');
+            // Use pre-loaded media files injected from server (avoids AJAX auth issues)
+            var allImages = window.__editorMediaFiles || [];
+            if (search && search.length >= 2) {
+                var q = search.toLowerCase();
+                allImages = allImages.filter(function(img) {
+                    return (img.original_name || '').toLowerCase().indexOf(q) !== -1;
+                });
+            }
+            renderImages(allImages);
+            setStatus(allImages.length + ' gambar tersedia — klik untuk menyisipkan');
+            
+            // Also refresh from server in background to get newly uploaded files
+            var url = (window.__editorSearchUrl || '/admin/files/search') + '?q=' + encodeURIComponent(search || '') + '&type=image';
             fetch(url, {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrf,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
                 credentials: 'same-origin'
             })
-            .then(function(r) {
-                if (!r.ok) { throw new Error('HTTP ' + r.status); }
-                var ct = r.headers.get('Content-Type') || '';
-                if (!ct.includes('application/json')) { throw new Error('Perlu login ulang (bukan JSON response)'); }
-                return r.json();
+            .then(function(r) { 
+                if (r.ok) return r.json(); 
+                return null;
             })
             .then(function(data) {
-                var images = (data.files || []);
-                renderImages(images);
-                setStatus(images.length + ' gambar tersedia \u2014 klik untuk menyisipkan');
+                if (data && data.files && data.files.length > 0) {
+                    var fresh = data.files;
+                    if (search && search.length >= 2) {
+                        var q2 = search.toLowerCase();
+                        fresh = fresh.filter(function(f) { return (f.original_name||'').toLowerCase().indexOf(q2) !== -1; });
+                    }
+                    renderImages(fresh);
+                    setStatus(fresh.length + ' gambar tersedia — klik untuk menyisipkan');
+                    // Update cache
+                    if (!search) window.__editorMediaFiles = fresh;
+                }
             })
-            .catch(function(e) {
-                var cnt = document.getElementById('fm-content');
-                if (cnt) cnt.innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#ef4444;font-weight:600;font-size:13px;">Gagal: ' + e.message + '</p><p style="font-size:12px;color:#64748b;margin-top:6px;">Refresh halaman jika perlu login ulang.</p></div>';
-            });
+            .catch(function() {}); // Silently fail - we already showed cached images
         }
 
         // ── Upload handler ────────────────────────────────────────────────
@@ -196,7 +206,7 @@
             formData.append('file', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/admin/files/upload');
+            xhr.open('POST', window.__editorUploadUrl || '/admin/files/upload');
             xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
             xhr.setRequestHeader('Accept', 'application/json');
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -578,3 +588,5 @@
         initTinyMCE();
     }
 })();
+
+
