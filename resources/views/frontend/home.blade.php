@@ -188,10 +188,7 @@
                     {{-- Phone image --}}
                     <div class="relative z-10">
                         @if(!empty($homepage['hero_image']))
-                            <img src="{{ Storage::url($homepage['hero_image']) }}" alt="MonetraPay App"
-                                 class="w-72 xl:w-96 object-contain drop-shadow-2xl">
-                        @elseif(file_exists(public_path('assets/images/hero.png')))
-                            <img src="/assets/images/hero.png" alt="MonetraPay App"
+                            <img src="{{ Storage::url($homepage['hero_image']) }}" alt="{{ $siteName ?? config('app.name') }} App"
                                  class="w-72 xl:w-96 object-contain drop-shadow-2xl">
                         @endif
                     </div>
