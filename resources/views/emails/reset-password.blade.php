@@ -7,76 +7,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reset Password</title>
+<title>Reset Password - {{$siteName}}</title>
 </head>
-<body style="margin:0;padding:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f0fdf4;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;padding:40px 20px;">
+<body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f0fdf4;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0fdf4;padding:32px 16px;">
 <tr><td align="center">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
 
+    {{-- HEADER --}}
     <tr>
-      <td align="center" style="padding-bottom:24px;">
-        <span style="font-size:24px;font-weight:900;color:#3D9E7A;">{{ $siteName }}</span>
-        <p style="margin:4px 0 0;font-size:12px;color:#4b7c65;font-weight:600;">Panel Administrasi</p>
+      <td style="background:linear-gradient(135deg,#3D9E7A 0%,#2D7A5C 100%);border-radius:16px 16px 0 0;padding:36px 40px 32px;text-align:center;">
+        <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
+        <p style="margin:0;font-size:12px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">Panel Administrasi</p>
       </td>
     </tr>
 
+    {{-- BODY --}}
     <tr>
-      <td style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+      <td style="background:#ffffff;padding:40px 40px 32px;">
 
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="background:linear-gradient(90deg,#3D9E7A,#2D7A5C);height:5px;"></td></tr>
-        </table>
-
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:40px 36px 32px;text-align:center;">
-
-            {{-- Lock icon --}}
-            <div style="width:64px;height:64px;background:#dcfce7;border-radius:50%;display:inline-block;line-height:64px;text-align:center;font-size:28px;margin-bottom:20px;">🔐</div>
-
-            <h1 style="margin:0 0 10px;font-size:22px;font-weight:800;color:#0f172a;">Reset Password</h1>
-            <p style="margin:0 0 32px;font-size:14px;color:#64748b;line-height:1.7;max-width:380px;display:inline-block;">
-              Kami menerima permintaan untuk mereset password akun CMS Anda. Klik tombol di bawah untuk membuat password baru.
-            </p>
-
-            {{-- CTA Button --}}
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-              <tr>
-                <td align="center">
-                  <a href="{{ $url }}"
-                     style="display:inline-block;padding:16px 40px;background:#3D9E7A;color:#ffffff;text-decoration:none;font-weight:700;border-radius:12px;font-size:15px;letter-spacing:0.3px;box-shadow:0 4px 12px rgba(61,158,122,0.3);">
-                    Reset Password Sekarang
-                  </a>
-                </td>
-              </tr>
-            </table>
-
-            {{-- URL fallback --}}
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:10px;margin-bottom:24px;border:1px solid #e2e8f0;">
-              <tr><td style="padding:14px 18px;">
-                <p style="margin:0 0 6px;font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Atau copy link ini:</p>
-                <p style="margin:0;font-size:11px;color:#64748b;word-break:break-all;font-family:monospace;line-height:1.5;">{{ $url }}</p>
-              </td></tr>
-            </table>
-
-            {{-- Warning --}}
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;">
-              <tr><td style="padding:14px 18px;">
-                <p style="margin:0;font-size:12px;color:#92400e;line-height:1.6;">
-                  ⚠ <strong>Link berlaku 60 menit.</strong> Jika Anda tidak meminta reset password, abaikan email ini — akun Anda tetap aman dan tidak ada perubahan yang dibuat.
-                </p>
-              </td></tr>
-            </table>
-
+        {{-- Icon --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+          <tr><td align="center">
+            <div style="width:72px;height:72px;background:#dcfce7;border-radius:50%;display:inline-block;line-height:72px;text-align:center;font-size:32px;">&#128272;</div>
           </td></tr>
         </table>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-top:1px solid #f1f5f9;">
-          <tr><td style="padding:14px 36px;text-align:center;">
-            <p style="margin:0;font-size:11px;color:#94a3b8;">© {{ date('Y') }} {{ $siteName }} CMS. Email ini dikirim otomatis.</p>
+        <h1 style="margin:0 0 10px;font-size:24px;font-weight:900;color:#0f172a;text-align:center;">Reset Password Akun Anda</h1>
+        <p style="margin:0 0 32px;font-size:15px;color:#475569;text-align:center;line-height:1.7;">Klik tombol di bawah untuk membuat password baru.<br><strong>Link berlaku 60 menit.</strong></p>
+
+        {{-- CTA Button --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+          <tr><td align="center">
+            <a href="{{$url}}" style="display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#3D9E7A,#2D7A5C);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;font-size:15px;box-shadow:0 4px 15px rgba(61,158,122,0.4);letter-spacing:0.3px;">&#128275; Reset Password Sekarang</a>
           </td></tr>
         </table>
 
+        {{-- Divider --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+          <tr><td style="border-top:1px solid #e2e8f0;"></td></tr>
+        </table>
+
+        {{-- URL Fallback --}}
+        <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;">Atau salin link berikut:</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:24px;">
+          <tr><td style="padding:14px 18px;">
+            <p style="margin:0;font-size:12px;color:#64748b;word-break:break-all;font-family:'Courier New',Courier,monospace;line-height:1.6;">{{$url}}</p>
+          </td></tr>
+        </table>
+
+        {{-- Warning Box --}}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;">
+          <tr><td style="padding:14px 18px;">
+            <p style="margin:0;font-size:13px;color:#92400e;line-height:1.7;">&#9888; <strong>Jika bukan Anda yang meminta reset password</strong>, abaikan email ini. Akun Anda tetap aman dan tidak ada perubahan yang akan dibuat.</p>
+          </td></tr>
+        </table>
+
+      </td>
+    </tr>
+
+    {{-- FOOTER --}}
+    <tr>
+      <td style="background:#1e293b;border-radius:0 0 16px 16px;padding:28px 40px;text-align:center;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#ffffff;">{{$siteName}}</p>
+        <p style="margin:0 0 10px;font-size:12px;color:#94a3b8;">Platform PPOB &amp; Payment Digital Indonesia</p>
+        <p style="margin:0;font-size:11px;color:#475569;">Email ini dikirim otomatis &#8212; tidak perlu dibalas. &copy; {{date('Y')}} {{$siteName}}. All rights reserved.</p>
       </td>
     </tr>
 
