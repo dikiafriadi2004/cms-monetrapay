@@ -3,6 +3,8 @@
     $adminUrl = url('/admin/contacts/' . $submission->id);
     $waNumber = preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $submission->phone));
     $siteUrl = config('app.url', 'https://monetrapay.com');
+    $logoPath = \App\Models\Setting::get('logo', 'general');
+    $logoUrl = $logoPath ? url(\Illuminate\Support\Facades\Storage::url($logoPath)) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -20,8 +22,14 @@
     <tr>
       <td style="background:linear-gradient(135deg,#0f3460 0%,#1a5276 100%);border-radius:16px 16px 0 0;padding:36px 40px 28px;text-align:center;">
         <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:3px;">&#128276; Notifikasi Admin</p>
-        <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
-        <p style="margin:0;font-size:13px;color:#7dd3fc;">Pendaftaran Baru Masuk</p>
+        @if($logoUrl)
+          <img src="{{$logoUrl}}" alt="{{$siteName}}"
+               style="max-height:48px;max-width:200px;width:auto;height:auto;display:inline-block;margin-bottom:8px;" />
+          <br>
+        @else
+          <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
+        @endif
+        <p style="margin:0;font-size:11px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">Notifikasi Admin</p>
       </td>
     </tr>
 

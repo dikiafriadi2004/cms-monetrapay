@@ -1,6 +1,8 @@
 @php
     $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
     $siteUrl = config('app.url', 'https://monetrapay.com');
+    $logoPath = \App\Models\Setting::get('logo', 'general');
+    $logoUrl = $logoPath ? url(\Illuminate\Support\Facades\Storage::url($logoPath)) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -16,9 +18,15 @@
 
     {{-- HEADER --}}
     <tr>
-      <td style="background:linear-gradient(135deg,#3D9E7A 0%,#2D7A5C 100%);border-radius:16px 16px 0 0;padding:36px 40px 32px;text-align:center;">
-        <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
-        <p style="margin:0;font-size:12px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">Panel Administrasi</p>
+      <td style="background:linear-gradient(135deg,#3D9E7A 0%,#2D7A5C 100%);border-radius:16px 16px 0 0;padding:32px 40px 28px;text-align:center;">
+        @if($logoUrl)
+          <img src="{{$logoUrl}}" alt="{{$siteName}}"
+               style="max-height:48px;max-width:200px;width:auto;height:auto;display:inline-block;margin-bottom:8px;" />
+          <br>
+        @else
+          <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
+        @endif
+        <p style="margin:0;font-size:11px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">Panel Administrasi</p>
       </td>
     </tr>
 

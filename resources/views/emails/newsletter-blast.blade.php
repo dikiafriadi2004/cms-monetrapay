@@ -3,6 +3,8 @@
     $siteUrl = config('app.url', 'https://monetrapay.com');
     $unsubToken = $subscriber->confirmation_token ?? '';
     $unsubUrl = $unsubscribeUrl ?? ($unsubToken ? url(route('newsletter.unsubscribe', $unsubToken, false)) : '#');
+    $logoPath = \App\Models\Setting::get('logo', 'general');
+    $logoUrl = $logoPath ? url(\Illuminate\Support\Facades\Storage::url($logoPath)) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -20,7 +22,13 @@
     <tr>
       <td style="background:linear-gradient(135deg,#3D9E7A 0%,#2D7A5C 100%);border-radius:16px 16px 0 0;padding:44px 40px 36px;text-align:center;">
         <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#a7f3d0;text-transform:uppercase;letter-spacing:3px;">Newsletter</p>
-        <p style="margin:0 0 8px;font-size:34px;font-weight:900;color:#ffffff;letter-spacing:-1px;">{{$siteName}}</p>
+        @if($logoUrl)
+          <img src="{{$logoUrl}}" alt="{{$siteName}}"
+               style="max-height:56px;max-width:220px;width:auto;height:auto;display:inline-block;margin-bottom:8px;" />
+          <br>
+        @else
+          <p style="margin:0 0 8px;font-size:34px;font-weight:900;color:#ffffff;letter-spacing:-1px;">{{$siteName}}</p>
+        @endif
         <p style="margin:0;font-size:14px;color:#d1fae5;">Platform PPOB &amp; Payment Digital Indonesia</p>
         @if($subscriber->name ?? false)
         <p style="margin:16px 0 0;font-size:13px;color:#a7f3d0;">Halo, <strong style="color:#ffffff;">{{$subscriber->name}}</strong>!</p>
