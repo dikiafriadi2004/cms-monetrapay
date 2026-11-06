@@ -83,7 +83,7 @@ class KontakPageSeeder extends Seeder
             </div>
           </div>
 
-          <!-- Row 2: No. WA + Topik (as city) -->
+          <!-- Row 2: No. WA + Topik -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
             <div>
               <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Nomor WhatsApp <span style="color:#ef4444;">*</span></label>
@@ -91,7 +91,7 @@ class KontakPageSeeder extends Seeder
             </div>
             <div>
               <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Topik</label>
-              <select name="city" class="kontak-input" style="background:#fff;cursor:pointer;">
+              <select name="subject" class="kontak-input" style="background:#fff;cursor:pointer;">
                 <option value="">-- Pilih Topik --</option>
                 <option value="Bantuan transaksi">Bantuan transaksi</option>
                 <option value="Daftar Agen/Reseller">Daftar Agen/Reseller</option>
@@ -100,6 +100,12 @@ class KontakPageSeeder extends Seeder
                 <option value="Lainnya">Lainnya</option>
               </select>
             </div>
+          </div>
+
+          <!-- Row 3: Kota -->
+          <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Kota Domisili</label>
+            <input type="text" name="city" placeholder="Kota domisili Anda" class="kontak-input">
           </div>
 
           <!-- Pesan -->

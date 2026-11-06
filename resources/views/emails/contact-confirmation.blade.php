@@ -5,13 +5,39 @@
     $siteUrl = config('app.url', 'https://monetrapay.com');
     $logoPath = \App\Models\Setting::get('logo', 'general');
     $logoUrl = $logoPath ? url(\Illuminate\Support\Facades\Storage::url($logoPath)) : null;
+    $subject = $submission->subject ?? null;
+    $isRegistration = $subject === 'Daftar Agen/Reseller' || empty($subject);
+    $emailTitle = match($subject) {
+        'Daftar Agen/Reseller' => 'Pendaftaran Agen Diterima!',
+        'Bantuan transaksi' => 'Laporan Anda Diterima',
+        'Kendala teknis' => 'Laporan Kendala Diterima',
+        'Kerja sama' => 'Proposal Kerja Sama Diterima',
+        default => 'Pesan Anda Telah Diterima',
+    };
+    $emailGreeting = match($subject) {
+        'Daftar Agen/Reseller' => 'mendaftar sebagai agen di',
+        'Bantuan transaksi', 'Kendala teknis' => 'menghubungi tim support',
+        default => 'menghubungi',
+    };
+    $cardTitle = $isRegistration ? 'Detail Pendaftaran Anda' : 'Detail Pesan Anda';
+    $nextStepsTitle = $isRegistration ? 'Langkah Selanjutnya' : 'Yang Akan Kami Lakukan';
+    $steps = $isRegistration ? [
+        ['title' => 'Tim kami akan meninjau data Anda', 'desc' => 'Estimasi waktu: 1&#8211;2 jam kerja'],
+        ['title' => 'Kami akan menghubungi Anda via WhatsApp', 'desc' => 'Nomor: ' . e($submission->phone)],
+        ['title' => 'Selamat bergabung sebagai Agen!', 'desc' => 'Akses panel agen dan mulai berjualan'],
+    ] : [
+        ['title' => 'Tim kami akan meninjau pesan Anda', 'desc' => 'Kami segera memproses permintaan Anda'],
+        ['title' => 'Kami akan menghubungi Anda dalam 1&#215;24 jam', 'desc' => 'Nomor: ' . e($submission->phone)],
+        ['title' => 'Masalah Anda akan segera diselesaikan', 'desc' => 'Tim kami berpengalaman menangani berbagai kendala'],
+    ];
+    $headerSubtitle = $isRegistration ? 'Konfirmasi Pendaftaran' : 'Konfirmasi Pesan';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Konfirmasi Pendaftaran - {{$siteName}}</title>
+<title>{{$headerSubtitle}} - {{$siteName}}</title>
 </head>
 <body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f0fdf4;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0fdf4;padding:32px 16px;">
@@ -28,7 +54,7 @@
         @else
           <p style="margin:0 0 4px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">{{$siteName}}</p>
         @endif
-        <p style="margin:0;font-size:11px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">Konfirmasi Pendaftaran</p>
+        <p style="margin:0;font-size:11px;color:#a7f3d0;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;">{{$headerSubtitle}}</p>
       </td>
     </tr>
 
@@ -43,13 +69,13 @@
           </td></tr>
         </table>
 
-        <h1 style="margin:0 0 8px;font-size:24px;font-weight:900;color:#0f172a;text-align:center;">Pendaftaran Berhasil Diterima!</h1>
-        <p style="margin:0 0 28px;font-size:15px;color:#475569;text-align:center;line-height:1.7;">Halo <strong>{{$submission->name}}</strong>, terima kasih telah mendaftar di <strong>{{$siteName}}</strong>.</p>
+        <h1 style="margin:0 0 8px;font-size:24px;font-weight:900;color:#0f172a;text-align:center;">{{$emailTitle}}</h1>
+        <p style="margin:0 0 28px;font-size:15px;color:#475569;text-align:center;line-height:1.7;">Halo <strong>{{$submission->name}}</strong>, terima kasih telah {{$emailGreeting}} <strong>{{$siteName}}</strong>.</p>
 
         {{-- Summary Card --}}
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:28px;">
           <tr><td style="padding:20px 24px;">
-            <p style="margin:0 0 14px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;">Detail Pendaftaran Anda</p>
+            <p style="margin:0 0 14px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;">{{$cardTitle}}</p>
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="padding:8px 0;font-size:13px;color:#64748b;width:38%;border-bottom:1px solid #f1f5f9;">Nama Lengkap</td>
@@ -65,7 +91,12 @@
                 <td style="padding:8px 0;font-size:14px;color:#0f172a;border-bottom:1px solid #f1f5f9;">{{$submission->email}}</td>
               </tr>
               @endif
-              @if($submission->city)
+              @if($submission->subject)
+              <tr>
+                <td style="padding:8px 0;font-size:13px;color:#64748b;border-bottom:1px solid #f1f5f9;">Topik</td>
+                <td style="padding:8px 0;font-size:14px;color:#0f172a;border-bottom:1px solid #f1f5f9;">{{$submission->subject}}</td>
+              </tr>
+              @elseif($submission->city)
               <tr>
                 <td style="padding:8px 0;font-size:13px;color:#64748b;border-bottom:1px solid #f1f5f9;">Kota</td>
                 <td style="padding:8px 0;font-size:14px;color:#0f172a;border-bottom:1px solid #f1f5f9;">{{$submission->city}}</td>
@@ -82,35 +113,19 @@
         {{-- Next Steps --}}
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
           <tr><td>
-            <p style="margin:0 0 16px;font-size:13px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:1px;">&#128338; Apa yang terjadi selanjutnya?</p>
+            <p style="margin:0 0 16px;font-size:13px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:1px;">&#128338; {{$nextStepsTitle}}</p>
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              @foreach($steps as $i => $step)
               <tr>
                 <td style="padding:10px 0;vertical-align:top;width:40px;">
-                  <div style="width:28px;height:28px;background:linear-gradient(135deg,#3D9E7A,#2D7A5C);border-radius:50%;display:inline-block;line-height:28px;text-align:center;font-size:12px;font-weight:900;color:#fff;">1</div>
+                  <div style="width:28px;height:28px;background:{{$i === 2 && $isRegistration ? 'linear-gradient(135deg,#F59E0B,#D97706)' : 'linear-gradient(135deg,#3D9E7A,#2D7A5C)'}};border-radius:50%;display:inline-block;line-height:28px;text-align:center;font-size:12px;font-weight:900;color:#fff;">{{$i + 1}}</div>
                 </td>
                 <td style="padding:10px 0 10px 8px;">
-                  <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#0f172a;">Tim kami akan meninjau data Anda</p>
-                  <p style="margin:0;font-size:13px;color:#64748b;">Estimasi waktu: 1&#8211;2 jam kerja</p>
+                  <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#0f172a;">{!! $step['title'] !!}</p>
+                  <p style="margin:0;font-size:13px;color:#64748b;">{!! $step['desc'] !!}</p>
                 </td>
               </tr>
-              <tr>
-                <td style="padding:10px 0;vertical-align:top;width:40px;">
-                  <div style="width:28px;height:28px;background:linear-gradient(135deg,#3D9E7A,#2D7A5C);border-radius:50%;display:inline-block;line-height:28px;text-align:center;font-size:12px;font-weight:900;color:#fff;">2</div>
-                </td>
-                <td style="padding:10px 0 10px 8px;">
-                  <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#0f172a;">Kami akan menghubungi Anda via WhatsApp</p>
-                  <p style="margin:0;font-size:13px;color:#64748b;">Nomor: {{$submission->phone}}</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding:10px 0;vertical-align:top;width:40px;">
-                  <div style="width:28px;height:28px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:50%;display:inline-block;line-height:28px;text-align:center;font-size:12px;font-weight:900;color:#fff;">3</div>
-                </td>
-                <td style="padding:10px 0 10px 8px;">
-                  <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#0f172a;">Selamat bergabung sebagai Agen!</p>
-                  <p style="margin:0;font-size:13px;color:#64748b;">Akses panel agen dan mulai berjualan</p>
-                </td>
-              </tr>
+              @endforeach
             </table>
           </td></tr>
         </table>

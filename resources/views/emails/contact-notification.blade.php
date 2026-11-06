@@ -74,6 +74,12 @@
                 </td>
               </tr>
               @endif
+              @if($submission->subject)
+              <tr>
+                <td style="padding:14px 20px;font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Topik</td>
+                <td style="padding:14px 20px;font-size:14px;font-weight:700;color:#dc2626;border-bottom:1px solid #f1f5f9;">{{$submission->subject}}</td>
+              </tr>
+              @endif
               @if($submission->city)
               <tr>
                 <td style="padding:14px 20px;font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Kota</td>
@@ -92,7 +98,7 @@
         {{-- Message Box --}}
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:4px solid #F59E0B;background:#fffbeb;border-radius:0 10px 10px 0;margin-bottom:24px;">
           <tr><td style="padding:16px 20px;">
-            <p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:1px;">Pesan dari Pendaftar</p>
+            <p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:1px;">Pesan{{$submission->subject ? ' tentang: ' . $submission->subject : ' dari Pengirim'}}</p>
             <p style="margin:0;font-size:14px;color:#431407;line-height:1.7;white-space:pre-line;">{{$submission->message}}</p>
           </td></tr>
         </table>
