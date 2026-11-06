@@ -146,6 +146,67 @@ Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->na
 // Redirect /admin to dashboard
 Route::redirect('/admin', '/admin/dashboard')->name('admin');
 
+// Email template preview (admin only, local/dev only)
+Route::middleware('auth')->prefix('admin/email-preview')->name('admin.email-preview.')->group(function () {
+    Route::get('reset-password', function () {
+        return view('emails.reset-password', [
+            'url' => url('/reset-password/dummy-token-preview-only'),
+        ]);
+    })->name('reset-password');
+
+    Route::get('contact-confirmation', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'city' => 'Jakarta Selatan',
+            'message' => 'Halo, saya tertarik bergabung sebagai agen MonetraPay. Mohon informasi lebih lanjut mengenai prosedur pendaftaran dan keuntungan yang ditawarkan.',
+            'created_at' => now(),
+        ];
+        return view('emails.contact-confirmation', compact('submission'));
+    })->name('contact-confirmation');
+
+    Route::get('contact-notification', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'city' => 'Jakarta Selatan',
+            'message' => 'Saya ingin mendaftar sebagai agen.',
+            'created_at' => now(),
+            'ip_address' => '127.0.0.1',
+        ];
+        return view('emails.contact-notification', compact('submission'));
+    })->name('contact-notification');
+
+    Route::get('contact-reply', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'message' => 'Saya ingin mendaftar sebagai agen.',
+            'created_at' => now(),
+        ];
+        $replyMessage = "Halo Diki,\n\nTerima kasih telah menghubungi kami. Kami dengan senang hati akan membantu proses pendaftaran Anda sebagai agen MonetraPay.\n\nSilakan hubungi kami via WhatsApp di nomor berikut untuk proses lebih lanjut.\n\nSalam,\nTim MonetraPay";
+        $adminName = 'Tim MonetraPay';
+        return view('emails.contact-reply', compact('submission', 'replyMessage', 'adminName'));
+    })->name('contact-reply');
+
+    Route::get('newsletter-blast', function () {
+        $campaign = (object)[
+            'subject' => 'Tips Sukses Menjadi Agen Pulsa di Era Digital',
+            'content' => '<p>Halo Mitra MonetraPay!</p><p>Di era digital ini, bisnis pulsa dan PPOB semakin menjanjikan. Berikut beberapa tips untuk memaksimalkan keuntungan Anda sebagai agen:</p><h2>1. Aktif di Media Sosial</h2><p>Promosikan layanan Anda di WhatsApp, Instagram, dan Facebook untuk menjangkau lebih banyak pelanggan.</p><h2>2. Manfaatkan Fitur Cashback</h2><p>Selalu informasikan promo cashback kepada pelanggan untuk meningkatkan transaksi.</p><p>Semangat terus dalam berbisnis!</p>',
+            'user' => (object)['name' => 'Admin MonetraPay'],
+        ];
+        $subscriber = (object)[
+            'name' => 'Diki Afriadi',
+            'email' => 'diki@example.com',
+        ];
+        $unsubscribeUrl = url('/newsletter/unsubscribe/preview-token');
+        return view('emails.newsletter-blast', compact('campaign', 'subscriber', 'unsubscribeUrl'));
+    })->name('newsletter-blast');
+});
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard (accessible to all authenticated users)
