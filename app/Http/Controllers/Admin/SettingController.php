@@ -149,6 +149,9 @@ class SettingController extends Controller
             return $this->respondError('Gagal mengirim email. Periksa konfigurasi SMTP dan coba lagi.');
         }
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Test email berhasil dikirim ke '.$validated['email'].'. Periksa inbox (atau folder spam).']);
+        }
         return back()->with('success', 'Test email berhasil dikirim ke '.$validated['email'].'. Periksa inbox (atau folder spam).');
     }
 
