@@ -16,6 +16,7 @@ class ContactSubmission extends Model
         'phone',
         'email',
         'city',
+        'subject',
         'message',
         'ip_address',
         'user_agent',
