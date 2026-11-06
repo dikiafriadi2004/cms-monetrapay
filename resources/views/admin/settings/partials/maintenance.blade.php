@@ -34,9 +34,10 @@
         </div>
     </div>
 
-    {{-- Status Indicator --}}
-    <div class="p-4 rounded-xl border-2 {{ ($settings['maintenance_mode'] ?? '0') == '1' ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200' }}">
-        @if(($settings['maintenance_mode'] ?? '0') == '1')
+    {{-- Status Indicator — reactive with Alpine toggle --}}
+    <div class="p-4 rounded-xl border-2 transition-colors"
+         :class="enabled ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'">
+        <template x-if="enabled">
             <div class="flex items-center gap-3">
                 <div class="relative">
                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -44,10 +45,11 @@
                 </div>
                 <div>
                     <p class="text-sm font-bold text-red-800">Status Saat Ini: Maintenance</p>
-                    <p class="text-xs text-red-600 mt-0.5">Website tidak dapat diakses publik</p>
+                    <p class="text-xs text-red-600 mt-0.5">Pengunjung publik akan melihat halaman Coming Soon</p>
                 </div>
             </div>
-        @else
+        </template>
+        <template x-if="!enabled">
             <div class="flex items-center gap-3">
                 <div class="w-3 h-3 rounded-full bg-green-500"></div>
                 <div>
@@ -55,6 +57,6 @@
                     <p class="text-xs text-green-600 mt-0.5">Website dapat diakses publik secara normal</p>
                 </div>
             </div>
-        @endif
+        </template>
     </div>
 </div>

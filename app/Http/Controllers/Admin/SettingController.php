@@ -47,6 +47,16 @@ class SettingController extends Controller
             }
         }
 
+        // Decrypt mail_password so form shows actual value (not encrypted gibberish)
+        // Without this, saving without changing password would double-encrypt it
+        if ($group === 'email' && !empty($settings['mail_password'])) {
+            try {
+                $settings['mail_password'] = decrypt($settings['mail_password']);
+            } catch (\Throwable $e) {
+                // Not yet encrypted (legacy plain text) — keep as-is
+            }
+        }
+
         return view('admin.settings.edit', compact('group', 'settings'));
     }
 
@@ -225,7 +235,7 @@ class SettingController extends Controller
                 'mail_host' => ['nullable', 'string', 'max:255'],
                 'mail_port' => ['nullable', 'integer', 'min:1', 'max:65535'],
                 'mail_username' => ['nullable', 'string', 'max:255'],
-                'mail_password' => ['nullable', 'string', 'max:255'],
+                'mail_password' => ['nullable', 'string', 'max:2048'],
                 'mail_encryption' => ['nullable', 'in:tls,ssl,none,'],
                 'mail_from_address' => ['nullable', 'email', 'max:255'],
                 'mail_from_name' => ['nullable', 'string', 'max:100'],
