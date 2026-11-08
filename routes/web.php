@@ -146,9 +146,10 @@ Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->na
 // Redirect /admin to dashboard
 Route::redirect('/admin', '/admin/dashboard')->name('admin');
 
-// Email template preview (admin only, local/dev only)
-Route::middleware('auth')->prefix('admin/email-preview')->name('admin.email-preview.')->group(function () {
-    Route::get('reset-password', function () {
+if (app()->environment('local', 'staging', 'development')) {
+    // Email template preview (admin only, local/staging only — never in production)
+    Route::middleware('auth')->prefix('admin/email-preview')->name('admin.email-preview.')->group(function () {
+        Route::get('reset-password', function () {
         return view('emails.reset-password', [
             'url' => url('/reset-password/dummy-token-preview-only'),
         ]);
@@ -206,6 +207,7 @@ Route::middleware('auth')->prefix('admin/email-preview')->name('admin.email-prev
         return view('emails.newsletter-blast', compact('campaign', 'subscriber', 'unsubscribeUrl'));
     })->name('newsletter-blast');
 });
+}
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
