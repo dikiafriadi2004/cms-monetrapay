@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -85,10 +86,10 @@ class RolePermissionSeeder extends Seeder
         $authorRole = Role::firstOrCreate(['name' => 'Author', 'guard_name' => 'web']);
         $authorRole->syncPermissions($authorPermissions);
 
-        // Kredensial super admin pertama — hardcoded di seeder, tidak perlu di .env.
-        $adminEmail    = 'admin@monetrapay.co.id';
-        $adminPassword = '20041992';
-        $adminName     = 'Diki Afriadi';
+        // Kredensial super admin pertama — dibaca dari .env, tidak di-hardcode.
+        $adminEmail    = env('ADMIN_EMAIL', 'admin@example.com');
+        $adminPassword = env('ADMIN_PASSWORD', \Illuminate\Support\Str::random(16));
+        $adminName     = env('ADMIN_NAME', 'Super Admin');
 
         $superAdmin = User::firstOrCreate(
             ['email' => $adminEmail],
@@ -99,6 +100,16 @@ class RolePermissionSeeder extends Seeder
         );
         $superAdmin->syncRoles([$superAdminRole]);
 
-        $this->command->info('✅ Roles & permissions seeded (44 total). Admin: ' . $adminEmail);
+        $this->command->info('');
+        $this->command->info('╔══════════════════════════════════════════╗');
+        $this->command->info('║         SUPER ADMIN CREDENTIALS          ║');
+        $this->command->info('╠══════════════════════════════════════════╣');
+        $this->command->info('║  Email    : ' . str_pad($adminEmail, 29) . '║');
+        $this->command->info('║  Password : ' . str_pad($adminPassword, 29) . '║');
+        $this->command->info('╚══════════════════════════════════════════╝');
+        $this->command->warn('⚠ Simpan credentials ini! Tidak akan ditampilkan lagi.');
+        $this->command->info('');
+
+        $this->command->info('✅ Roles & permissions seeded (44 total).');
     }
 }
