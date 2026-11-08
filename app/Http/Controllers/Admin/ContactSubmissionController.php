@@ -99,7 +99,7 @@ class ContactSubmissionController extends Controller
                 function ($mail) use ($contact) {
                     $siteName = Setting::get('site_name', 'general') ?? config('app.name');
                     $mail->to($contact->email, $contact->name)
-                        ->subject('Re: Pendaftaran Anda di '.$siteName)
+                        ->subject('Re: ' . ($contact->subject ?? $contact->city ?? 'Pesan Anda') . ' — ' . $siteName)
                         ->replyTo(
                             Setting::get('contact_email', 'general') ?? config('mail.from.address'),
                             $siteName.' Support'
