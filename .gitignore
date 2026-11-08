@@ -41,3 +41,8 @@ diagnose_*.php
 make_ico.php
 verify_render.php
 measure_gap.php
+
+# Debug files (public directory)
+public/test_*.php
+public/debug_*.php
+public/check_*.php
