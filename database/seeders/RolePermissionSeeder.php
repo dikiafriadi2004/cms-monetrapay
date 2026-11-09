@@ -86,10 +86,17 @@ class RolePermissionSeeder extends Seeder
         $authorRole = Role::firstOrCreate(['name' => 'Author', 'guard_name' => 'web']);
         $authorRole->syncPermissions($authorPermissions);
 
-        // Kredensial super admin pertama — dibaca dari .env, tidak di-hardcode.
+        // Kredensial super admin — dibaca dari .env.
+        // Hapus SEMUA user Super Admin lama dulu agar tidak duplikat
         $adminEmail    = env('ADMIN_EMAIL', 'admin@example.com');
         $adminPassword = env('ADMIN_PASSWORD', \Illuminate\Support\Str::random(16));
         $adminName     = env('ADMIN_NAME', 'Super Admin');
+
+        // Hapus user Super Admin lama yang emailnya beda dengan yang di .env
+        User::role('Super Admin')->where('email', '!=', $adminEmail)->each(function ($user) {
+            $user->syncRoles([]);
+            $user->delete();
+        });
 
         $superAdmin = User::firstOrCreate(
             ['email' => $adminEmail],
@@ -98,6 +105,12 @@ class RolePermissionSeeder extends Seeder
                 'password' => bcrypt($adminPassword),
             ]
         );
+
+        // Update nama jika user sudah ada
+        if (!$superAdmin->wasRecentlyCreated) {
+            $superAdmin->update(['name' => $adminName]);
+        }
+
         $superAdmin->syncRoles([$superAdminRole]);
 
         $this->command->info('');
