@@ -31,10 +31,22 @@ USER_COUNT=$(php /var/www/html/artisan tinker --execute="echo App\Models\User::c
 
 if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
     echo "  First install detected - running cms:install..."
+
+    # Validasi credentials tersedia
+    if [ -z "$ADMIN_EMAIL" ]; then
+        echo "ERROR: ADMIN_EMAIL environment variable tidak diset!"
+        echo "Jalankan manual: docker compose exec app php artisan cms:install --admin-name=... --admin-email=... --admin-password=..."
+        exit 1
+    fi
+    if [ -z "$ADMIN_PASSWORD" ]; then
+        echo "ERROR: ADMIN_PASSWORD environment variable tidak diset!"
+        exit 1
+    fi
+
     php /var/www/html/artisan cms:install \
         --admin-name="${ADMIN_NAME:-Super Admin}" \
-        --admin-email="${ADMIN_EMAIL:-admin@example.com}" \
-        --admin-password="${ADMIN_PASSWORD:-$(php -r 'echo substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#"), 0, 16);')}" \
+        --admin-email="${ADMIN_EMAIL}" \
+        --admin-password="${ADMIN_PASSWORD}" \
         --no-interaction
     echo "  Install complete!"
 else
