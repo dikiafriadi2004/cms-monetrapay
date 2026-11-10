@@ -46,3 +46,6 @@ measure_gap.php
 public/test_*.php
 public/debug_*.php
 public/check_*.php
+
+# Docker local override (tidak di-commit, tiap developer beda)
+docker-compose.override.yml
