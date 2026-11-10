@@ -27,19 +27,18 @@ echo "  Migrations complete!"
 
 # Seed only on fresh install (no users)
 echo "[3/6] Checking if first install..."
-USER_COUNT=$(php -r "
-require '/var/www/html/vendor/autoload.php';
-\$app = require '/var/www/html/bootstrap/app.php';
-\$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-echo App\Models\User::count();
-" 2>/dev/null || echo "0")
+USER_COUNT=$(php /var/www/html/artisan tinker --execute="echo App\Models\User::count();" 2>/dev/null | tail -1 | tr -d '[:space:]')
 
-if [ "$USER_COUNT" = "0" ]; then
-    echo "  First install detected - running seeders..."
-    php artisan db:seed --force --no-interaction
-    echo "  Seeding complete!"
+if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
+    echo "  First install detected - running cms:install..."
+    php /var/www/html/artisan cms:install \
+        --admin-name="${ADMIN_NAME:-Super Admin}" \
+        --admin-email="${ADMIN_EMAIL:-admin@example.com}" \
+        --admin-password="${ADMIN_PASSWORD:-$(php -r 'echo substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#"), 0, 16);')}" \
+        --no-interaction
+    echo "  Install complete!"
 else
-    echo "  Existing install detected ($USER_COUNT users) - skipping seed."
+    echo "  Existing install detected ($USER_COUNT users) - skipping."
 fi
 
 # Storage link
