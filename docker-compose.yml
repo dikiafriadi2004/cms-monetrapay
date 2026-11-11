@@ -2,6 +2,10 @@ version: '3.8'
 
 # ============================================================
 # Docker Compose untuk VPS Production
+#
+# Multi-app setup: port internal 8001, routing via Nginx Proxy Manager
+# Single-app setup: ubah APP_PORT=80 di .env
+#
 # Local development: tetap gunakan XAMPP / php artisan serve
 # ============================================================
 
@@ -22,7 +26,7 @@ services:
       - storage_data:/var/www/html/storage/app/public
       - logs_data:/var/www/html/storage/logs
     ports:
-      - "${APP_PORT:-80}:80"
+      - "${APP_PORT:-8001}:80"
     depends_on:
       db:
         condition: service_healthy
@@ -30,6 +34,7 @@ services:
         condition: service_healthy
     networks:
       - cms_network
+      - proxy_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/up"]
       interval: 30s
@@ -88,73 +93,6 @@ volumes:
 networks:
   cms_network:
     driver: bridge
-    volumes:
-      - storage_data:/var/www/html/storage/app/public
-      - logs_data:/var/www/html/storage/logs
-    ports:
-      - "${APP_PORT:-80}:80"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - cms_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/up"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
-  # ── MySQL Database ────────────────────────────────────────
-  db:
-    image: mysql:8.0
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE:-cms_db}
-      MYSQL_USER: ${DB_USERNAME:-cms_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
-    networks:
-      - cms_network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-
-  # ── Redis (Cache + Queue + Session) ──────────────────────
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
-    volumes:
-      - redis_data:/data
-    networks:
-      - cms_network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
-# ── Volumes ───────────────────────────────────────────────
-volumes:
-  db_data:
-    driver: local
-  storage_data:
-    driver: local
-  redis_data:
-    driver: local
-  logs_data:
-    driver: local
-
-# ── Networks ──────────────────────────────────────────────
-networks:
-  cms_network:
-    driver: bridge
+  proxy_network:
+    external: true
+    name: proxy_network

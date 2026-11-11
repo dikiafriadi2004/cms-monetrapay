@@ -1,0 +1,39 @@
+version: '3.8'
+
+# ============================================================
+# Nginx Proxy Manager (NPM)
+# Jalankan INI DULU sebelum project lain di VPS
+#
+# Cara install di VPS (sekali saja):
+#   mkdir -p /opt/npm && cd /opt/npm
+#   cp /path/to/docker-compose.npm.yml docker-compose.yml
+#   docker compose up -d
+#   Akses: http://IP-VPS:81
+#   Login default: admin@example.com / changeme
+# ============================================================
+
+services:
+
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"      # HTTP traffic semua domain
+      - "443:443"    # HTTPS traffic semua domain
+      - "81:81"      # NPM Admin Panel
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy_network
+
+volumes:
+  npm_data:
+    driver: local
+  npm_letsencrypt:
+    driver: local
+
+networks:
+  proxy_network:
+    name: proxy_network
+    driver: bridge
