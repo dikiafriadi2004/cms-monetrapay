@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             LayananPageSeeder::class,
             TentangKamiPageSeeder::class,
             KontakPageSeeder::class,
+            DownloadPageSeeder::class,
             BlogSeeder::class,
             AdsSeeder::class,
         ]);
