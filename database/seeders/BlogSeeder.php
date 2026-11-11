@@ -40,7 +40,7 @@ class BlogSeeder extends Seeder
 
 <h2>Langkah Memulai Bisnis Pulsa</h2>
 <h3>1. Pilih Platform yang Tepat</h3>
-<p>Daftarkan diri ke platform terpercaya seperti MonetraPay yang menyediakan akses ke semua operator dengan harga grosir. Pastikan platform memiliki sistem yang stabil dan support yang responsif.</p>
+<p>Daftarkan diri ke platform terpercaya yang menyediakan akses ke semua operator dengan harga grosir. Pastikan platform memiliki sistem yang stabil dan support yang responsif.</p>
 
 <h3>2. Tentukan Modal Awal</h3>
 <p>Modal awal untuk bisnis pulsa sangat fleksibel. Anda bisa memulai dari Rp 50.000 - Rp 500.000 tergantung target pasar dan volume transaksi yang diinginkan.</p>
@@ -82,7 +82,7 @@ class BlogSeeder extends Seeder
 </ul>
 
 <h2>Cara Kerja PPOB</h2>
-<p>Sistem PPOB bekerja sederhana: Anda sebagai agen menerima pembayaran dari pelanggan, kemudian melakukan transaksi melalui platform seperti MonetraPay. Setiap transaksi berhasil, Anda mendapatkan komisi yang sudah ditetapkan.</p>
+<p>Sistem PPOB bekerja sederhana: Anda sebagai agen menerima pembayaran dari pelanggan, kemudian melakukan transaksi melalui platform layanan PPOB. Setiap transaksi berhasil, Anda mendapatkan komisi yang sudah ditetapkan.</p>
 
 <h2>Keunggulan Bisnis PPOB</h2>
 <ol>
@@ -128,7 +128,7 @@ class BlogSeeder extends Seeder
             [
                 'title'        => 'Tips Meningkatkan Omzet Bisnis Digital: Strategi yang Terbukti Berhasil',
                 'slug'         => 'tips-meningkatkan-omzet-bisnis-digital',
-                'excerpt'      => 'Ingin omzet bisnis digital Anda terus meningkat? Berikut strategi yang terbukti berhasil digunakan oleh agen-agen sukses MonetraPay.',
+                'excerpt'      => 'Ingin omzet bisnis digital Anda terus meningkat? Berikut strategi yang terbukti berhasil digunakan oleh agen-agen sukses platform kami.',
                 'status'       => 'published',
                 'published_at' => Carbon::now()->subDays(1),
                 'category'     => $catTips?->id,
@@ -145,7 +145,7 @@ class BlogSeeder extends Seeder
 <p>Kecepatan dan keramahan adalah kunci. Pelanggan yang puas akan merekomendasikan layanan Anda ke orang lain. Word of mouth adalah marketing terbaik dan paling murah.</p>
 
 <h2>4. Aktif 24 Jam</h2>
-<p>Banyak transaksi digital terjadi di malam hari. Dengan sistem otomatis dari platform seperti MonetraPay, Anda bisa melayani pelanggan kapan saja tanpa harus terjaga sepanjang malam.</p>
+<p>Banyak transaksi digital terjadi di malam hari. Dengan sistem otomatis dari platform kami, Anda bisa melayani pelanggan kapan saja tanpa harus terjaga sepanjang malam.</p>
 
 <h2>5. Program Referral</h2>
 <p>Daftarkan kerabat dan teman sebagai sub-agen. Setiap transaksi yang mereka lakukan akan memberikan komisi tambahan untuk Anda. Semakin banyak jaringan, semakin besar pendapatan.</p>',
@@ -176,7 +176,7 @@ class BlogSeeder extends Seeder
 <p>LinkAja merupakan e-wallet yang terintegrasi dengan layanan BUMN. Cocok untuk pembayaran transportasi umum, tagihan, dan berbagai layanan pemerintah.</p>
 
 <h2>Kesimpulan</h2>
-<p>Sebagai agen bisnis digital, pastikan Anda menyediakan top-up untuk semua e-wallet populer. Dengan platform MonetraPay, Anda bisa mengisi semua dompet digital tersebut dalam satu sistem yang terintegrasi.</p>',
+<p>Sebagai agen bisnis digital, pastikan Anda menyediakan top-up untuk semua e-wallet populer. Dengan platform kami, Anda bisa mengisi semua dompet digital tersebut dalam satu sistem yang terintegrasi.</p>',
             ],
         ];
 

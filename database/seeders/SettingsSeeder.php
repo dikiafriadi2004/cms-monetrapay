@@ -11,14 +11,14 @@ class SettingsSeeder extends Seeder
     {
         $settings = [
             // ── GENERAL ────────────────────────────────────────────────
-            ['group' => 'general', 'key' => 'site_name',             'value' => 'MonetraPay'],
-            ['group' => 'general', 'key' => 'tagline',               'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
-            ['group' => 'general', 'key' => 'contact_email',         'value' => 'support@monetrapay.com'],
-            ['group' => 'general', 'key' => 'contact_phone',         'value' => '+62 812-3456-7890'],
+            ['group' => 'general', 'key' => 'site_name',             'value' => 'CMS'],
+            ['group' => 'general', 'key' => 'tagline',               'value' => 'Platform Digital Terbaik untuk Bisnis Anda'],
+            ['group' => 'general', 'key' => 'contact_email',         'value' => 'support@yourdomain.com'],
+            ['group' => 'general', 'key' => 'contact_phone',         'value' => '+62 800-0000-0000'],
             ['group' => 'general', 'key' => 'maps_lat',              'value' => '-6.2088'],
             ['group' => 'general', 'key' => 'maps_lng',              'value' => '106.8456'],
             ['group' => 'general', 'key' => 'maps_zoom',             'value' => '15'],
-            ['group' => 'general', 'key' => 'office_address',        'value' => 'Jakarta Selatan, DKI Jakarta 12190'],
+            ['group' => 'general', 'key' => 'office_address',        'value' => 'Jl. Contoh No. 1, Jakarta Selatan'],
             ['group' => 'general', 'key' => 'logo',                  'value' => null],
             ['group' => 'general', 'key' => 'favicon',               'value' => null],
             // Navbar CTA — ubah teks & URL sesuai kebutuhan
@@ -26,26 +26,26 @@ class SettingsSeeder extends Seeder
             ['group' => 'general', 'key' => 'navbar_cta_url',        'value' => '/kontak'],
             // WhatsApp Floating Button
             ['group' => 'general', 'key' => 'whatsapp_float_enabled','value' => '1'],
-            ['group' => 'general', 'key' => 'whatsapp_number',       'value' => '6281234567890'],
-            ['group' => 'general', 'key' => 'whatsapp_text',         'value' => 'Halo, saya ingin tahu lebih lanjut tentang layanan MonetraPay'],
+            ['group' => 'general', 'key' => 'whatsapp_number',       'value' => ''],
+            ['group' => 'general', 'key' => 'whatsapp_text',         'value' => 'Halo, saya ingin tahu lebih lanjut tentang layanan kami'],
 
             // ── SOCIAL MEDIA ──────────────────────────────────────────
-            ['group' => 'social', 'key' => 'facebook_url',         'value' => 'https://facebook.com/monetrapay'],
-            ['group' => 'social', 'key' => 'instagram_url',        'value' => 'https://instagram.com/monetrapay'],
-            ['group' => 'social', 'key' => 'twitter_url',          'value' => 'https://twitter.com/monetrapay'],
-            ['group' => 'social', 'key' => 'youtube_url',          'value' => 'https://youtube.com/@monetrapay'],
-            ['group' => 'social', 'key' => 'tiktok_url',           'value' => 'https://tiktok.com/@monetrapay'],
-            ['group' => 'social', 'key' => 'whatsapp_url',         'value' => 'https://wa.me/6281234567890'],
+            ['group' => 'social', 'key' => 'facebook_url',         'value' => ''],
+            ['group' => 'social', 'key' => 'instagram_url',        'value' => ''],
+            ['group' => 'social', 'key' => 'twitter_url',          'value' => ''],
+            ['group' => 'social', 'key' => 'youtube_url',          'value' => ''],
+            ['group' => 'social', 'key' => 'tiktok_url',           'value' => ''],
+            ['group' => 'social', 'key' => 'whatsapp_url',         'value' => ''],
             ['group' => 'social', 'key' => 'linkedin_url',         'value' => ''],
 
             // ── SEO ───────────────────────────────────────────────────
-            ['group' => 'seo', 'key' => 'meta_title_default',      'value' => 'MonetraPay - Platform Transaksi Digital Terpercaya'],
-            ['group' => 'seo', 'key' => 'meta_description_default','value' => 'MonetraPay adalah platform all-in-one untuk penjualan pulsa, PPOB, top-up game, dan e-money. Bergabung sekarang dan mulai bisnis digital Anda.'],
+            ['group' => 'seo', 'key' => 'meta_title_default',      'value' => 'CMS - Platform Transaksi Digital Terpercaya'],
+            ['group' => 'seo', 'key' => 'meta_description_default','value' => 'Platform all-in-one untuk penjualan pulsa, PPOB, top-up game, dan e-money. Bergabung sekarang dan mulai bisnis digital Anda.'],
             ['group' => 'seo', 'key' => 'ga_measurement_id',       'value' => ''],
             ['group' => 'seo', 'key' => 'robots_txt',              'value' => "User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: /sitemap.xml"],
 
             // ── FOOTER ────────────────────────────────────────────────
-            ['group' => 'footer', 'key' => 'copyright_text',       'value' => '© ' . date('Y') . ' MonetraPay. All rights reserved.'],
+            ['group' => 'footer', 'key' => 'copyright_text',       'value' => '© ' . date('Y') . ' CMS. All rights reserved.'],
             ['group' => 'footer', 'key' => 'additional_content',   'value' => ' '],
 
             // ── MAINTENANCE ───────────────────────────────────────────
@@ -61,8 +61,8 @@ class SettingsSeeder extends Seeder
             ['group' => 'email', 'key' => 'mail_username',         'value' => ''],
             ['group' => 'email', 'key' => 'mail_password',         'value' => ''],
             ['group' => 'email', 'key' => 'mail_encryption',       'value' => 'tls'],
-            ['group' => 'email', 'key' => 'mail_from_name',        'value' => 'MonetraPay'],
-            ['group' => 'email', 'key' => 'mail_from_address',     'value' => 'noreply@monetrapay.com'],
+            ['group' => 'email', 'key' => 'mail_from_name',        'value' => 'CMS'],
+            ['group' => 'email', 'key' => 'mail_from_address',     'value' => 'noreply@yourdomain.com'],
 
             // ── HOMEPAGE HERO ─────────────────────────────────────────
             ['group' => 'homepage', 'key' => 'hero_title',         'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
@@ -92,14 +92,14 @@ class SettingsSeeder extends Seeder
             ['group' => 'homepage', 'key' => 'statsbar_4_label',   'value' => 'Dukungan'],
 
             // ── TESTIMONIALS ──────────────────────────────────────────
-            ['group' => 'homepage', 'key' => 'testimonial_1_name', 'value' => 'Ahmad Fauzi'],
-            ['group' => 'homepage', 'key' => 'testimonial_1_role', 'value' => 'Agen Pulsa, Surabaya'],
-            ['group' => 'homepage', 'key' => 'testimonial_1_text', 'value' => 'MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk.'],
-            ['group' => 'homepage', 'key' => 'testimonial_2_name', 'value' => 'Siti Rahayu'],
-            ['group' => 'homepage', 'key' => 'testimonial_2_role', 'value' => 'Reseller PPOB, Bandung'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_name', 'value' => 'Budi Santoso'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_role', 'value' => 'Agen Digital'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_text', 'value' => 'Platform ini sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk.'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_name', 'value' => 'Siti Aminah'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_role', 'value' => 'Reseller Online'],
             ['group' => 'homepage', 'key' => 'testimonial_2_text', 'value' => 'Margin yang diberikan sangat kompetitif. Pelanggan saya senang karena harga jual tetap bisa bersaing. Proses deposit juga sangat cepat!'],
-            ['group' => 'homepage', 'key' => 'testimonial_3_name', 'value' => 'Budi Santoso'],
-            ['group' => 'homepage', 'key' => 'testimonial_3_role', 'value' => 'Agen PPOB, Medan'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_name', 'value' => 'Rahmat Hidayat'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_role', 'value' => 'Pengusaha PPOB'],
             ['group' => 'homepage', 'key' => 'testimonial_3_text', 'value' => 'Support 24/7 membuat saya merasa aman berjualan. Tim selalu respons cepat dan selesaikan masalah dengan profesional.'],
 
             // ── HOMEPAGE SERVICES ─────────────────────────────────────
@@ -114,7 +114,7 @@ class SettingsSeeder extends Seeder
 
             // ── HOMEPAGE CTA ──────────────────────────────────────────
             ['group' => 'homepage', 'key' => 'cta_title',          'value' => 'Siap Mengembangkan Bisnis Pulsa & PPOB?'],
-            ['group' => 'homepage', 'key' => 'cta_description',    'value' => 'Bergabung sekarang dan nikmati keuntungan menjadi mitra MonetraPay. Deposit mulai dari Rp 10.000, margin kompetitif, dan dukungan 24/7.'],
+            ['group' => 'homepage', 'key' => 'cta_description',    'value' => 'Bergabung sekarang dan nikmati keuntungan menjadi mitra kami. Deposit mulai dari Rp 10.000, margin kompetitif, dan dukungan 24/7.'],
             ['group' => 'homepage', 'key' => 'cta_button_text',    'value' => 'Daftar Jadi Agen'],
             ['group' => 'homepage', 'key' => 'cta_button_url',     'value' => '/kontak'],
         ];

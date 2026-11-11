@@ -515,6 +515,7 @@ Route::get('/kontak', [PageFrontController::class, 'show'])->defaults('slug', 'k
 Route::get('/faq', [PageFrontController::class, 'show'])->defaults('slug', 'faq')->name('page.faq');
 Route::get('/kebijakan-privasi', [PageFrontController::class, 'show'])->defaults('slug', 'kebijakan-privasi')->name('page.kebijakan-privasi');
 Route::get('/syarat-ketentuan', [PageFrontController::class, 'show'])->defaults('slug', 'syarat-ketentuan')->name('page.syarat-ketentuan');
+Route::get('/download', [PageFrontController::class, 'show'])->defaults('slug', 'download')->name('page.download');
 
 /*
 |--------------------------------------------------------------------------

@@ -134,7 +134,7 @@ class KontakPageSeeder extends Seeder
           </div>
           <div>
             <div style="font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Email</div>
-            <div style="font-size:14px;font-weight:600;color:#1e293b;"><a href="mailto:support@monetrapay.co.id" style="color:#2563eb;">support@monetrapay.co.id</a></div>
+            <div style="font-size:14px;font-weight:600;color:#1e293b;"><a href="mailto:support@yourdomain.com" style="color:#2563eb;">support@yourdomain.com</a></div>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ class KontakPageSeeder extends Seeder
       <h2 style="font-size:clamp(20px,4vw,28px);font-weight:800;color:#1e293b;margin:0 0 8px;">Lokasi Kami</h2>
       <p style="color:#64748b;font-size:14px;margin:0;">Jl. Gatot Subroto No. 123, Jakarta Selatan, 12930</p>
     </div>
-    <iframe src="https://maps.google.com/maps?q=-6.2088,106.8456&z=15&output=embed" width="100%" height="350" style="border:0;border-radius:12px;display:block;" allowfullscreen="" loading="lazy" title="Lokasi Kantor MonetraPay"></iframe>
+    <iframe src="https://maps.google.com/maps?q=-6.2088,106.8456&z=15&output=embed" width="100%" height="350" style="border:0;border-radius:12px;display:block;" allowfullscreen="" loading="lazy" title="Lokasi Kantor"></iframe>
   </div>
 </section>
 
@@ -195,7 +195,7 @@ class KontakPageSeeder extends Seeder
   <div style="max-width:1100px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;background:#f8fafc;border-radius:16px;padding:40px;border:1px solid #e2e8f0;">
       <div>
-        <h2 style="font-size:clamp(18px,3vw,26px);font-weight:800;color:#1e293b;margin:0 0 10px;">Ingin jadi mitra MonetraPay?</h2>
+        <h2 style="font-size:clamp(18px,3vw,26px);font-weight:800;color:#1e293b;margin:0 0 10px;">Ingin jadi mitra kami?</h2>
         <p style="color:#64748b;font-size:15px;margin:0;max-width:520px;">Pilih topik &ldquo;Kerja sama&rdquo; pada formulir, dan tim kami akan menjelaskan skema harga serta cara bergabung.</p>
       </div>
       <div style="flex-shrink:0;">

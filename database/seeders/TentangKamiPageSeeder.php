@@ -49,7 +49,7 @@ class TentangKamiPageSeeder extends Seeder
           Membuat pembayaran digital terasa <span style="color:#3D9E7A;">mudah untuk semua orang.</span>
         </h1>
         <p style="font-size:clamp(15px,1.8vw,18px);color:#64748b;line-height:1.7;margin:0 0 32px;">
-          MonetraPay hadir untuk mempermudah masyarakat Indonesia dalam bertransaksi digital. Kami percaya bahwa layanan keuangan digital seharusnya dapat diakses oleh siapa saja, di mana saja, kapan saja.
+          [Nama Aplikasi] hadir untuk mempermudah masyarakat Indonesia dalam bertransaksi digital. Kami percaya bahwa layanan keuangan digital seharusnya dapat diakses oleh siapa saja, di mana saja, kapan saja.
         </p>
         <!-- Stats row -->
         <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;">
@@ -78,7 +78,7 @@ class TentangKamiPageSeeder extends Seeder
       <div style="display:flex;justify-content:center;">
         <div style="position:relative;">
           <div style="width:320px;height:320px;background:rgba(61,158,122,.08);border-radius:24px;display:flex;align-items:center;justify-content:center;">
-            <span style="font-size:2.5rem;font-weight:800;color:#1e293b;">MonetraPay</span>
+            <span style="font-size:2.5rem;font-weight:800;color:#1e293b;">[Nama Aplikasi]</span>
           </div>
           <div style="position:absolute;top:-16px;right:-16px;width:80px;height:80px;background:rgba(245,158,11,.1);border-radius:16px;"></div>
           <div style="position:absolute;bottom:-16px;left:-16px;width:56px;height:56px;background:rgba(61,158,122,.1);border-radius:12px;"></div>
@@ -99,7 +99,7 @@ class TentangKamiPageSeeder extends Seeder
           Mitra pembayaran digital yang dekat dengan keseharian Anda
         </h2>
         <p style="color:#64748b;font-size:15px;line-height:1.8;margin:0 0 16px;">
-          MonetraPay didirikan dengan satu tujuan: membuat transaksi digital lebih mudah, lebih cepat, dan lebih terjangkau bagi semua orang di Indonesia.
+          [Nama Aplikasi] didirikan dengan satu tujuan: membuat transaksi digital lebih mudah, lebih cepat, dan lebih terjangkau bagi semua orang di Indonesia.
         </p>
         <p style="color:#64748b;font-size:15px;line-height:1.8;margin:0 0 16px;">
           Dari pulsa hingga tagihan listrik, dari top-up game hingga e-money, kami menyediakan ratusan produk digital dalam satu platform yang mudah digunakan.
@@ -240,7 +240,7 @@ class TentangKamiPageSeeder extends Seeder
           Tumbuh selangkah demi selangkah
         </h2>
         <p style="color:#64748b;font-size:15px;line-height:1.7;margin:0;">
-          Dari sebuah ide sederhana di tahun 2019, MonetraPay telah berkembang menjadi platform transaksi digital yang dipercaya oleh ratusan ribu pengguna di seluruh Indonesia.
+          Dari sebuah ide sederhana di tahun 2019, platform kami telah berkembang menjadi platform transaksi digital yang dipercaya oleh ratusan ribu pengguna di seluruh Indonesia.
         </p>
       </div>
       <!-- Right: timeline items -->
@@ -256,7 +256,7 @@ class TentangKamiPageSeeder extends Seeder
               <span style="font-size:11px;font-weight:700;color:#94a3b8;">2019</span>
               <span style="font-size:14px;font-weight:700;color:#1e293b;">Didirikan</span>
             </div>
-            <p style="font-size:13px;color:#64748b;line-height:1.6;margin:0;">MonetraPay lahir dengan visi menyederhanakan transaksi digital di Indonesia.</p>
+            <p style="font-size:13px;color:#64748b;line-height:1.6;margin:0;">[Nama Aplikasi] lahir dengan visi menyederhanakan transaksi digital di Indonesia.</p>
           </div>
         </div>
         <!-- 2020 -->
@@ -331,7 +331,7 @@ class TentangKamiPageSeeder extends Seeder
       <div style="background:#fff;border-radius:16px;padding:32px 24px;border:1px solid #f1f5f9;box-shadow:0 1px 4px rgba(0,0,0,.05);text-align:center;">
         <div style="font-size:36px;margin-bottom:12px;">🏛️</div>
         <p style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin:0 0 6px;">Terdaftar di</p>
-        <p style="font-size:15px;font-weight:800;color:#1e293b;margin:0;">PT Monetra Payment Indonesia</p>
+        <p style="font-size:15px;font-weight:800;color:#1e293b;margin:0;">[Nama Aplikasi]</p>
         <p style="font-size:12px;color:#3D9E7A;margin:4px 0 0;font-weight:600;">Badan Hukum Resmi</p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:32px 24px;border:1px solid #f1f5f9;box-shadow:0 1px 4px rgba(0,0,0,.05);text-align:center;">
@@ -355,7 +355,7 @@ class TentangKamiPageSeeder extends Seeder
   <div style="max-width:1200px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:48px;">
       <span style="display:inline-block;font-size:11px;font-weight:700;color:#3D9E7A;background:rgba(61,158,122,.1);padding:6px 14px;border-radius:99px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;">Tim Kami</span>
-      <h2 style="font-size:clamp(22px,3.5vw,34px);font-weight:800;color:#1e293b;margin:0;">Orang-orang di balik MonetraPay</h2>
+      <h2 style="font-size:clamp(22px,3.5vw,34px);font-weight:800;color:#1e293b;margin:0;">Orang-orang di balik [Nama Aplikasi]</h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:24px;">
       <div style="text-align:center;">
@@ -389,7 +389,7 @@ class TentangKamiPageSeeder extends Seeder
       Ingin bekerja sama atau sekadar bertanya?
     </h2>
     <p style="color:rgba(255,255,255,.8);font-size:clamp(15px,2vw,18px);margin:0 0 32px;max-width:560px;margin-left:auto;margin-right:auto;">
-      Tim kami siap membantu Anda. Hubungi kami sekarang dan mulai perjalanan digital Anda bersama MonetraPay.
+      Tim kami siap membantu Anda. Hubungi kami sekarang dan mulai perjalanan digital Anda bersama kami.
     </p>
     <a href="/kontak" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#3D9E7A;padding:16px 40px;border-radius:16px;font-size:16px;font-weight:800;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.1);">
       Hubungi Kami
