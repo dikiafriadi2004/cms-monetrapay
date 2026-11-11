@@ -15,7 +15,7 @@ class HomeController extends Controller
     public function index()
     {
         $latestBlogs = $this->cache->latestBlogs(3);
-        $homepage = Setting::getGroup('homepage');
+        $homepage    = Setting::getGroup('homepage');
 
         return view('frontend.home', compact('latestBlogs', 'homepage'));
     }

@@ -222,9 +222,9 @@
                 </tbody>
             </table>
         </div>
-        @if($blogs->hasPages())
-        <div class="px-5 py-4 border-t border-slate-100">{{ $blogs->links() }}</div>
-        @endif
+        <div class="px-5 border-t border-slate-100">
+            <x-admin.pagination :paginator="$blogs" />
+        </div>
     </div>
 
     @include('components.admin.delete-modal')

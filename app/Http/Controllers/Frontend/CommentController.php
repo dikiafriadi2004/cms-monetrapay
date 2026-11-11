@@ -42,7 +42,7 @@ class CommentController extends Controller
         $validated = $request->validate([
             'author_name' => ['required', 'string', 'min:2', 'max:100'],
             'author_email' => ['required', 'email:rfc', 'max:255'],
-            'author_website' => ['nullable', 'url', 'max:255'],
+            'author_website' => ['nullable', 'url', 'max:255', 'regex:/^https?:\/\//i'],
             'content' => ['required', 'string', 'min:5', 'max:2000'],
             'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
         ], [

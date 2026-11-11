@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApiRateLimit;
 use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\FrontendCacheHeaders;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -44,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'check.permission' => CheckPermission::class,
+            'api.rate' => ApiRateLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

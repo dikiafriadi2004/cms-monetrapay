@@ -21,7 +21,24 @@ class PageFrontController extends Controller
     {
         $page = Page::where('slug', $slug)
             ->where('status', 'published')
-            ->firstOrFail();
+            ->first();
+
+        // Page not found — show a graceful "coming soon" page instead of 500
+        if (! $page) {
+            return response()->view('frontend.page.not-found', [
+                'slug' => $slug,
+            ], 404);
+        }
+
+        // GrapesJS pages — has gjs_css set means designed with Visual Editor
+        if (!empty($page->gjs_css)) {
+            return $this->showWithGrapesJs($page);
+        }
+
+        // Legacy page builder
+        if ($page->use_page_builder) {
+            return $this->showWithPageBuilder($page);
+        }
 
         // Enhance content (lazy images, secure external links)
         $page->content = $this->contentEnhancer->enhance($page->content);
@@ -38,9 +55,11 @@ class PageFrontController extends Controller
 
         // Choose template based on page template field
         $templateMap = [
-            'layanan' => 'frontend.page.layanan',
-            'tentang-kami' => 'frontend.page.tentang-kami',
-            'kontak' => 'frontend.page.kontak',
+            'full-width'   => 'frontend.page.template-full-width',
+            'sidebar-right'=> 'frontend.page.template-sidebar-right',
+            'sidebar-left' => 'frontend.page.template-sidebar-left',
+            'landing'      => 'frontend.page.template-landing',
+            'docs'         => 'frontend.page.template-docs',
         ];
 
         $viewName = $templateMap[$page->template] ?? 'frontend.page.show';
@@ -58,6 +77,62 @@ class PageFrontController extends Controller
             'ogTags',
             'twitterTags',
             'structuredData',
+        ));
+    }
+
+    /**
+     * Show page designed with GrapesJS Visual Editor
+     */
+    protected function showWithGrapesJs(Page $page)
+    {
+        $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+        $metaTags       = $this->seoService->getMetaTags($page);
+        $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+        $twitterTags    = $this->seoService->getTwitterCardTags($page);
+        $structuredData = $this->seoService->getStructuredData($page);
+        $breadcrumbs    = $this->buildBreadcrumbs($page);
+
+        return view('frontend.page.grapesjs', compact(
+            'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+            'ogTags', 'twitterTags', 'structuredData',
+        ));
+    }
+
+    /**
+     * Show page with page builder components (legacy)
+     */
+    protected function showWithPageBuilder(Page $page)
+    {
+        // If page was built with GrapesJS (has gjs_css set means GrapesJS was used)
+        if (!empty($page->gjs_css)) {
+            // SEO data
+            $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+            $metaTags       = $this->seoService->getMetaTags($page);
+            $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+            $twitterTags    = $this->seoService->getTwitterCardTags($page);
+            $structuredData = $this->seoService->getStructuredData($page);
+            $breadcrumbs    = $this->buildBreadcrumbs($page);
+
+            return view('frontend.page.grapesjs', compact(
+                'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+                'ogTags', 'twitterTags', 'structuredData',
+            ));
+        }
+
+        // Load visible components ordered (legacy page builder)
+        $page->load('visibleComponents');
+
+        // SEO data
+        $canonicalUrl   = $this->seoService->getCanonicalUrl($page);
+        $metaTags       = $this->seoService->getMetaTags($page);
+        $ogTags         = $this->seoService->getOpenGraphTags($page, $canonicalUrl);
+        $twitterTags    = $this->seoService->getTwitterCardTags($page);
+        $structuredData = $this->seoService->getStructuredData($page);
+        $breadcrumbs    = $this->buildBreadcrumbs($page);
+
+        return view('frontend.page.builder', compact(
+            'page', 'breadcrumbs', 'canonicalUrl', 'metaTags',
+            'ogTags', 'twitterTags', 'structuredData',
         ));
     }
 

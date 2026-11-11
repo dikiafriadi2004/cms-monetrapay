@@ -56,6 +56,85 @@
         </div>
     </div>
 
+    {{-- ═══ STATISTIK ═══ --}}
+    <div class="border border-slate-200 rounded-xl overflow-hidden">
+        <div class="px-5 py-3 bg-gradient-to-r from-primary-light to-white border-b border-slate-100 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-slate-800">Statistik</p>
+                <p class="text-xs text-slate-500">Angka-angka yang ditampilkan di hero dan stats bar beranda</p>
+            </div>
+        </div>
+        <div class="p-5 space-y-4">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Hero Stats (4 angka di bawah hero)</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @foreach([1,2,3,4] as $i)
+                <div class="flex gap-2">
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stat {{ $i }} — Nilai</label>
+                        <input type="text" name="stat_{{ $i }}_value" value="{{ old('stat_'.$i.'_value', $settings['stat_'.$i.'_value'] ?? '') }}" placeholder="100K+">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stat {{ $i }} — Label</label>
+                        <input type="text" name="stat_{{ $i }}_label" value="{{ old('stat_'.$i.'_label', $settings['stat_'.$i.'_label'] ?? '') }}" placeholder="Pengguna Aktif">
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-4">Stats Bar (section gelap di tengah halaman)</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @foreach([1,2,3,4] as $i)
+                <div class="flex gap-2">
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bar {{ $i }} — Nilai</label>
+                        <input type="text" name="statsbar_{{ $i }}_value" value="{{ old('statsbar_'.$i.'_value', $settings['statsbar_'.$i.'_value'] ?? '') }}" placeholder="500K+">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bar {{ $i }} — Label</label>
+                        <input type="text" name="statsbar_{{ $i }}_label" value="{{ old('statsbar_'.$i.'_label', $settings['statsbar_'.$i.'_label'] ?? '') }}" placeholder="Agen Aktif">
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- ═══ TESTIMONI ═══ --}}
+    <div class="border border-slate-200 rounded-xl overflow-hidden">
+        <div class="px-5 py-3 bg-gradient-to-r from-purple-50 to-white border-b border-slate-100 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-slate-800">Testimoni</p>
+                <p class="text-xs text-slate-500">3 testimoni yang ditampilkan di beranda</p>
+            </div>
+        </div>
+        <div class="p-5 space-y-5">
+            @foreach([1,2,3] as $i)
+            <div class="border border-slate-100 rounded-lg p-4 space-y-3">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Testimoni {{ $i }}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama</label>
+                        <input type="text" name="testimonial_{{ $i }}_name" value="{{ old('testimonial_'.$i.'_name', $settings['testimonial_'.$i.'_name'] ?? '') }}" placeholder="Nama Pemberi Testimoni">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Role / Kota</label>
+                        <input type="text" name="testimonial_{{ $i }}_role" value="{{ old('testimonial_'.$i.'_role', $settings['testimonial_'.$i.'_role'] ?? '') }}" placeholder="Agen Pulsa, Surabaya">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Teks Testimoni</label>
+                    <textarea name="testimonial_{{ $i }}_text" rows="2" maxlength="300" placeholder="Tulis testimoni di sini...">{{ old('testimonial_'.$i.'_text', $settings['testimonial_'.$i.'_text'] ?? '') }}</textarea>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
     {{-- ═══ SERVICES (4 cards) ═══ --}}
     <div class="border border-slate-200 rounded-xl overflow-hidden">
         <div class="px-5 py-3 bg-gradient-to-r from-secondary-light to-white border-b border-slate-100 flex items-center gap-2">
@@ -107,7 +186,7 @@
                 <label for="about_title" class="block text-xs font-semibold text-slate-700 mb-1.5">Judul About</label>
                 <input type="text" name="about_title" id="about_title"
                        value="{{ old('about_title', $settings['about_title'] ?? '') }}" maxlength="255"
-                       placeholder="Tentang MonetraPay">
+                       placeholder="Tentang Kami">
                 @error('about_title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>

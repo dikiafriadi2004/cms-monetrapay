@@ -20,7 +20,8 @@ class NewsletterCampaignController extends Controller
     {
         $campaigns = NewsletterCampaign::with('user')
             ->orderByDesc('created_at')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         $activeCount = NewsletterSubscriber::active()->count();
 
@@ -80,7 +81,7 @@ class NewsletterCampaignController extends Controller
             'recipients_count' => $subscribers->count(),
         ]);
 
-        $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
         $sentCount = 0;
         $failed = 0;
 

@@ -10,69 +10,122 @@ class SettingsSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            // General Settings
-            ['group' => 'general', 'key' => 'site_name', 'value' => 'MonetraPay'],
-            ['group' => 'general', 'key' => 'tagline', 'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
-            ['group' => 'general', 'key' => 'contact_email', 'value' => 'support@monetrapay.com'],
-            ['group' => 'general', 'key' => 'contact_phone', 'value' => '+62 812-3456-7890'],
-            ['group' => 'general', 'key' => 'logo', 'value' => null],
-            ['group' => 'general', 'key' => 'favicon', 'value' => null],
+            // ── GENERAL ────────────────────────────────────────────────
+            ['group' => 'general', 'key' => 'site_name',             'value' => 'MonetraPay'],
+            ['group' => 'general', 'key' => 'tagline',               'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
+            ['group' => 'general', 'key' => 'contact_email',         'value' => 'support@monetrapay.com'],
+            ['group' => 'general', 'key' => 'contact_phone',         'value' => '+62 812-3456-7890'],
+            ['group' => 'general', 'key' => 'maps_lat',              'value' => '-6.2088'],
+            ['group' => 'general', 'key' => 'maps_lng',              'value' => '106.8456'],
+            ['group' => 'general', 'key' => 'maps_zoom',             'value' => '15'],
+            ['group' => 'general', 'key' => 'office_address',        'value' => 'Jakarta Selatan, DKI Jakarta 12190'],
+            ['group' => 'general', 'key' => 'logo',                  'value' => null],
+            ['group' => 'general', 'key' => 'favicon',               'value' => null],
+            // Navbar CTA — ubah teks & URL sesuai kebutuhan
+            ['group' => 'general', 'key' => 'navbar_cta_text',       'value' => 'Daftar Jadi Agen'],
+            ['group' => 'general', 'key' => 'navbar_cta_url',        'value' => '/kontak'],
+            // WhatsApp Floating Button
+            ['group' => 'general', 'key' => 'whatsapp_float_enabled','value' => '1'],
+            ['group' => 'general', 'key' => 'whatsapp_number',       'value' => '6281234567890'],
+            ['group' => 'general', 'key' => 'whatsapp_text',         'value' => 'Halo, saya ingin tahu lebih lanjut tentang layanan MonetraPay'],
 
-            // Social Media
-            ['group' => 'social', 'key' => 'facebook_url', 'value' => 'https://facebook.com/monetrapay'],
-            ['group' => 'social', 'key' => 'instagram_url', 'value' => 'https://instagram.com/monetrapay'],
-            ['group' => 'social', 'key' => 'twitter_url', 'value' => 'https://twitter.com/monetrapay'],
-            ['group' => 'social', 'key' => 'youtube_url', 'value' => 'https://youtube.com/@monetrapay'],
-            ['group' => 'social', 'key' => 'tiktok_url', 'value' => 'https://tiktok.com/@monetrapay'],
+            // ── SOCIAL MEDIA ──────────────────────────────────────────
+            ['group' => 'social', 'key' => 'facebook_url',         'value' => 'https://facebook.com/monetrapay'],
+            ['group' => 'social', 'key' => 'instagram_url',        'value' => 'https://instagram.com/monetrapay'],
+            ['group' => 'social', 'key' => 'twitter_url',          'value' => 'https://twitter.com/monetrapay'],
+            ['group' => 'social', 'key' => 'youtube_url',          'value' => 'https://youtube.com/@monetrapay'],
+            ['group' => 'social', 'key' => 'tiktok_url',           'value' => 'https://tiktok.com/@monetrapay'],
+            ['group' => 'social', 'key' => 'whatsapp_url',         'value' => 'https://wa.me/6281234567890'],
+            ['group' => 'social', 'key' => 'linkedin_url',         'value' => ''],
 
-            // SEO
-            ['group' => 'seo', 'key' => 'meta_title_default', 'value' => 'MonetraPay - Platform Transaksi Digital Terpercaya'],
-            ['group' => 'seo', 'key' => 'meta_description_default', 'value' => 'MonetraPay adalah platform all-in-one untuk penjualan pulsa, PPOB, top-up game, dan e-money. Bergabung sekarang dan mulai bisnis digital Anda.'],
-            ['group' => 'seo', 'key' => 'ga_measurement_id', 'value' => null],
+            // ── SEO ───────────────────────────────────────────────────
+            ['group' => 'seo', 'key' => 'meta_title_default',      'value' => 'MonetraPay - Platform Transaksi Digital Terpercaya'],
+            ['group' => 'seo', 'key' => 'meta_description_default','value' => 'MonetraPay adalah platform all-in-one untuk penjualan pulsa, PPOB, top-up game, dan e-money. Bergabung sekarang dan mulai bisnis digital Anda.'],
+            ['group' => 'seo', 'key' => 'ga_measurement_id',       'value' => ''],
+            ['group' => 'seo', 'key' => 'robots_txt',              'value' => "User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: /sitemap.xml"],
 
-            // Footer
-            ['group' => 'footer', 'key' => 'copyright_text', 'value' => '© '.date('Y').' MonetraPay. All rights reserved.'],
-            ['group' => 'footer', 'key' => 'additional_content', 'value' => 'Terdaftar dan diawasi oleh Bank Indonesia'],
+            // ── FOOTER ────────────────────────────────────────────────
+            ['group' => 'footer', 'key' => 'copyright_text',       'value' => '© ' . date('Y') . ' MonetraPay. All rights reserved.'],
+            ['group' => 'footer', 'key' => 'additional_content',   'value' => ' '],
 
-            // Maintenance
-            ['group' => 'maintenance', 'key' => 'maintenance_mode', 'value' => '0'],
+            // ── MAINTENANCE ───────────────────────────────────────────
+            ['group' => 'maintenance', 'key' => 'maintenance_mode','value' => '0'],
+            ['group' => 'maintenance', 'key' => 'maintenance_message', 'value' => 'Kami sedang melakukan pemeliharaan. Kembali lagi sebentar.'],
 
-            // Homepage Settings
-            ['group' => 'homepage', 'key' => 'hero_title', 'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
-            ['group' => 'homepage', 'key' => 'hero_subtitle', 'value' => 'Platform terlengkap untuk penjualan pulsa, pembayaran PPOB, top-up game, dan e-money. Mulai bisnis digital Anda sekarang dengan modal minimal.'],
-            ['group' => 'homepage', 'key' => 'hero_cta_text', 'value' => 'Daftar Jadi Agen'],
-            ['group' => 'homepage', 'key' => 'hero_cta_url', 'value' => '#daftar'],
-            ['group' => 'homepage', 'key' => 'hero_image', 'value' => null],
+            // ── EMAIL ─────────────────────────────────────────────────
+            // Konfigurasi ini bisa di-override dari Admin → Settings → Email
+            // Group harus 'email' agar sesuai dengan SettingController->validGroups dan MailConfigService
+            ['group' => 'email', 'key' => 'mail_driver',           'value' => 'smtp'],
+            ['group' => 'email', 'key' => 'mail_host',             'value' => 'smtp.gmail.com'],
+            ['group' => 'email', 'key' => 'mail_port',             'value' => '587'],
+            ['group' => 'email', 'key' => 'mail_username',         'value' => ''],
+            ['group' => 'email', 'key' => 'mail_password',         'value' => ''],
+            ['group' => 'email', 'key' => 'mail_encryption',       'value' => 'tls'],
+            ['group' => 'email', 'key' => 'mail_from_name',        'value' => 'MonetraPay'],
+            ['group' => 'email', 'key' => 'mail_from_address',     'value' => 'noreply@monetrapay.com'],
 
-            // Services
-            ['group' => 'homepage', 'key' => 'service_1_title', 'value' => 'Pulsa All Operator'],
+            // ── HOMEPAGE HERO ─────────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'hero_title',         'value' => 'All-in-One Payment Solution untuk Bisnis Digital Anda'],
+            ['group' => 'homepage', 'key' => 'hero_subtitle',      'value' => 'Platform terlengkap untuk penjualan pulsa, pembayaran PPOB, top-up game, dan e-money. Mulai bisnis digital Anda sekarang dengan modal minimal.'],
+            ['group' => 'homepage', 'key' => 'hero_cta_text',      'value' => 'Daftar Jadi Agen'],
+            ['group' => 'homepage', 'key' => 'hero_cta_url',       'value' => '/kontak'],
+            ['group' => 'homepage', 'key' => 'hero_image',         'value' => null],
+
+            // ── HOMEPAGE STATS (Hero) ─────────────────────────────────
+            ['group' => 'homepage', 'key' => 'stat_1_value',       'value' => '100K+'],
+            ['group' => 'homepage', 'key' => 'stat_1_label',       'value' => 'Pengguna Aktif'],
+            ['group' => 'homepage', 'key' => 'stat_2_value',       'value' => '500+'],
+            ['group' => 'homepage', 'key' => 'stat_2_label',       'value' => 'Produk Digital'],
+            ['group' => 'homepage', 'key' => 'stat_3_value',       'value' => '99.9%'],
+            ['group' => 'homepage', 'key' => 'stat_3_label',       'value' => 'Uptime Server'],
+            ['group' => 'homepage', 'key' => 'stat_4_value',       'value' => '24/7'],
+            ['group' => 'homepage', 'key' => 'stat_4_label',       'value' => 'Support'],
+
+            // ── HOMEPAGE STATS BAR ────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'statsbar_1_value',   'value' => '500K+'],
+            ['group' => 'homepage', 'key' => 'statsbar_1_label',   'value' => 'Agen Aktif'],
+            ['group' => 'homepage', 'key' => 'statsbar_2_value',   'value' => 'Rp 2T+'],
+            ['group' => 'homepage', 'key' => 'statsbar_2_label',   'value' => 'Total Transaksi'],
+            ['group' => 'homepage', 'key' => 'statsbar_3_value',   'value' => '99.9%'],
+            ['group' => 'homepage', 'key' => 'statsbar_3_label',   'value' => 'Uptime'],
+            ['group' => 'homepage', 'key' => 'statsbar_4_value',   'value' => '24/7'],
+            ['group' => 'homepage', 'key' => 'statsbar_4_label',   'value' => 'Dukungan'],
+
+            // ── TESTIMONIALS ──────────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'testimonial_1_name', 'value' => 'Ahmad Fauzi'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_role', 'value' => 'Agen Pulsa, Surabaya'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_text', 'value' => 'MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk.'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_name', 'value' => 'Siti Rahayu'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_role', 'value' => 'Reseller PPOB, Bandung'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_text', 'value' => 'Margin yang diberikan sangat kompetitif. Pelanggan saya senang karena harga jual tetap bisa bersaing. Proses deposit juga sangat cepat!'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_name', 'value' => 'Budi Santoso'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_role', 'value' => 'Agen PPOB, Medan'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_text', 'value' => 'Support 24/7 membuat saya merasa aman berjualan. Tim selalu respons cepat dan selesaikan masalah dengan profesional.'],
+
+            // ── HOMEPAGE SERVICES ─────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'service_1_title',    'value' => 'Pulsa All Operator'],
             ['group' => 'homepage', 'key' => 'service_1_description', 'value' => 'Jual pulsa semua operator (Telkomsel, Indosat, XL, Tri, Smartfren) dengan harga kompetitif dan margin menguntungkan.'],
-            ['group' => 'homepage', 'key' => 'service_2_title', 'value' => 'PPOB & Tagihan'],
-            ['group' => 'homepage', 'key' => 'service_2_description', 'value' => 'Bayar tagihan PLN, PDAM, BPJS Kesehatan, internet, TV kabel, dan berbagai tagihan lainnya dalam satu platform.'],
-            ['group' => 'homepage', 'key' => 'service_3_title', 'value' => 'Top-Up Game'],
+            ['group' => 'homepage', 'key' => 'service_2_title',    'value' => 'PPOB & Tagihan'],
+            ['group' => 'homepage', 'key' => 'service_2_description', 'value' => 'Bayar tagihan PLN, PDAM, BPJS, internet, TV kabel, dan berbagai tagihan lainnya dalam satu platform.'],
+            ['group' => 'homepage', 'key' => 'service_3_title',    'value' => 'Top-Up Game'],
             ['group' => 'homepage', 'key' => 'service_3_description', 'value' => 'Top-up diamond Mobile Legends, UC PUBG, Free Fire, Genshin Impact, dan 100+ game populer lainnya.'],
-            ['group' => 'homepage', 'key' => 'service_4_title', 'value' => 'E-Money & E-Wallet'],
+            ['group' => 'homepage', 'key' => 'service_4_title',    'value' => 'E-Money & E-Wallet'],
             ['group' => 'homepage', 'key' => 'service_4_description', 'value' => 'Isi saldo GoPay, OVO, DANA, ShopeePay, LinkAja, dan berbagai dompet digital lainnya dengan mudah.'],
 
-            // About
-            ['group' => 'homepage', 'key' => 'about_title', 'value' => 'Mengapa Memilih MonetraPay?'],
-            ['group' => 'homepage', 'key' => 'about_description', 'value' => 'MonetraPay hadir sebagai solusi bisnis digital terpercaya yang telah melayani lebih dari 100.000 agen di seluruh Indonesia. Dengan teknologi terkini, sistem kami menjamin transaksi yang cepat, aman, dan menguntungkan. Bergabunglah dengan komunitas agen sukses MonetraPay dan raih penghasilan tambahan dari rumah.'],
-            ['group' => 'homepage', 'key' => 'about_image', 'value' => null],
-
-            // CTA
-            ['group' => 'homepage', 'key' => 'cta_title', 'value' => 'Siap Mengembangkan Bisnis Pulsa & PPOB?'],
-            ['group' => 'homepage', 'key' => 'cta_description', 'value' => 'Bergabung sekarang dan nikmati keuntungan menjadi mitra MonetraPay. Deposit mulai dari Rp 10.000, margin kompetitif, dan dukungan 24/7.'],
-            ['group' => 'homepage', 'key' => 'cta_button_text', 'value' => 'Daftar Jadi Agen'],
-            ['group' => 'homepage', 'key' => 'cta_button_url', 'value' => '#daftar'],
+            // ── HOMEPAGE CTA ──────────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'cta_title',          'value' => 'Siap Mengembangkan Bisnis Pulsa & PPOB?'],
+            ['group' => 'homepage', 'key' => 'cta_description',    'value' => 'Bergabung sekarang dan nikmati keuntungan menjadi mitra MonetraPay. Deposit mulai dari Rp 10.000, margin kompetitif, dan dukungan 24/7.'],
+            ['group' => 'homepage', 'key' => 'cta_button_text',    'value' => 'Daftar Jadi Agen'],
+            ['group' => 'homepage', 'key' => 'cta_button_url',     'value' => '/kontak'],
         ];
 
-        foreach ($settings as $setting) {
+        foreach ($settings as $s) {
             Setting::updateOrCreate(
-                ['group' => $setting['group'], 'key' => $setting['key']],
-                ['value' => $setting['value']]
+                ['group' => $s['group'], 'key' => $s['key']],
+                ['value' => $s['value']]
             );
         }
 
-        $this->command->info('Settings seeded successfully.');
+        $this->command->info('✅ Settings seeded (' . count($settings) . ' items)');
     }
 }

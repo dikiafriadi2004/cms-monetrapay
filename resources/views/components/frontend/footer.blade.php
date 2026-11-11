@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {{-- About / Site Info --}}
         <div>
-            <h3 class="text-lg font-semibold text-white mb-4">{{ $settings['site_name'] ?? 'MonetraPay' }}</h3>
+            <h3 class="text-lg font-semibold text-white mb-4">{{ $siteName ?? config('app.name') }}</h3>
             @if (!empty($settings['tagline']))
                 <p class="text-sm text-slate-400 mb-4">{{ $settings['tagline'] }}</p>
             @endif
@@ -89,6 +89,6 @@
 
     {{-- Copyright --}}
     <div class="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
-        {{ $settings['copyright_text'] ?? '© ' . date('Y') . ' MonetraPay. All rights reserved.' }}
+        {{ $settings['copyright_text'] ?? '© ' . date('Y') . ' All rights reserved.' }}
     </div>
 </div>

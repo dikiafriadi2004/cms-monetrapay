@@ -50,6 +50,7 @@ class ContactController extends Controller
             'phone' => ['required', 'string', 'min:8', 'max:30', 'regex:/^[0-9+\-\s()]+$/'],
             'email' => ['nullable', 'email:rfc', 'max:255'],
             'city' => ['nullable', 'string', 'max:100'],
+            'subject' => ['nullable', 'string', 'max:100'],
             'message' => ['nullable', 'string', 'max:1000'],
         ], [
             'name.required' => 'Nama wajib diisi.',
@@ -69,31 +70,44 @@ class ContactController extends Controller
             'is_read' => false,
         ]));
 
-        // Auto-reply to submitter (if email provided) + notify admin
-        try {
-            // Re-apply mail config from DB to override any cached .env values
-            app(MailConfigService::class)->apply();
+        // Auto-reply + admin notification dikirim SETELAH response ke user
+        // menggunakan defer() agar tidak memblok response
+        $submissionId = $submission->id;
+        defer(function () use ($submissionId) {
+            try {
+                $submission = ContactSubmission::find($submissionId);
+                if (!$submission) return;
 
-            // 1. Send confirmation auto-reply to the submitter
-            if (! empty($submission->email)) {
-                Mail::to($submission->email)
-                    ->send(new ContactConfirmation($submission));
+                app(MailConfigService::class)->apply();
+
+                // 1. Konfirmasi ke pengirim
+                if (!empty($submission->email)) {
+                    Mail::to($submission->email)
+                        ->send(new ContactConfirmation($submission));
+                }
+
+                // 2. Notifikasi ke admin
+                $adminEmail = Setting::get('contact_email', 'general')
+                    ?? config('mail.from.address');
+
+                if ($adminEmail) {
+                    Mail::to($adminEmail)
+                        ->send(new ContactNotification($submission));
+                }
+            } catch (\Throwable $e) {
+                report($e);
             }
+        });
 
-            // 2. Notify admin email (with Reply-To = submitter)
-            $adminEmail = Setting::get('contact_email', 'general')
-                ?? config('mail.from.address');
+        $topic = $validated['subject'] ?? 'pesan';
+        $successMsg = match(true) {
+            $topic === 'Daftar Agen/Reseller' => 'Terima kasih! Pendaftaran agen Anda telah diterima. Tim kami akan segera menghubungi Anda.',
+            $topic === 'Bantuan transaksi' => 'Terima kasih! Laporan Anda telah diterima. Tim support kami akan segera membantu.',
+            $topic === 'Kendala teknis' => 'Terima kasih! Laporan kendala teknis Anda telah diterima. Tim teknis kami akan segera menangani.',
+            $topic === 'Kerja sama' => 'Terima kasih! Proposal kerja sama Anda telah diterima. Tim kami akan segera menghubungi.',
+            default => 'Terima kasih! Pesan Anda telah diterima. Tim kami akan segera merespons.',
+        };
 
-            if ($adminEmail) {
-                Mail::to($adminEmail)
-                    ->send(new ContactNotification($submission));
-            }
-        } catch (\Throwable $e) {
-            // Mail failure shouldn't break the user flow
-            report($e);
-        }
-
-        return back()
-            ->with('contact_success', 'Terima kasih! Pendaftaran Anda telah diterima. Tim kami akan segera menghubungi Anda.');
+        return back()->with('contact_success', $successMsg);
     }
 }

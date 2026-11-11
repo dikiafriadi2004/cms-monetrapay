@@ -1,11 +1,11 @@
-@extends('frontend.layouts.app')
+﻿@extends('frontend.layouts.app')
 
 @section('title', 'Kategori')
 
 @section('seo')
 @php
-    $catsTitle = 'Kategori - ' . ($siteName ?? 'MonetraPay');
-    $catsDesc = 'Jelajahi semua kategori artikel di MonetraPay.';
+    $catsTitle = 'Kategori - ' . ($siteName ?? config('app.name'));
+    $catsDesc = 'Jelajahi semua kategori artikel di sini.';
     $catsUrl = route('categories.index');
 @endphp
 <title>{{ $catsTitle }}</title>
@@ -15,11 +15,11 @@
 <meta property="og:description" content="{{ $catsDesc }}">
 <meta property="og:url" content="{{ $catsUrl }}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ $siteName ?? 'MonetraPay' }}">
+<meta property="og:site_name" content="{{ $siteName ?? config('app.name') }}">
 @endsection
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-8">
     {{-- Breadcrumb --}}
     <x-frontend.breadcrumb :items="[['label' => 'Kategori', 'url' => '']]" />
 

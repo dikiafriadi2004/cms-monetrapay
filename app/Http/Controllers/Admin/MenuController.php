@@ -20,7 +20,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::withCount('items')->orderBy('location')->orderBy('name')->get();
+        $menus = Menu::withCount('items')->orderBy('location')->orderBy('name')->paginate(20)->withQueryString();
 
         return view('admin.menus.index', compact('menus'));
     }

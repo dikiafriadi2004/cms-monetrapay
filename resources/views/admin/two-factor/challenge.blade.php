@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
-    <title>Verifikasi 2FA — MonetraPay CMS</title>
+    <title>Verifikasi 2FA — {{ config('app.name') }}</title>
     @vite(['resources/css/app.css'])
-    <link rel="icon" href="/assets/images/favico.png" type="image/png">
+    @php $twofaFavicon = \App\Models\Setting::get('favicon', 'general'); @endphp
+    @if($twofaFavicon)
+        <link rel="icon" href="{{ Storage::url($twofaFavicon) }}" type="image/png">
+    @else
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    @endif
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>

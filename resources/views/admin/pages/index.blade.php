@@ -133,9 +133,14 @@
                                     </div>
                                 @else
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('admin.pages.grapesjs', $page) }}"
+                                           class="text-sm text-teal-600 hover:text-teal-800 font-semibold"
+                                           title="Edit dengan Visual Editor">
+                                            🎨 Visual Editor
+                                        </a>
                                         <a href="{{ route('admin.pages.edit', $page) }}"
                                            class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                            Edit
+                                            Pengaturan
                                         </a>
                                         <button type="button"
                                                 @click="deleteUrl = '{{ route('admin.pages.destroy', $page) }}'; deleteItemName = '{{ addslashes($page->title) }}'; showDeleteModal = true"
@@ -159,8 +164,8 @@
 
         {{-- Pagination --}}
         @if($pages->hasPages())
-            <div class="px-6 py-4 border-t border-slate-200">
-                {{ $pages->links() }}
+            <div class="px-6 border-t border-slate-200">
+                <x-admin.pagination :paginator="$pages" />
             </div>
         @endif
     </div>

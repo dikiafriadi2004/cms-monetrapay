@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
-    <title>Lupa Password — MonetraPay CMS</title>
+    @php
+        try {
+            $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
+            $logo = \App\Models\Setting::get('logo', 'general');
+        } catch (\Throwable $e) {
+            $siteName = config('app.name');
+            $logo = null;
+        }
+    @endphp
+    <title>Lupa Password — {{ $siteName }}</title>
     @vite(['resources/css/app.css'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -14,11 +23,10 @@
 
     <div class="relative w-full max-w-md">
         <div class="text-center mb-8">
-            @php $resetLogo = \App\Models\Setting::get('logo', 'general'); @endphp
-            @if($resetLogo)
-                <img src="{{ Storage::url($resetLogo) }}" alt="MonetraPay" class="h-10 w-auto mx-auto mb-4">
-            @elseif(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="MonetraPay" class="h-10 w-auto mx-auto mb-4">
+            @if($logo)
+                <img src="{{ Storage::url($logo) }}" alt="{{ $siteName }}" class="h-10 w-auto mx-auto mb-4">
+            @else
+                <span class="text-2xl font-extrabold text-white inline-block mb-4">{{ $siteName }}</span>
             @endif
             <h1 class="text-xl font-extrabold text-white">Lupa Password</h1>
             <p class="text-slate-400 text-sm mt-1">Masukkan email Anda untuk menerima link reset</p>

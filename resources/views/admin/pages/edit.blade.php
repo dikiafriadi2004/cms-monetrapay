@@ -167,8 +167,19 @@
                     </div>
                 </div>
 
+                {{-- Visual Editor (GrapesJS) --}}
+                <div class="bg-white rounded-lg shadow-sm border border-teal-200 p-6">
+                    <h2 class="text-lg font-semibold text-slate-800 mb-3">🎨 Visual Editor</h2>
+                    <p class="text-sm text-slate-500 mb-4">Edit tampilan halaman secara visual dengan drag & drop menggunakan GrapesJS.</p>
+                    <a href="{{ route('admin.pages.grapesjs', $page) }}"
+                       class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        Buka Visual Editor
+                    </a>
+                </div>
+
                 {{-- Template --}}
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4" id="template-section">
                     <h2 class="text-lg font-semibold text-slate-800">Template</h2>
 
                     <div>
@@ -249,5 +260,38 @@
             img.src = '';
         }
     }
+
+    function togglePageBuilder() {
+        const checkbox        = document.getElementById('use_page_builder');
+        const contentLabel    = document.querySelector('label[for="content"]');
+        const templateSection = document.getElementById('template-section');
+        const pbActive        = document.getElementById('pb-active-section');
+        const pbInactive      = document.getElementById('pb-inactive-section');
+
+        if (!checkbox) return;
+
+        const isChecked = checkbox.checked;
+
+        // Dim TinyMCE editor when page builder is on
+        if (contentLabel) {
+            const contentBox = contentLabel.closest('.bg-white');
+            if (contentBox) {
+                contentBox.style.opacity       = isChecked ? '0.4' : '1';
+                contentBox.style.pointerEvents = isChecked ? 'none' : 'auto';
+            }
+        }
+
+        // Show/hide page builder status sections
+        if (pbActive)    pbActive.classList.toggle('hidden', !isChecked);
+        if (pbInactive)  pbInactive.classList.toggle('hidden',  isChecked);
+
+        // Always show template section
+        if (templateSection) templateSection.classList.remove('hidden');
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePageBuilder();
+    });
 </script>
 @endsection

@@ -166,8 +166,14 @@
                     </div>
                 </div>
 
+                {{-- Visual Editor Info --}}
+                <div class="bg-white rounded-lg shadow-sm border border-teal-200 p-6">
+                    <h2 class="text-lg font-semibold text-slate-800 mb-2">🎨 Visual Editor</h2>
+                    <p class="text-sm text-slate-500">Setelah halaman disimpan, klik tombol <strong>🎨 Visual Editor</strong> di halaman daftar untuk mendesain tampilan halaman secara visual dengan drag & drop.</p>
+                </div>
+
                 {{-- Template --}}
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4" id="template-section">
                     <h2 class="text-lg font-semibold text-slate-800">Template</h2>
 
                     <div>

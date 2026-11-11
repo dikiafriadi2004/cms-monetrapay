@@ -103,9 +103,9 @@
                 </tbody>
             </table>
         </div>
-        @if($campaigns->hasPages())
-            <div class="px-5 py-4 border-t border-slate-100">{{ $campaigns->links() }}</div>
-        @endif
+        <div class="px-5 border-t border-slate-100">
+            <x-admin.pagination :paginator="$campaigns" />
+        </div>
     </div>
 
     @include('components.admin.delete-modal')

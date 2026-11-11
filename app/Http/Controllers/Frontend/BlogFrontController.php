@@ -37,7 +37,7 @@ class BlogFrontController extends Controller
             });
         }
 
-        $blogs = $query->paginate(10)->withQueryString();
+        $blogs = $query->paginate(9)->withQueryString();
 
         $categories = Category::withCount(['blogs' => function ($q) {
             $q->where('status', 'published');
@@ -61,17 +61,35 @@ class BlogFrontController extends Controller
         // Get related articles (max 3 from same categories)
         $relatedBlogs = Blog::where('status', 'published')
             ->where('id', '!=', $blog->id)
-            ->whereHas('categories', function ($q) use ($blog) {
-                $q->whereIn('categories.id', $blog->categories->pluck('id'));
-            })
-            ->with(['author', 'categories'])
-            ->orderBy('published_at', 'desc')
+            ->whereHas('categories', fn ($q) => $q->whereIn('id', $blog->categories->pluck('id')))
+            ->with(['author:id,name', 'categories:id,name,slug'])
+            ->latest('published_at')
             ->limit(3)
             ->get();
 
-        // Auto-insert ads
+        // Fallback if fewer than 3
+        if ($relatedBlogs->count() < 3) {
+            $extra = Blog::where('status', 'published')
+                ->where('id', '!=', $blog->id)
+                ->whereNotIn('id', $relatedBlogs->pluck('id'))
+                ->with(['author:id,name', 'categories:id,name,slug'])
+                ->latest('published_at')
+                ->limit(3 - $relatedBlogs->count())
+                ->get();
+            $relatedBlogs = $relatedBlogs->concat($extra);
+        }
+
+        // Auto-insert ads into paragraphs (position = auto_insert)
         $autoInsertAds = Ad::where('position', 'auto_insert')
             ->where('is_active', true)
+            ->whereNotNull('interval')
+            ->where('interval', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', today());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', today());
+            })
             ->get();
 
         $content = $this->adInsertionService->insertAdsInContent($blog->content, $autoInsertAds);
@@ -117,7 +135,7 @@ class BlogFrontController extends Controller
             })
             ->with(['author', 'categories'])
             ->orderBy('published_at', 'desc')
-            ->paginate(10);
+            ->paginate(9);
 
         return view('frontend.category.show', compact('category', 'blogs'));
     }

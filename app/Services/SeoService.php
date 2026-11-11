@@ -55,7 +55,7 @@ class SeoService
             'og:image' => $image,
             'og:url' => $url,
             'og:type' => $type,
-            'og:site_name' => $this->getGlobalSetting('site_name', 'general') ?? 'MonetraPay',
+            'og:site_name' => $this->getGlobalSetting('site_name', 'general') ?? config('app.name'),
         ];
     }
 
@@ -173,7 +173,7 @@ class SeoService
      */
     protected function getOrganizationSchema(Page $page): array
     {
-        $siteName = $this->getGlobalSetting('site_name', 'general') ?? 'MonetraPay';
+        $siteName = $this->getGlobalSetting('site_name', 'general') ?? config('app.name');
 
         return [
             '@context' => 'https://schema.org',

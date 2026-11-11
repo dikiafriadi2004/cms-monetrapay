@@ -9,6 +9,7 @@ use App\Models\Setting;
 use App\Services\MailConfigService;
 use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ContactSubmissionController extends Controller
@@ -96,9 +97,9 @@ class ContactSubmissionController extends Controller
                     'adminName' => auth()->user()->name,
                 ],
                 function ($mail) use ($contact) {
-                    $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+                    $siteName = Setting::get('site_name', 'general') ?? config('app.name');
                     $mail->to($contact->email, $contact->name)
-                        ->subject('Re: Pendaftaran Anda di '.$siteName)
+                        ->subject('Re: ' . ($contact->subject ?? $contact->city ?? 'Pesan Anda') . ' — ' . $siteName)
                         ->replyTo(
                             Setting::get('contact_email', 'general') ?? config('mail.from.address'),
                             $siteName.' Support'
@@ -106,7 +107,11 @@ class ContactSubmissionController extends Controller
                 }
             );
         } catch (\Throwable $e) {
-            return $this->respondError('Gagal mengirim email: '.$e->getMessage());
+            Log::error('ContactSubmissionController::reply failed: '.$e->getMessage(), [
+                'contact_id' => $contact->id,
+                'exception'  => get_class($e),
+            ]);
+            return $this->respondError('Gagal mengirim email. Silakan coba lagi.');
         }
 
         // Save reply record

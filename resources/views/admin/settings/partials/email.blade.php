@@ -108,7 +108,7 @@
                 <label for="mail_from_name" class="block text-xs font-semibold text-slate-700 mb-1.5">From Name</label>
                 <input type="text" name="mail_from_name" id="mail_from_name"
                        value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}"
-                       maxlength="100" placeholder="MonetraPay">
+                       maxlength="100" placeholder="Nama Brand">
                 @error('mail_from_name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
@@ -121,17 +121,48 @@
             <p class="text-sm text-slate-700 mb-3">
                 Setelah simpan pengaturan di atas, kirim test email untuk verifikasi konfigurasi bekerja.
             </p>
-            <form method="POST" action="{{ route('admin.settings.email-test') }}" class="flex flex-col sm:flex-row gap-2">
-                @csrf
-                <input type="email" name="email" required placeholder="email-tujuan@example.com"
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="email" id="test-email-input" placeholder="email-tujuan@example.com"
                        value="{{ auth()->user()->email }}"
                        class="flex-1">
-                <button type="submit"
+                <button type="button" onclick="sendTestEmail()"
                         class="inline-flex items-center justify-center gap-2 px-5 py-2 bg-secondary text-white text-sm font-semibold rounded-lg hover:bg-secondary-dark transition-colors whitespace-nowrap">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                     Kirim Test Email
                 </button>
-            </form>
+            </div>
+            <p id="test-email-result" class="mt-2 text-xs hidden"></p>
         </div>
     </div>
+
+    <script>
+    function sendTestEmail() {
+        const email = document.getElementById('test-email-input').value;
+        const result = document.getElementById('test-email-result');
+        if (!email) { alert('Masukkan email tujuan'); return; }
+
+        result.textContent = 'Mengirim...';
+        result.className = 'mt-2 text-xs text-slate-500';
+
+        fetch('{{ route("admin.settings.email-test") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams({ email: email }),
+        })
+        .then(r => r.json().catch(() => ({ success: r.ok, message: r.ok ? 'Terkirim!' : 'Gagal' })))
+        .then(data => {
+            result.textContent = data.message || (data.success ? 'Email terkirim!' : 'Gagal mengirim');
+            result.className = 'mt-2 text-xs ' + (data.success ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold');
+        })
+        .catch(e => {
+            result.textContent = 'Error: ' + e.message;
+            result.className = 'mt-2 text-xs text-red-600 font-semibold';
+        });
+    }
+    </script>
 </div>

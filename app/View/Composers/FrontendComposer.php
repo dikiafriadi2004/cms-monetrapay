@@ -21,7 +21,7 @@ class FrontendComposer
     {
         try {
             // Site name
-            $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+            $siteName = Setting::get('site_name', 'general', config('app.name'));
 
             // Google Analytics ID
             $gaId = Setting::get('ga_measurement_id', 'seo');
@@ -34,6 +34,9 @@ class FrontendComposer
 
             // Logo
             $logo = Setting::get('logo', 'general');
+
+            // Favicon
+            $favicon = Setting::get('favicon', 'general');
 
             // Footer settings
             $footerSettings = [
@@ -48,18 +51,20 @@ class FrontendComposer
             // Social media links
             $socialLinks = Setting::getGroup('social');
         } catch (\Exception $e) {
-            $siteName = 'MonetraPay';
+            $siteName = config('app.name');
             $logo = null;
+            $favicon = null;
             $gaId = null;
             $headerMenu = [];
             $footerMenu = [];
-            $footerSettings = ['site_name' => 'MonetraPay'];
+            $footerSettings = ['site_name' => config('app.name')];
             $socialLinks = [];
         }
 
         $view->with(compact(
             'siteName',
             'logo',
+            'favicon',
             'gaId',
             'headerMenu',
             'footerMenu',

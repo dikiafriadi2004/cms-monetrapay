@@ -25,7 +25,7 @@ class ContactConfirmation extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        $siteName = Setting::get('site_name', 'general', 'MonetraPay');
+        $siteName = Setting::get('site_name', 'general') ?? config('app.name');
         $adminEmail = Setting::get('contact_email', 'general')
             ?? config('mail.from.address');
 

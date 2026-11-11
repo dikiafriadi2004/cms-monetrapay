@@ -16,9 +16,36 @@
 /public/build
 /public/hot
 /public/storage
+/public/favicon.ico
 /storage/*.key
 /storage/pail
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Agent working files — never commit
+/.agents/
+
+# Laravel runtime files — never commit
+/storage/framework/sessions/
+/storage/framework/cache/
+/storage/framework/views/*.php
+/storage/logs/*.log
+
+# Temporary diagnostic/fix scripts
+clear_favicon*.php
+test_gd.php
+check_*.php
+diagnose_*.php
+make_ico.php
+verify_render.php
+measure_gap.php
+
+# Debug files (public directory)
+public/test_*.php
+public/debug_*.php
+public/check_*.php
+
+# Docker local override (tidak di-commit, tiap developer beda)
+docker-compose.override.yml

@@ -124,9 +124,9 @@
             @endforelse
         </div>
 
-        @if($comments->hasPages())
-            <div class="px-5 py-4 border-t border-slate-100">{{ $comments->links() }}</div>
-        @endif
+        <div class="px-5 border-t border-slate-100">
+            <x-admin.pagination :paginator="$comments" />
+        </div>
     </div>
 
     @include('components.admin.delete-modal')

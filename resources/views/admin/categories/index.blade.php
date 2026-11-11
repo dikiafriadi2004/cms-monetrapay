@@ -112,7 +112,7 @@
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                         <h3 class="text-sm font-bold text-slate-800">Daftar Kategori</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">{{ $categories->count() }} kategori tersedia</p>
+                        <p class="text-xs text-slate-500 mt-0.5">{{ $categories->total() }} kategori tersedia</p>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -173,6 +173,9 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+                <div class="px-5 border-t border-slate-100">
+                    <x-admin.pagination :paginator="$categories" />
                 </div>
             </div>
         </div>

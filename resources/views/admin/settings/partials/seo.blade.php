@@ -33,6 +33,61 @@
             <p class="mt-1 text-[11px] text-slate-500">Format: G- diikuti karakter alfanumerik (contoh: G-ABC123DEF4)</p>
             @error('ga_measurement_id') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
         </div>
+
+        {{-- GA4 Property ID --}}
+        <div class="mt-5">
+            <label for="ga_property_id" class="block text-xs font-semibold text-slate-700 mb-1.5">GA4 Property ID</label>
+            <input type="text" name="ga_property_id" id="ga_property_id"
+                   value="{{old('ga_property_id', $settings['ga_property_id'] ?? '')}}"
+                   placeholder="properties/123456789">
+            <p class="mt-1 text-[11px] text-slate-500">Format: properties/ diikuti angka. Temukan di Google Analytics &rarr; Admin &rarr; Property Settings</p>
+            @error('ga_property_id') <p class="mt-1 text-xs text-red-600">{{$message}}</p> @enderror
+        </div>
+
+        {{-- GA4 Service Account Credentials JSON --}}
+        <div class="mt-5">
+            <label for="ga_credentials_json" class="block text-xs font-semibold text-slate-700 mb-1.5">Service Account Credentials JSON</label>
+            <textarea name="ga_credentials_json" id="ga_credentials_json" rows="8"
+                      placeholder='{"type": "service_account", "project_id": "...", ...}'
+                      class="font-mono text-xs">{{old('ga_credentials_json', isset($settings['ga_credentials_json']) && $settings['ga_credentials_json'] ? '(tersimpan — paste ulang untuk mengubah)' : '')}}</textarea>
+            <p class="mt-1 text-[11px] text-slate-500">Paste isi file JSON Service Account dari Google Cloud Console. Credentials disimpan terenkripsi.</p>
+            @if(!empty($settings['ga_credentials_json']))
+                <p class="text-green-600 text-xs mt-1">&check; Credentials sudah tersimpan</p>
+            @endif
+            @error('ga_credentials_json') <p class="mt-1 text-xs text-red-600">{{$message}}</p> @enderror
+        </div>
+
+        {{-- Tombol Test Connection --}}
+        <div class="mt-4 flex items-center gap-3">
+            <button type="button" id="btn-test-ga4"
+                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary"
+                    onclick="testGA4Connection()">
+                Test Koneksi GA4
+            </button>
+            <span id="ga4-test-result" class="text-xs"></span>
+        </div>
+
+        {{-- Panduan Setup GA4 --}}
+        <div class="mt-4">
+            <details class="border border-slate-200 rounded-lg">
+                <summary class="px-4 py-3 text-xs font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 select-none">
+                    &darr; Cara Setup Google Analytics Data API
+                </summary>
+                <div class="px-4 pb-4 pt-2 text-xs text-slate-600 space-y-2">
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>Buka <a href="https://console.cloud.google.com" target="_blank" class="text-primary underline">Google Cloud Console</a> dan buat atau pilih project.</li>
+                        <li>Di menu samping, pergi ke <strong>APIs &amp; Services &rarr; Library</strong>, cari <strong>Google Analytics Data API</strong>, lalu klik Enable.</li>
+                        <li>Pergi ke <strong>APIs &amp; Services &rarr; Credentials</strong>, klik <strong>Create Credentials &rarr; Service Account</strong>.</li>
+                        <li>Isi nama service account, klik Create, lalu Done.</li>
+                        <li>Klik service account yang baru dibuat, pergi ke tab <strong>Keys</strong>, klik <strong>Add Key &rarr; Create new key</strong>, pilih <strong>JSON</strong>, lalu Download.</li>
+                        <li>Buka <a href="https://analytics.google.com" target="_blank" class="text-primary underline">Google Analytics</a> &rarr; <strong>Admin &rarr; Property Access Management</strong>. Tambahkan email service account (ada di file JSON, field <code>client_email</code>) dengan role <strong>Viewer</strong>.</li>
+                        <li>Di GA4 Admin &rarr; Property Settings, salin <strong>Property ID</strong> (format angka), lalu tulis sebagai <code>properties/&lt;ANGKA&gt;</code> di field GA4 Property ID di atas.</li>
+                        <li>Buka file JSON yang didownload, salin seluruh isinya, paste di field Service Account Credentials JSON di atas.</li>
+                        <li>Klik <strong>Test Koneksi GA4</strong> untuk verifikasi, lalu simpan settings.</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
     </div>
 
     <div class="pt-5 border-t border-slate-100">
@@ -50,3 +105,34 @@
         </div>
     </div>
 </div>
+
+<script>
+function testGA4Connection() {
+    const btn = document.getElementById('btn-test-ga4');
+    const result = document.getElementById('ga4-test-result');
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    result.textContent = '';
+
+    fetch('/admin/analytics/test-connection', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        result.textContent = data.success ? '\u2713 ' + data.message : '\u2717 ' + data.message;
+        result.style.color = data.success ? '#16a34a' : '#dc2626';
+    })
+    .catch(e => {
+        result.textContent = '\u2717 Error: ' + e.message;
+        result.style.color = '#dc2626';
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Test Koneksi GA4';
+    });
+}
+</script>

@@ -9,6 +9,22 @@
 </head>
 <body class="bg-slate-100">
     <div x-data="imagePicker()" class="p-4 min-h-screen">
+        {{-- Drag & Drop Overlay --}}
+        <div
+            x-show="isDragging"
+            x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            style="background:rgba(13,148,136,0.15);border:3px dashed #0D9488;"
+        >
+            <div class="bg-white rounded-xl shadow-2xl px-12 py-8 text-center">
+                <svg class="mx-auto w-16 h-16 text-primary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                <p class="text-lg font-semibold text-slate-700">Lepas file untuk mengupload</p>
+                <p class="text-sm text-slate-500 mt-1">Gambar akan langsung diupload</p>
+            </div>
+        </div>
+
         {{-- Header --}}
         <div class="flex items-center justify-between mb-4">
             <div>
@@ -94,6 +110,27 @@
             </div>
             @endif
 
+            {{-- Recently uploaded (shown immediately after upload, before page reload) --}}
+            <div x-show="recentUploads.length > 0" class="mb-3">
+                <p class="text-xs text-slate-500 mb-2">Baru diupload:</p>
+                <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                    <template x-for="file in recentUploads" :key="file.id">
+                        <div
+                            @click="selectImage(file.url)"
+                            class="cursor-pointer group relative aspect-square rounded-lg border-2 border-emerald-400 overflow-hidden hover:border-blue-500 hover:shadow-md transition"
+                        >
+                            <img :src="file.thumbnail_url || file.url" :alt="file.original_name" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/25 transition flex items-center justify-center">
+                                <svg class="w-7 h-7 text-white opacity-0 group-hover:opacity-100 drop-shadow transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-1.5 py-1 opacity-0 group-hover:opacity-100 transition">
+                                <p class="text-[10px] text-white truncate text-center font-semibold">Klik untuk pilih</p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
             {{-- Images Grid --}}
             @if($files->isNotEmpty())
             <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
@@ -154,14 +191,53 @@
             searchResults: null,
             uploading: false,
             uploadProgress: 0,
+            isDragging: false,
+            _dragCounter: 0,
+            recentUploads: [],
+
+            init() {
+                // Receive CSRF token from parent window (when loaded in iframe)
+                window.addEventListener('message', (e) => {
+                    if (e.data && e.data.type === 'csrf-token' && e.data.token) {
+                        const meta = document.querySelector('meta[name="csrf-token"]');
+                        if (meta) meta.setAttribute('content', e.data.token);
+                    }
+                });
+
+                // Drag & drop on entire document
+                document.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    this._dragCounter++;
+                    this.isDragging = true;
+                });
+                document.addEventListener('dragleave', (e) => {
+                    this._dragCounter--;
+                    if (this._dragCounter <= 0) {
+                        this._dragCounter = 0;
+                        this.isDragging = false;
+                    }
+                });
+                document.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                document.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this._dragCounter = 0;
+                    this.isDragging = false;
+                    const files = e.dataTransfer.files;
+                    if (files.length) {
+                        this.uploadImage(files[0]);
+                    }
+                });
+            },
 
             selectImage(url) {
                 // Send selected image URL back to parent window (TinyMCE)
-                if (window.parent && window.parent.postMessage) {
+                if (window.parent && window.parent !== window) {
                     window.parent.postMessage({ type: 'file-manager-select', url: url }, '*');
                 }
                 // Also try callback approach for TinyMCE
-                if (typeof window.parent.fileManagerCallback === 'function') {
+                if (window.parent && typeof window.parent.fileManagerCallback === 'function') {
                     window.parent.fileManagerCallback(url);
                 }
             },
@@ -173,7 +249,7 @@
                 }
 
                 try {
-                    const response = await fetch(`{{ route('admin.files.search') }}?q=${encodeURIComponent(this.searchQuery)}`);
+                    const response = await fetch(`{{route('admin.files.search')}}?q=${encodeURIComponent(this.searchQuery)}`);
                     const data = await response.json();
                     // Filter only images
                     this.searchResults = data.files.filter(f => f.mime_type.startsWith('image/'));
@@ -185,18 +261,48 @@
             async uploadImage(file) {
                 if (!file) return;
 
+                // Validate image type client-side
+                if (!file.type.startsWith('image/')) {
+                    alert('Hanya file gambar yang diizinkan.');
+                    return;
+                }
+
                 this.uploading = true;
                 this.uploadProgress = 0;
 
+                // Get CSRF token - try multiple sources
+                const getCsrf = () => {
+                    // 1. From meta tag (most reliable)
+                    const meta = document.querySelector('meta[name="csrf-token"]');
+                    if (meta) return meta.content;
+                    // 2. From XSRF-TOKEN cookie
+                    const cookies = document.cookie.split(';');
+                    for (const c of cookies) {
+                        const [k, v] = c.trim().split('=');
+                        if (k === 'XSRF-TOKEN') return decodeURIComponent(v);
+                    }
+                    // 3. From parent window meta tag (when in iframe)
+                    try {
+                        const parentMeta = window.parent.document.querySelector('meta[name="csrf-token"]');
+                        if (parentMeta) return parentMeta.content;
+                    } catch(e) {}
+                    return '';
+                };
+
+                const csrf = getCsrf();
+
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('folder_id', '{{ $currentFolder?->id ?? '' }}');
+                formData.append('_token', csrf);
+                formData.append('folder_id', '{{$currentFolder?->id ?? ''}}');
 
                 try {
                     const xhr = new XMLHttpRequest();
-                    xhr.open('POST', '{{ route("admin.files.upload") }}');
-                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+                    xhr.open('POST', '{{route("admin.files.upload")}}');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
                     xhr.setRequestHeader('Accept', 'application/json');
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.withCredentials = true;
 
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
@@ -206,10 +312,40 @@
 
                     xhr.onload = () => {
                         this.uploading = false;
+                        console.log('[Picker] Upload response status:', xhr.status);
+                        console.log('[Picker] Upload response:', xhr.responseText.substring(0, 500));
                         if (xhr.status === 200) {
+                            try {
+                                const json = JSON.parse(xhr.responseText);
+                                console.log('[Picker] Upload JSON:', json);
+                                if (json.success && json.file) {
+                                    // Use server URL so selectImage works properly
+                                    this.recentUploads.unshift({
+                                        id: Date.now(),
+                                        url: json.file.url,
+                                        thumbnail_url: json.file.thumbnail_url || json.file.url,
+                                        original_name: json.file.original_name || file.name,
+                                    });
+                                    return; // Don't reload — image is clickable immediately
+                                }
+                            } catch (e) {
+                                console.error('[Picker] JSON parse error:', e);
+                            }
+                            // Fallback: reload to refresh grid
                             window.location.reload();
+                        } else if (xhr.status === 419) {
+                            alert('CSRF token expired. Silakan refresh halaman dan coba lagi.');
+                        } else if (xhr.status === 422) {
+                            try {
+                                const err = JSON.parse(xhr.responseText);
+                                alert('Validasi gagal: ' + JSON.stringify(err.errors || err.message));
+                            } catch(e) {
+                                alert('Upload gagal (422): ' + xhr.responseText.substring(0, 200));
+                            }
+                        } else if (xhr.status === 403) {
+                            alert('Akses ditolak (403). Pastikan Anda memiliki permission file.create.');
                         } else {
-                            alert('Upload gagal. Pastikan file adalah gambar dengan ukuran maksimal 10MB.');
+                            alert('Upload gagal (status ' + xhr.status + '). Cek console untuk detail.');
                         }
                     };
 

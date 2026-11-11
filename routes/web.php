@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\FileManagerController;
 use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\NewsletterCampaignController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
@@ -87,6 +88,18 @@ Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'uns
 */
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/favicon.ico', function () {
+    $ico = public_path('favicon.ico');
+    if (file_exists($ico)) {
+        return response()->file($ico, ['Content-Type' => 'image/x-icon']);
+    }
+    // Fallback: serve favicon-32.png as ico
+    $png = \Illuminate\Support\Facades\Storage::disk('public')->path('favicon/favicon-32.png');
+    if (file_exists($png)) {
+        return response()->file($png, ['Content-Type' => 'image/png']);
+    }
+    abort(404);
+});
 Route::get('/feed.xml', [FeedController::class, 'rss'])->name('feed.rss');
 Route::get('/rss', fn () => redirect('/feed.xml', 301));
 
@@ -115,7 +128,7 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 |--------------------------------------------------------------------------
 */
 Route::get('/two-factor/challenge', [TwoFactorController::class, 'challenge'])->name('two-factor.challenge');
-Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->name('two-factor.verify');
+Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->name('two-factor.verify')->middleware('throttle:5,1');
 
 /*
 |--------------------------------------------------------------------------
@@ -129,6 +142,73 @@ Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->na
 | Modules: blog, page, category, menu, file, ad, setting, analytics
 | Operations: view, create, edit, delete
 */
+
+// Redirect /admin to dashboard
+Route::redirect('/admin', '/admin/dashboard')->name('admin');
+
+if (app()->environment('local', 'staging', 'development')) {
+    // Email template preview (admin only, local/staging only — never in production)
+    Route::middleware('auth')->prefix('admin/email-preview')->name('admin.email-preview.')->group(function () {
+        Route::get('reset-password', function () {
+        return view('emails.reset-password', [
+            'url' => url('/reset-password/dummy-token-preview-only'),
+        ]);
+    })->name('reset-password');
+
+    Route::get('contact-confirmation', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'city' => 'Jakarta Selatan',
+            'message' => 'Halo, saya tertarik bergabung sebagai agen MonetraPay. Mohon informasi lebih lanjut mengenai prosedur pendaftaran dan keuntungan yang ditawarkan.',
+            'created_at' => now(),
+        ];
+        return view('emails.contact-confirmation', compact('submission'));
+    })->name('contact-confirmation');
+
+    Route::get('contact-notification', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'city' => 'Jakarta Selatan',
+            'message' => 'Saya ingin mendaftar sebagai agen.',
+            'created_at' => now(),
+            'ip_address' => '127.0.0.1',
+        ];
+        return view('emails.contact-notification', compact('submission'));
+    })->name('contact-notification');
+
+    Route::get('contact-reply', function () {
+        $submission = (object)[
+            'name' => 'Diki Afriadi',
+            'phone' => '08123456789',
+            'email' => 'diki@example.com',
+            'message' => 'Saya ingin mendaftar sebagai agen.',
+            'created_at' => now(),
+        ];
+        $replyMessage = "Halo Diki,\n\nTerima kasih telah menghubungi kami. Kami dengan senang hati akan membantu proses pendaftaran Anda sebagai agen MonetraPay.\n\nSilakan hubungi kami via WhatsApp di nomor berikut untuk proses lebih lanjut.\n\nSalam,\nTim MonetraPay";
+        $adminName = 'Tim MonetraPay';
+        return view('emails.contact-reply', compact('submission', 'replyMessage', 'adminName'));
+    })->name('contact-reply');
+
+    Route::get('newsletter-blast', function () {
+        $campaign = (object)[
+            'subject' => 'Tips Sukses Menjadi Agen Pulsa di Era Digital',
+            'content' => '<p>Halo Mitra MonetraPay!</p><p>Di era digital ini, bisnis pulsa dan PPOB semakin menjanjikan. Berikut beberapa tips untuk memaksimalkan keuntungan Anda sebagai agen:</p><h2>1. Aktif di Media Sosial</h2><p>Promosikan layanan Anda di WhatsApp, Instagram, dan Facebook untuk menjangkau lebih banyak pelanggan.</p><h2>2. Manfaatkan Fitur Cashback</h2><p>Selalu informasikan promo cashback kepada pelanggan untuk meningkatkan transaksi.</p><p>Semangat terus dalam berbisnis!</p>',
+            'user' => (object)['name' => 'Admin MonetraPay'],
+        ];
+        $subscriber = (object)[
+            'name' => 'Diki Afriadi',
+            'email' => 'diki@example.com',
+        ];
+        $unsubscribeUrl = url('/newsletter/unsubscribe/preview-token');
+        return view('emails.newsletter-blast', compact('campaign', 'subscriber', 'unsubscribeUrl'));
+    })->name('newsletter-blast');
+});
+}
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard (accessible to all authenticated users)
@@ -248,6 +328,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('files/{media}', [FileManagerController::class, 'update'])
         ->middleware('check.permission:file.edit')
         ->name('files.update');
+    Route::post('files/{media}/crop', [FileManagerController::class, 'crop'])
+        ->middleware('check.permission:file.edit')
+        ->name('files.crop');
 
     // Ad Management Routes
     Route::middleware('check.permission:ad.view')->group(function () {
@@ -281,46 +364,48 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('settings.email-test');
 
     // User Management Routes
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:user.view')->group(function () {
         Route::get('users', [UserController::class, 'index'])->name('users.index');
     });
-    Route::middleware('check.permission:setting.create')->group(function () {
+    Route::middleware('check.permission:user.create')->group(function () {
         Route::get('users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('users', [UserController::class, 'store'])->name('users.store');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:user.edit')->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::match(['put', 'patch'], 'users/{user}', [UserController::class, 'update'])->name('users.update');
     });
     Route::delete('users/{user}', [UserController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:user.delete')
         ->name('users.destroy');
     Route::get('users/{user}', [UserController::class, 'show'])
-        ->middleware('check.permission:setting.view')
+        ->middleware('check.permission:user.view')
         ->name('users.show');
 
     // Role Management Routes
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:role.view')->group(function () {
         Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
     });
-    Route::middleware('check.permission:setting.create')->group(function () {
+    Route::middleware('check.permission:role.create')->group(function () {
         Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');
         Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:role.edit')->group(function () {
         Route::get('roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
         Route::match(['put', 'patch'], 'roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     });
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:role.delete')
         ->name('roles.destroy');
     Route::get('roles/{role}', [RoleController::class, 'show'])
-        ->middleware('check.permission:setting.view')
+        ->middleware('check.permission:role.view')
         ->name('roles.show');
 
     // Analytics Routes
     Route::middleware('check.permission:analytics.view')->group(function () {
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::post('analytics/test-connection', [AnalyticsController::class, 'testConnection'])
+            ->name('analytics.test-connection');
     });
 
     // SEO Tools
@@ -336,21 +421,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('maintenance/clear-cache', [MaintenanceController::class, 'clearCache'])
         ->middleware('check.permission:setting.edit')
         ->name('maintenance.clear-cache');
-    Route::post('maintenance/regenerate-sitemap', [MaintenanceController::class, 'regenerateSitemap'])
-        ->middleware('check.permission:setting.edit')
-        ->name('maintenance.regenerate-sitemap');
 
     // Contact Submissions
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:contact.view')->group(function () {
         Route::get('contacts', [ContactSubmissionController::class, 'index'])->name('contacts.index');
         Route::get('contacts/{contact}', [ContactSubmissionController::class, 'show'])->name('contacts.show');
     });
-    Route::middleware('check.permission:setting.edit')->group(function () {
+    Route::middleware('check.permission:contact.edit')->group(function () {
         Route::post('contacts/{contact}/toggle-read', [ContactSubmissionController::class, 'toggleRead'])->name('contacts.toggle-read');
         Route::post('contacts/{contact}/reply', [ContactSubmissionController::class, 'reply'])->name('contacts.reply');
     });
     Route::delete('contacts/{contact}', [ContactSubmissionController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:contact.delete')
         ->name('contacts.destroy');
 
     // Audit Log
@@ -372,21 +454,67 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('comments.destroy');
 
     // Newsletter subscribers
-    Route::middleware('check.permission:setting.view')->group(function () {
+    Route::middleware('check.permission:newsletter.view')->group(function () {
         Route::get('newsletter', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('newsletter.index');
         Route::get('newsletter/export', [App\Http\Controllers\Admin\NewsletterController::class, 'export'])->name('newsletter.export');
-        // Campaign blast routes
         Route::get('newsletter/campaigns', [NewsletterCampaignController::class, 'index'])->name('newsletter.campaigns.index');
+    });
+    Route::middleware('check.permission:newsletter.create')->group(function () {
+        // 'create' MUST be registered before {campaign} wildcard
         Route::get('newsletter/campaigns/create', [NewsletterCampaignController::class, 'create'])->name('newsletter.campaigns.create');
         Route::post('newsletter/campaigns', [NewsletterCampaignController::class, 'store'])->name('newsletter.campaigns.store');
-        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
         Route::post('newsletter/campaigns/{campaign}/send', [NewsletterCampaignController::class, 'send'])->name('newsletter.campaigns.send')->middleware('throttle:3,1');
-        Route::delete('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'destroy'])->name('newsletter.campaigns.destroy');
     });
+    Route::middleware('check.permission:newsletter.view')->group(function () {
+        // {campaign} wildcard AFTER static 'create' route
+        Route::get('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'show'])->name('newsletter.campaigns.show');
+    });
+    Route::delete('newsletter/campaigns/{campaign}', [NewsletterCampaignController::class, 'destroy'])
+        ->middleware('check.permission:newsletter.delete')
+        ->name('newsletter.campaigns.destroy');
     Route::delete('newsletter/{subscriber}', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])
-        ->middleware('check.permission:setting.delete')
+        ->middleware('check.permission:newsletter.delete')
         ->name('newsletter.destroy');
+
+    // Export/Import Tools
+    Route::middleware('check.permission:setting.edit')->group(function () {
+        Route::get('tools/export-import', [\App\Http\Controllers\Admin\ExportImportController::class, 'index'])->name('tools.export-import');
+        Route::post('tools/export/blogs', [\App\Http\Controllers\Admin\ExportImportController::class, 'exportBlogs'])->name('tools.export.blogs');
+        Route::post('tools/export/pages', [\App\Http\Controllers\Admin\ExportImportController::class, 'exportPages'])->name('tools.export.pages');
+        Route::post('tools/import/blogs', [\App\Http\Controllers\Admin\ExportImportController::class, 'importBlogs'])->name('tools.import.blogs');
+        Route::post('tools/import/pages', [\App\Http\Controllers\Admin\ExportImportController::class, 'importPages'])->name('tools.import.pages');
+        Route::get('tools/export/download', [\App\Http\Controllers\Admin\ExportImportController::class, 'download'])->name('tools.export.download');
+        Route::delete('tools/export/delete', [\App\Http\Controllers\Admin\ExportImportController::class, 'deleteExport'])->name('tools.export.delete');
+    });
+
+    // Page Builder
+    Route::middleware('check.permission:page.edit')->group(function () {
+        Route::get('page-builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'index'])->name('page-builder.index');
+        Route::get('pages/{page}/builder', [\App\Http\Controllers\Admin\PageBuilderController::class, 'edit'])->name('page-builder.edit');
+        Route::post('pages/{page}/builder/save', [\App\Http\Controllers\Admin\PageBuilderController::class, 'save'])->name('page-builder.save');
+        Route::get('pages/{page}/builder/preview', [\App\Http\Controllers\Admin\PageBuilderController::class, 'preview'])->name('page-builder.preview');
+        Route::get('page-builder/components', [\App\Http\Controllers\Admin\PageBuilderController::class, 'components'])->name('page-builder.components');
+        Route::delete('page-builder/components/{component}', [\App\Http\Controllers\Admin\PageBuilderController::class, 'deleteComponent'])->name('page-builder.delete-component');
+        Route::get('pages/{page}/builder/grapesjs', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsEdit'])->name('pages.grapesjs');
+        Route::get('pages/{page}/builder/grapesjs/load', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsLoad'])->name('pages.grapesjs.load');
+        Route::post('pages/{page}/builder/grapesjs/save', [\App\Http\Controllers\Admin\PageBuilderController::class, 'grapesjsSave'])->name('pages.grapesjs.save');
+    });
+
+    // Notifications (AJAX endpoint - needs session/web middleware, not API)
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Static Page Routes (named — must be before the catch-all)
+|--------------------------------------------------------------------------
+*/
+Route::get('/layanan', [PageFrontController::class, 'show'])->defaults('slug', 'layanan')->name('page.layanan');
+Route::get('/tentang-kami', [PageFrontController::class, 'show'])->defaults('slug', 'tentang-kami')->name('page.tentang-kami');
+Route::get('/kontak', [PageFrontController::class, 'show'])->defaults('slug', 'kontak')->name('page.kontak');
+Route::get('/faq', [PageFrontController::class, 'show'])->defaults('slug', 'faq')->name('page.faq');
+Route::get('/kebijakan-privasi', [PageFrontController::class, 'show'])->defaults('slug', 'kebijakan-privasi')->name('page.kebijakan-privasi');
+Route::get('/syarat-ketentuan', [PageFrontController::class, 'show'])->defaults('slug', 'syarat-ketentuan')->name('page.syarat-ketentuan');
 
 /*
 |--------------------------------------------------------------------------

@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     @php
-        $siteName = \App\Models\Setting::get('site_name', 'general', 'MonetraPay');
-        $contactEmail = \App\Models\Setting::get('contact_email', 'general', 'info@monetrapay.com');
-        $logo = \App\Models\Setting::get('logo', 'general');
+        try {
+            $siteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
+            $contactEmail = \App\Models\Setting::get('contact_email', 'general');
+            $logo = \App\Models\Setting::get('logo', 'general');
+        } catch (\Throwable $e) {
+            $siteName = config('app.name');
+            $contactEmail = null;
+            $logo = null;
+        }
     @endphp
     <title>Maintenance — {{ $siteName }}</title>
     @vite(['resources/css/app.css'])
@@ -34,11 +40,9 @@
         <div class="mb-8">
             @if($logo)
                 <img src="{{ Storage::url($logo) }}" alt="{{ $siteName }}" class="h-12 w-auto mx-auto object-contain">
-            @elseif(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="{{ $siteName }}" class="h-12 w-auto mx-auto object-contain">
             @else
                 <span class="text-2xl font-extrabold">
-                    <span style="color:#3D9E7A">Monetra</span><span style="color:#FE8134">Pay</span>
+                    {{ $siteName }}
                 </span>
             @endif
         </div>

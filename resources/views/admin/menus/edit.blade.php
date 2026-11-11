@@ -1,34 +1,25 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Edit Menu: ' . $menu->name)
 @section('page-title', 'Menu Builder')
 
-@push('styles')
-<style>
-    .menu-item.is-dragging {
-        opacity: 0.45;
-        border-color: rgba(61, 158, 122, 0.7);
-    }
-</style>
-@endpush
-
 @section('content')
-<div x-data="menuBuilder()" class="space-y-5">
+<div x-data="menuBuilder()" x-init="init()" class="space-y-5">
 
-    {{-- ═══ HEADER ═══ --}}
+    {{-- HEADER --}}
     <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="flex items-center gap-3 min-w-0">
+        <div class="flex items-center gap-3">
             <a href="{{ route('admin.menus.index') }}"
-               class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors shrink-0">
+               class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </a>
-            <div class="min-w-0">
-                <h1 class="text-lg font-bold text-slate-800 truncate">{{ $menu->name }}</h1>
+            <div>
+                <h1 class="text-lg font-bold text-slate-800">{{ $menu->name }}</h1>
                 <p class="text-xs text-slate-500">Edit struktur menu navigasi</p>
             </div>
         </div>
         <button @click="saveMenu()" :disabled="saving"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-sm">
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-60 shadow-sm">
             <svg x-show="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -38,169 +29,292 @@
         </button>
     </div>
 
-    {{-- Message --}}
-    <div x-show="message" x-transition x-cloak
+    {{-- ALERT --}}
+    <div x-show="message" x-cloak x-transition
          :class="messageType === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'"
-         class="flex items-center gap-3 p-3.5 rounded-xl border">
-        <svg x-show="messageType === 'success'" class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        <svg x-show="messageType !== 'success'" class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        <p class="text-sm font-medium" x-text="message"></p>
+         class="flex items-center gap-3 p-3.5 rounded-xl border text-sm font-medium">
+        <svg x-show="messageType === 'success'" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <svg x-show="messageType !== 'success'" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <span x-text="message"></span>
     </div>
 
-    {{-- ═══ MENU INFO CARD ═══ --}}
+    {{-- INFO MENU --}}
     <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-        <h2 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <span class="w-1 h-4 bg-primary rounded-full"></span>
-            Informasi Menu
-        </h2>
+        <h2 class="text-sm font-bold text-slate-700 mb-4">Informasi Menu</h2>
         <form method="POST" action="{{ route('admin.menus.update', $menu) }}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-            @csrf
-            @method('PUT')
+            @csrf @method('PUT')
             <div class="md:col-span-6">
-                <label for="menu_name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Menu</label>
-                <input type="text" name="name" id="menu_name" value="{{ $menu->name }}" required maxlength="100">
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Menu</label>
+                <input type="text" name="name" value="{{ $menu->name }}" required maxlength="100"
+                       class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15">
             </div>
             <div class="md:col-span-4">
-                <label for="menu_location" class="block text-xs font-semibold text-slate-700 mb-1.5">Lokasi</label>
-                <select name="location" id="menu_location" required>
-                    <option value="header" {{ $menu->location === 'header' ? 'selected' : '' }}>Header</option>
-                    <option value="footer" {{ $menu->location === 'footer' ? 'selected' : '' }}>Footer</option>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Lokasi</label>
+                <select name="location" required
+                        class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15">
+                    <option value="header"  {{ $menu->location === 'header'  ? 'selected' : '' }}>Header (Navigasi Utama)</option>
+                    <option value="footer"  {{ $menu->location === 'footer'  ? 'selected' : '' }}>Footer</option>
                     <option value="sidebar" {{ $menu->location === 'sidebar' ? 'selected' : '' }}>Sidebar</option>
+                    <option value="social"  {{ $menu->location === 'social'  ? 'selected' : '' }}>Social Media</option>
                 </select>
             </div>
             <div class="md:col-span-2">
                 <button type="submit"
-                        class="w-full px-4 py-2.5 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-colors">
-                    Update Info
+                        class="w-full px-4 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+                    Update
                 </button>
             </div>
         </form>
     </div>
 
-    {{-- ═══ MAIN GRID ═══ --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    {{-- MAIN GRID: seperti WordPress --}}
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 items-start">
 
-        {{-- ═══ LEFT: MENU ITEMS LIST ═══ --}}
-        <div class="lg:col-span-2">
+        {{-- KIRI: Panel tambah item (seperti WP) --}}
+        <div class="lg:col-span-2 space-y-4">
+
+            {{-- HALAMAN --}}
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <button @click="openPanel = openPanel === 'pages' ? '' : 'pages'"
+                        class="w-full flex items-center justify-between px-5 py-3.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Halaman
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold bg-primary/10 text-primary rounded-full">{{ count($pages) }}</span>
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="openPanel === 'pages' ? 'rotate-180' : ''"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="openPanel === 'pages'" x-collapse class="border-t border-slate-100">
+                    <div class="p-4 space-y-3">
+                        {{-- Search --}}
+                        <input type="text" x-model="pageSearch" placeholder="Cari halaman..."
+                               class="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-primary">
+                        {{-- List --}}
+                        <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                            @foreach($pages as $page)
+                            <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer group"
+                                   x-show="!pageSearch || '{{ strtolower($page->title) }}'.includes(pageSearch.toLowerCase())">
+                                <input type="checkbox" value="{{ $page->id }}" x-model="selectedPages"
+                                       class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/30 cursor-pointer">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors truncate">{{ $page->title }}</p>
+                                    <p class="text-xs text-slate-400 font-mono truncate">/{{ $page->slug }}</p>
+                                </div>
+                            </label>
+                            @endforeach
+                        </div>
+                        {{-- Actions --}}
+                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                            <button @click="selectAllPages()" type="button"
+                                    class="text-xs text-primary hover:underline font-semibold">Pilih Semua</button>
+                            <span class="text-slate-300">|</span>
+                            <button @click="selectedPages = []" type="button"
+                                    class="text-xs text-slate-500 hover:underline">Batal Pilih</button>
+                            <button @click="addPages()" type="button"
+                                    :disabled="selectedPages.length === 0"
+                                    class="ml-auto px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                Tambah ke Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- KATEGORI --}}
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <button @click="openPanel = openPanel === 'categories' ? '' : 'categories'"
+                        class="w-full flex items-center justify-between px-5 py-3.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                        Kategori Blog
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold bg-purple-100 text-purple-700 rounded-full">{{ count($categories) }}</span>
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="openPanel === 'categories' ? 'rotate-180' : ''"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="openPanel === 'categories'" x-collapse class="border-t border-slate-100">
+                    <div class="p-4 space-y-3">
+                        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                            @foreach($categories as $cat)
+                            <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer group">
+                                <input type="checkbox" value="{{ $cat->id }}" x-model="selectedCategories"
+                                       class="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500/30 cursor-pointer">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-slate-700 group-hover:text-purple-600 transition-colors truncate">{{ $cat->name }}</p>
+                                    <p class="text-xs text-slate-400 font-mono truncate">/blog/kategori/{{ $cat->slug }}</p>
+                                </div>
+                            </label>
+                            @endforeach
+                        </div>
+                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                            <button @click="selectedCategories = []" type="button"
+                                    class="text-xs text-slate-500 hover:underline">Batal Pilih</button>
+                            <button @click="addCategories()" type="button"
+                                    :disabled="selectedCategories.length === 0"
+                                    class="ml-auto px-4 py-1.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                Tambah ke Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- CUSTOM LINK --}}
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <button @click="openPanel = openPanel === 'custom' ? '' : 'custom'"
+                        class="w-full flex items-center justify-between px-5 py-3.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        Custom Link
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="openPanel === 'custom' ? 'rotate-180' : ''"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="openPanel === 'custom'" x-collapse class="border-t border-slate-100">
+                    <div class="p-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">URL</label>
+                            <input type="text" x-model="customLink.url" placeholder="/kontak atau https://example.com"
+                                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/15">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Teks Link</label>
+                            <input type="text" x-model="customLink.label" placeholder="Teks yang ditampilkan"
+                                   @keydown.enter="addCustomLink()"
+                                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/15">
+                        </div>
+                        <p x-show="customError" x-cloak class="text-xs text-red-600 font-medium" x-text="customError"></p>
+                        <button @click="addCustomLink()" type="button"
+                                class="w-full px-4 py-2 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 transition-colors">
+                            Tambah ke Menu
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- KANAN: Struktur menu --}}
+        <div class="lg:col-span-3">
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                    <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                        <span class="w-1 h-4 bg-primary rounded-full"></span>
-                        Item Menu
-                    </h2>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-full">
-                        <span x-text="countItems(items)"></span> / 50
+                    <h2 class="text-sm font-bold text-slate-700">Struktur Menu</h2>
+                    <span class="text-xs text-slate-500 font-medium">
+                        <span x-text="countItems(items)"></span>/50 item
                     </span>
                 </div>
-
                 <div class="p-5">
-                    <div id="menu-items-container" class="min-h-[260px] space-y-2" x-ref="sortableContainer">
-                        <template x-if="items.length === 0">
-                            <div class="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-xl text-center">
-                                <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-3">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                                </div>
-                                <p class="text-sm font-medium text-slate-600">Belum ada item menu</p>
-                                <p class="text-xs text-slate-400 mt-0.5">Tambahkan dari panel kanan</p>
-                            </div>
-                        </template>
+                    {{-- Empty state --}}
+                    <template x-if="items.length === 0">
+                        <div class="flex flex-col items-center justify-center py-16 border-2 border-dashed border-slate-200 rounded-xl text-center">
+                            <svg class="w-10 h-10 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <p class="text-sm font-medium text-slate-500">Belum ada item menu</p>
+                            <p class="text-xs text-slate-400 mt-1">Pilih halaman atau buat custom link dari panel kiri</p>
+                        </div>
+                    </template>
 
-                        <template x-for="(item, index) in items" :key="item._id">
-                            <div class="menu-item-wrapper">
-                                {{-- LEVEL 1 --}}
-                                <div class="menu-item group flex items-center gap-2 p-3 bg-white border-2 border-slate-200 rounded-lg cursor-move hover:border-primary/40 hover:shadow-sm transition-all"
-                                     :class="dragging.item && dragging.item._id === item._id ? 'is-dragging' : ''"
-                                     :data-id="item._id"
-                                     draggable="true"
-                                     @dragstart.stop="startDrag(items, index, $event)"
-                                     @dragover.prevent
-                                     @drop.stop="dropItem(items, index, $event)"
-                                     @dragend="endDrag()">
-                                    <svg class="w-4 h-4 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-semibold text-slate-800 truncate" x-text="item.label"></span>
-                                            <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase tracking-wide"
-                                                  :class="{
-                                                      'bg-primary/10 text-primary': item.type === 'page',
-                                                      'bg-purple-50 text-purple-700': item.type === 'category',
-                                                      'bg-amber-50 text-amber-700': item.type === 'custom',
-                                                      'bg-secondary/10 text-secondary-dark': item.type === 'external'
-                                                  }"
-                                                  x-text="item.type"></span>
-                                        </div>
-                                        <p class="text-[11px] text-slate-500 truncate font-mono" x-text="item.url || '-'"></p>
+                    {{-- Item list --}}
+                    <div id="menu-root" class="space-y-2">
+                        <template x-for="(item, idx) in items" :key="item._id">
+                            <div>
+                                {{-- Level 1 --}}
+                                <div class="menu-row flex items-center gap-2 p-3 bg-white border-2 border-slate-200 rounded-xl hover:border-primary/40 transition-all group"
+                                     :data-id="item._id">
+                                    <div class="drag-handle cursor-grab text-slate-300 hover:text-primary p-1 shrink-0">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
                                     </div>
-                                    <button @click="removeItem(items, index)"
-                                            class="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0"
-                                            title="Hapus">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
+
+                                    {{-- Edit mode --}}
+                                    <template x-if="editingId === item._id">
+                                        <div class="flex-1 flex items-center gap-2">
+                                            <input type="text" x-model="editLabel" @keydown.enter="saveEdit(item)" @keydown.escape="cancelEdit()"
+                                                   class="flex-1 text-sm px-2 py-1 rounded-lg border border-primary focus:outline-none" x-ref="editInput">
+                                            <input type="text" x-model="editUrl" @keydown.enter="saveEdit(item)" @keydown.escape="cancelEdit()"
+                                                   class="flex-1 text-xs px-2 py-1 rounded-lg border border-slate-300 font-mono focus:outline-none" placeholder="URL">
+                                            <button @click="saveEdit(item)" class="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+                                            <button @click="cancelEdit()" class="p-1.5 text-slate-400 hover:bg-slate-100 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                        </div>
+                                    </template>
+
+                                    {{-- View mode --}}
+                                    <template x-if="editingId !== item._id">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-semibold text-slate-800 truncate" x-text="item.label"></span>
+                                                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
+                                                      :class="{'bg-primary/10 text-primary':item.type==='page','bg-purple-100 text-purple-700':item.type==='category','bg-amber-100 text-amber-700':item.type==='custom','bg-blue-100 text-blue-700':item.type==='external'}"
+                                                      x-text="item.type"></span>
+                                            </div>
+                                            <p class="text-[11px] text-slate-400 font-mono truncate mt-0.5" x-text="item.url || '-'"></p>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="editingId !== item._id">
+                                        <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button @click="startEdit(item)" title="Edit" class="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            </button>
+                                            <button @click="removeItem(items, idx)" title="Hapus" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            </button>
+                                        </div>
+                                    </template>
                                 </div>
 
-                                {{-- LEVEL 2 --}}
-                                <div class="ml-7 mt-2 space-y-2 nested-sortable" :data-parent-id="item._id" @dragover.prevent @drop.stop="dropInto(item.children, $event)">
-                                    <template x-for="(child, childIndex) in item.children" :key="child._id">
-                                        <div class="menu-item-wrapper">
-                                            <div class="menu-item group flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg cursor-move hover:border-primary/40 transition-all"
-                                                 :class="dragging.item && dragging.item._id === child._id ? 'is-dragging' : ''"
-                                                 :data-id="child._id"
-                                                 draggable="true"
-                                                 @dragstart.stop="startDrag(item.children, childIndex, $event)"
-                                                 @dragover.prevent
-                                                 @drop.stop="dropItem(item.children, childIndex, $event)"
-                                                 @dragend="endDrag()">
-                                                <svg class="w-3.5 h-3.5 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-sm font-medium text-slate-700 truncate" x-text="child.label"></span>
-                                                        <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase tracking-wide"
-                                                              :class="{
-                                                                  'bg-primary/10 text-primary': child.type === 'page',
-                                                                  'bg-purple-50 text-purple-700': child.type === 'category',
-                                                                  'bg-amber-50 text-amber-700': child.type === 'custom',
-                                                                  'bg-secondary/10 text-secondary-dark': child.type === 'external'
-                                                              }"
-                                                              x-text="child.type"></span>
-                                                    </div>
-                                                    <p class="text-[11px] text-slate-500 truncate font-mono" x-text="child.url || '-'"></p>
+                                {{-- Children level 2 --}}
+                                <div class="ml-8 mt-1.5 space-y-1.5 nested-container min-h-[6px]">
+                                    <template x-for="(child, ci) in item.children" :key="child._id">
+                                        <div>
+                                            <div class="menu-row flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-primary/40 transition-all group"
+                                                 :data-id="child._id">
+                                                <div class="drag-handle cursor-grab text-slate-300 hover:text-primary shrink-0">
+                                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
                                                 </div>
-                                                <button @click="removeItem(item.children, childIndex)"
-                                                        class="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                </button>
-                                            </div>
-
-                                            {{-- LEVEL 3 --}}
-                                            <div class="ml-6 mt-2 space-y-2 nested-sortable" :data-parent-id="child._id" @dragover.prevent @drop.stop="dropInto(child.children, $event)">
-                                                <template x-for="(grandchild, gcIndex) in child.children" :key="grandchild._id">
-                                                    <div class="menu-item group flex items-center gap-2 p-2.5 bg-white border border-slate-200 border-dashed rounded-lg cursor-move hover:border-primary/40 transition-all"
-                                                         :class="dragging.item && dragging.item._id === grandchild._id ? 'is-dragging' : ''"
-                                                         :data-id="grandchild._id"
-                                                         draggable="true"
-                                                         @dragstart.stop="startDrag(child.children, gcIndex, $event)"
-                                                         @dragover.prevent
-                                                         @drop.stop="dropItem(child.children, gcIndex, $event)"
-                                                         @dragend="endDrag()">
-                                                        <svg class="w-3 h-3 text-slate-300 shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-                                                        <div class="flex-1 min-w-0">
-                                                            <div class="flex items-center gap-2">
-                                                                <span class="text-xs font-medium text-slate-600 truncate" x-text="grandchild.label"></span>
-                                                                <span class="inline-flex px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
-                                                                      :class="{
-                                                                          'bg-primary/10 text-primary': grandchild.type === 'page',
-                                                                          'bg-purple-50 text-purple-700': grandchild.type === 'category',
-                                                                          'bg-amber-50 text-amber-700': grandchild.type === 'custom',
-                                                                          'bg-secondary/10 text-secondary-dark': grandchild.type === 'external'
-                                                                      }"
-                                                                      x-text="grandchild.type"></span>
-                                                            </div>
-                                                            <p class="text-[10px] text-slate-400 truncate font-mono" x-text="grandchild.url || '-'"></p>
+                                                <template x-if="editingId === child._id">
+                                                    <div class="flex-1 flex items-center gap-2">
+                                                        <input type="text" x-model="editLabel" @keydown.enter="saveEdit(child)" @keydown.escape="cancelEdit()"
+                                                               class="flex-1 text-sm px-2 py-1 rounded-lg border border-primary focus:outline-none">
+                                                        <input type="text" x-model="editUrl" @keydown.enter="saveEdit(child)" @keydown.escape="cancelEdit()"
+                                                               class="flex-1 text-xs px-2 py-1 rounded-lg border border-slate-300 font-mono focus:outline-none">
+                                                        <button @click="saveEdit(child)" class="p-1 text-green-600 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+                                                        <button @click="cancelEdit()" class="p-1 text-slate-400 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                    </div>
+                                                </template>
+                                                <template x-if="editingId !== child._id">
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center gap-1.5">
+                                                            <span class="text-sm font-medium text-slate-700 truncate" x-text="child.label"></span>
+                                                            <span class="px-1 py-0.5 text-[9px] font-bold rounded uppercase"
+                                                                  :class="{'bg-primary/10 text-primary':child.type==='page','bg-purple-100 text-purple-700':child.type==='category','bg-amber-100 text-amber-700':child.type==='custom','bg-blue-100 text-blue-700':child.type==='external'}"
+                                                                  x-text="child.type"></span>
                                                         </div>
-                                                        <button @click="removeItem(child.children, gcIndex)"
-                                                                class="p-1 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0">
-                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                        </button>
+                                                        <p class="text-[10px] text-slate-400 font-mono truncate" x-text="child.url || '-'"></p>
+                                                    </div>
+                                                </template>
+                                                <template x-if="editingId !== child._id">
+                                                    <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button @click="startEdit(child)" class="p-1 text-slate-400 hover:text-primary rounded"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                                                        <button @click="removeItem(item.children, ci)" class="p-1 text-slate-400 hover:text-red-600 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            {{-- Level 3 --}}
+                                            <div class="ml-6 mt-1 space-y-1 nested-container min-h-[4px]">
+                                                <template x-for="(gc, gi) in child.children" :key="gc._id">
+                                                    <div class="menu-row flex items-center gap-2 p-2 bg-white border border-dashed border-slate-200 rounded-xl hover:border-primary/30 transition-all group"
+                                                         :data-id="gc._id">
+                                                        <div class="drag-handle cursor-grab text-slate-300 hover:text-primary shrink-0">
+                                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM8 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <span class="text-xs font-medium text-slate-600 truncate" x-text="gc.label"></span>
+                                                            <p class="text-[10px] text-slate-400 font-mono truncate" x-text="gc.url || '-'"></p>
+                                                        </div>
+                                                        <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button @click="startEdit(gc)" class="p-1 text-slate-400 hover:text-primary rounded"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                                                            <button @click="removeItem(child.children, gi)" class="p-1 text-slate-400 hover:text-red-600 rounded"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                                                        </div>
                                                     </div>
                                                 </template>
                                             </div>
@@ -211,155 +325,11 @@
                         </template>
                     </div>
 
-                    <div class="mt-4 flex items-start gap-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                        <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-xs text-blue-700">Drag item untuk mengubah urutan. Maksimal 3 level kedalaman dan 50 item per menu.</p>
-                    </div>
+                    <p class="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Drag untuk mengubah urutan. Seret ke dalam item lain untuk membuat sub-menu. Maks. 3 level.
+                    </p>
                 </div>
-            </div>
-        </div>
-
-        {{-- ═══ RIGHT: ADD ITEM PANEL ═══ --}}
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm sticky top-4">
-                <div class="px-5 py-4 border-b border-slate-100">
-                    <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                        <span class="w-1 h-4 bg-secondary rounded-full"></span>
-                        Tambah Item
-                    </h2>
-                </div>
-
-                <div class="p-5">
-                    {{-- Tabs --}}
-                    <div class="grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-lg mb-4">
-                        <button @click="activeTab = 'custom'" type="button"
-                                :class="activeTab === 'custom' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-                                class="px-2 py-1.5 text-[11px] font-bold rounded-md transition-colors uppercase">
-                            Custom
-                        </button>
-                        <button @click="activeTab = 'page'" type="button"
-                                :class="activeTab === 'page' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-                                class="px-2 py-1.5 text-[11px] font-bold rounded-md transition-colors uppercase">
-                            Halaman
-                        </button>
-                        <button @click="activeTab = 'category'" type="button"
-                                :class="activeTab === 'category' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-                                class="px-2 py-1.5 text-[11px] font-bold rounded-md transition-colors uppercase">
-                            Kategori
-                        </button>
-                        <button @click="activeTab = 'external'" type="button"
-                                :class="activeTab === 'external' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-                                class="px-2 py-1.5 text-[11px] font-bold rounded-md transition-colors uppercase">
-                            External
-                        </button>
-                    </div>
-
-                    {{-- CUSTOM --}}
-                    <div x-show="activeTab === 'custom'" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Label</label>
-                            <input type="text" x-model="newItem.label" placeholder="Teks menu" maxlength="100">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">URL</label>
-                            <input type="url" x-model="newItem.url" placeholder="https://example.com">
-                            <p x-show="urlError" x-cloak class="mt-1 text-xs text-red-600" x-text="urlError"></p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Target</label>
-                            <select x-model="newItem.target">
-                                <option value="_self">Same Window</option>
-                                <option value="_blank">New Tab</option>
-                            </select>
-                        </div>
-                        <button @click="addCustomItem()" type="button"
-                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Tambah ke Menu
-                        </button>
-                    </div>
-
-                    {{-- PAGE --}}
-                    <div x-show="activeTab === 'page'" x-cloak class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Pilih Halaman</label>
-                            <select x-model="selectedPage">
-                                <option value="">-- Pilih Halaman --</option>
-                                @foreach($pages as $page)
-                                    <option value="{{ $page->id }}">{{ $page->title }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <button @click="addPageItem()" type="button"
-                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Tambah ke Menu
-                        </button>
-                    </div>
-
-                    {{-- CATEGORY --}}
-                    <div x-show="activeTab === 'category'" x-cloak class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Pilih Kategori</label>
-                            <select x-model="selectedCategory">
-                                <option value="">-- Pilih Kategori --</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <button @click="addCategoryItem()" type="button"
-                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Tambah ke Menu
-                        </button>
-                    </div>
-
-                    {{-- EXTERNAL --}}
-                    <div x-show="activeTab === 'external'" x-cloak class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Label</label>
-                            <input type="text" x-model="externalItem.label" placeholder="Teks menu" maxlength="100">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">URL External</label>
-                            <input type="url" x-model="externalItem.url" placeholder="https://external-site.com">
-                            <p x-show="externalUrlError" x-cloak class="mt-1 text-xs text-red-600" x-text="externalUrlError"></p>
-                        </div>
-                        <button @click="addExternalItem()" type="button"
-                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Tambah ke Menu
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Remove Item Confirm Modal --}}
-    <div x-show="showRemoveConfirm" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showRemoveConfirm = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100">
-            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-800 text-center mb-2">Hapus Item Menu</h3>
-            <p class="text-sm text-slate-600 text-center mb-6">
-                Hapus "<span class="font-semibold" x-text="removeConfirmName"></span>"? Aksi ini akan menghapus item beserta sub-itemnya.
-            </p>
-            <div class="flex gap-3">
-                <button type="button" @click="showRemoveConfirm = false"
-                        class="flex-1 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
-                    Batal
-                </button>
-                <button type="button" @click="confirmRemove()"
-                        class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 transition-colors">
-                    Ya, Hapus
-                </button>
             </div>
         </div>
     </div>
@@ -368,223 +338,225 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
-    const pagesData = @json($pages);
-    const categoriesData = @json($categories);
+const PAGES_DATA      = @json($pages->map(fn($p) => ['id' => $p->id, 'title' => $p->title, 'slug' => $p->slug]));
+const CATEGORIES_DATA = @json($categories->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'slug' => $c->slug]));
+const SAVE_URL        = "{{ route('admin.menus.save-items', $menu) }}";
+const CSRF            = "{{ csrf_token() }}";
 
-    function menuBuilder() {
-        return {
-            items: @json($menuTree),
-            activeTab: 'custom',
-            saving: false,
-            message: '',
-            messageType: 'success',
-            urlError: '',
-            externalUrlError: '',
-            selectedPage: '',
-            selectedCategory: '',
-            newItem: { label: '', url: '', target: '_self' },
-            externalItem: { label: '', url: '' },
-            _idCounter: Date.now(),
-            showRemoveConfirm: false,
-            removeConfirmName: '',
-            _pendingRemove: null,
-            dragging: { array: null, index: null, item: null },
+function menuBuilder() {
+    return {
+        items: @json($menuTree),
 
-            init() {
-                this.assignIds(this.items);
-            },
+        // Panel state
+        openPanel: 'pages',
 
-            assignIds(items) {
-                items.forEach(item => {
-                    if (!item._id) item._id = this.generateId();
-                    if (!item.children) item.children = [];
-                    this.assignIds(item.children);
-                });
-            },
+        // Selections
+        selectedPages: [],
+        selectedCategories: [],
+        pageSearch: '',
 
-            generateId() { return 'item_' + (this._idCounter++); },
+        // Custom link
+        customLink: { label: '', url: '' },
+        customError: '',
 
-            startDrag(array, index, event) {
-                this.dragging = { array, index, item: array[index] };
-                event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('text/plain', array[index]._id);
-            },
+        // Edit state
+        editingId: null,
+        editLabel: '',
+        editUrl: '',
 
-            dropItem(targetArray, targetIndex, event) {
-                event.preventDefault();
-                this.moveDraggedItem(targetArray, targetIndex);
-            },
+        // Message
+        message: '',
+        messageType: 'success',
+        saving: false,
 
-            dropInto(targetArray, event) {
-                event.preventDefault();
-                this.moveDraggedItem(targetArray, targetArray.length);
-            },
+        _idCounter: Date.now(),
 
-            moveDraggedItem(targetArray, targetIndex) {
-                const { array: sourceArray, index: sourceIndex, item } = this.dragging;
-                if (!sourceArray || !item) return;
+        init() {
+            this.assignIds(this.items);
+            this.$nextTick(() => this.initSortable());
+        },
 
-                if (this.isDescendantArray(item, targetArray)) {
-                    this.showMessage('Item tidak bisa dipindah ke turunannya sendiri.', 'error');
-                    this.endDrag();
-                    return;
-                }
+        generateId() { return 'item_' + (++this._idCounter); },
 
-                if (sourceArray === targetArray && sourceIndex === targetIndex) {
-                    this.endDrag();
-                    return;
-                }
+        assignIds(arr) {
+            arr.forEach(item => {
+                if (!item._id) item._id = this.generateId();
+                if (!item.children) item.children = [];
+                this.assignIds(item.children);
+            });
+        },
 
-                sourceArray.splice(sourceIndex, 1);
+        countItems(arr) {
+            return arr.reduce((n, item) => n + 1 + this.countItems(item.children || []), 0);
+        },
 
-                if (sourceArray === targetArray && targetIndex > sourceIndex) {
-                    targetIndex--;
-                }
+        // ── Add pages (checklist) ──
+        selectAllPages() {
+            this.selectedPages = PAGES_DATA.map(p => String(p.id));
+        },
 
-                targetArray.splice(targetIndex, 0, item);
-                this.endDrag();
-            },
-
-            isDescendantArray(item, targetArray) {
-                if (item.children === targetArray) return true;
-
-                return (item.children || []).some(child => this.isDescendantArray(child, targetArray));
-            },
-
-            endDrag() {
-                this.dragging = { array: null, index: null, item: null };
-            },
-
-            countItems(items) {
-                let count = 0;
-                items.forEach(item => {
-                    count++;
-                    if (item.children && item.children.length > 0) count += this.countItems(item.children);
-                });
-                return count;
-            },
-
-            validateUrl(url) {
-                if (!url) return false;
-                try {
-                    const parsed = new URL(url);
-                    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-                } catch { return false; }
-            },
-
-            addCustomItem() {
-                this.urlError = '';
-                if (!this.newItem.label.trim()) { this.urlError = 'Label wajib diisi.'; return; }
-                if (!this.newItem.url.trim()) { this.urlError = 'URL wajib diisi.'; return; }
-                if (!this.validateUrl(this.newItem.url)) { this.urlError = 'URL harus berformat http:// atau https://.'; return; }
-                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
-
-                this.items.push({
-                    _id: this.generateId(), label: this.newItem.label.trim(), type: 'custom',
-                    url: this.newItem.url.trim(), target: this.newItem.target,
-                    page_id: null, category_id: null, children: []
-                });
-                this.newItem = { label: '', url: '', target: '_self' };
-                this.showMessage('Item ditambahkan.', 'success');
-            },
-
-            addPageItem() {
-                if (!this.selectedPage) return;
-                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
-                const page = pagesData.find(p => p.id == this.selectedPage);
-                if (!page) return;
+        addPages() {
+            if (this.selectedPages.length === 0) return;
+            PAGES_DATA.forEach(page => {
+                if (!this.selectedPages.includes(String(page.id))) return;
+                if (this.countItems(this.items) >= 50) { this.showMsg('Maksimal 50 item.', 'error'); return; }
                 this.items.push({
                     _id: this.generateId(), label: page.title, type: 'page',
                     url: '/' + page.slug, target: '_self',
                     page_id: page.id, category_id: null, children: []
                 });
-                this.selectedPage = '';
-                this.showMessage('Halaman ditambahkan.', 'success');
-            },
+            });
+            this.selectedPages = [];
+            this.showMsg(PAGES_DATA.filter(p => true).length + ' halaman ditambahkan.', 'success');
+            this.$nextTick(() => this.refreshSortable());
+        },
 
-            addCategoryItem() {
-                if (!this.selectedCategory) return;
-                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
-                const category = categoriesData.find(c => c.id == this.selectedCategory);
-                if (!category) return;
+        // ── Add categories ──
+        addCategories() {
+            if (this.selectedCategories.length === 0) return;
+            CATEGORIES_DATA.forEach(cat => {
+                if (!this.selectedCategories.includes(String(cat.id))) return;
+                if (this.countItems(this.items) >= 50) { this.showMsg('Maksimal 50 item.', 'error'); return; }
                 this.items.push({
-                    _id: this.generateId(), label: category.name, type: 'category',
-                    url: '/kategori/' + category.slug, target: '_self',
-                    page_id: null, category_id: category.id, children: []
+                    _id: this.generateId(), label: cat.name, type: 'category',
+                    url: '/blog/kategori/' + cat.slug, target: '_self',
+                    page_id: null, category_id: cat.id, children: []
                 });
-                this.selectedCategory = '';
-                this.showMessage('Kategori ditambahkan.', 'success');
-            },
+            });
+            this.selectedCategories = [];
+            this.showMsg('Kategori ditambahkan.', 'success');
+            this.$nextTick(() => this.refreshSortable());
+        },
 
-            addExternalItem() {
-                this.externalUrlError = '';
-                if (!this.externalItem.label.trim()) { this.externalUrlError = 'Label wajib diisi.'; return; }
-                if (!this.externalItem.url.trim()) { this.externalUrlError = 'URL wajib diisi.'; return; }
-                if (!this.validateUrl(this.externalItem.url)) { this.externalUrlError = 'URL harus berformat http:// atau https://.'; return; }
-                if (this.countItems(this.items) >= 50) { this.showMessage('Maksimal 50 item per menu.', 'error'); return; }
+        // ── Add custom link ──
+        addCustomLink() {
+            this.customError = '';
+            if (!this.customLink.label.trim()) { this.customError = 'Teks link wajib diisi.'; return; }
+            if (!this.customLink.url.trim())   { this.customError = 'URL wajib diisi.'; return; }
+            const url = this.customLink.url.trim();
+            const valid = url.startsWith('/') || url.startsWith('#') || url.startsWith('http://') || url.startsWith('https://');
+            if (!valid) { this.customError = 'URL harus diawali / atau https://'; return; }
+            if (this.countItems(this.items) >= 50) { this.customError = 'Maksimal 50 item.'; return; }
+            this.items.push({
+                _id: this.generateId(), label: this.customLink.label.trim(), type: 'custom',
+                url, target: '_self', page_id: null, category_id: null, children: []
+            });
+            this.customLink = { label: '', url: '' };
+            this.showMsg('Custom link ditambahkan.', 'success');
+            this.$nextTick(() => this.refreshSortable());
+        },
 
-                this.items.push({
-                    _id: this.generateId(), label: this.externalItem.label.trim(), type: 'external',
-                    url: this.externalItem.url.trim(), target: '_blank',
-                    page_id: null, category_id: null, children: []
+        // ── Edit ──
+        startEdit(item) {
+            this.editingId = item._id;
+            this.editLabel = item.label;
+            this.editUrl   = item.url;
+        },
+        saveEdit(item) {
+            if (!this.editLabel.trim()) return;
+            item.label = this.editLabel.trim();
+            item.url   = this.editUrl.trim();
+            this.editingId = null;
+        },
+        cancelEdit() { this.editingId = null; },
+
+        // ── Remove ──
+        removeItem(arr, idx) {
+            arr.splice(idx, 1);
+        },
+
+        // ── Sortable ──
+        initSortable() {
+            const root = document.getElementById('menu-root');
+            if (!root || typeof Sortable === 'undefined') return;
+            this._makeSortable(root);
+        },
+
+        refreshSortable() {
+            // Re-init newly added nested containers
+            document.querySelectorAll('.nested-container:not([data-si])').forEach(el => {
+                el.setAttribute('data-si', '1');
+                Sortable.create(el, {
+                    group: 'menu-items', animation: 150, handle: '.drag-handle',
+                    ghostClass: 'sortable-ghost', fallbackOnBody: true,
+                    onEnd: () => this.$nextTick(() => this.syncFromDom()),
                 });
-                this.externalItem = { label: '', url: '' };
-                this.showMessage('Link external ditambahkan.', 'success');
-            },
+            });
+        },
 
-            removeItem(array, index) {
-                this._pendingRemove = { array, index };
-                this.removeConfirmName = array[index].label;
-                this.showRemoveConfirm = true;
-            },
-
-            confirmRemove() {
-                if (this._pendingRemove) {
-                    this._pendingRemove.array.splice(this._pendingRemove.index, 1);
-                    this._pendingRemove = null;
-                }
-                this.showRemoveConfirm = false;
-            },
-
-            prepareItemsForSave(items) {
-                return items.map(item => ({
-                    label: item.label, type: item.type, url: item.url,
-                    target: item.target || '_self',
-                    page_id: item.page_id || null, category_id: item.category_id || null,
-                    children: item.children ? this.prepareItemsForSave(item.children) : []
-                }));
-            },
-
-            async saveMenu() {
-                this.saving = true;
-                this.message = '';
-                const payload = { items: this.prepareItemsForSave(this.items) };
-                try {
-                    const response = await fetch('{{ route("admin.menus.save-items", $menu) }}', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
+        _makeSortable(el) {
+            Sortable.create(el, {
+                group: 'menu-items', animation: 150, handle: '.drag-handle',
+                ghostClass: 'sortable-ghost', fallbackOnBody: true,
+                onEnd: () => this.$nextTick(() => this.syncFromDom()),
+            });
+            el.querySelectorAll('.nested-container').forEach(nested => {
+                if (!nested.dataset.si) {
+                    nested.setAttribute('data-si', '1');
+                    Sortable.create(nested, {
+                        group: 'menu-items', animation: 150, handle: '.drag-handle',
+                        ghostClass: 'sortable-ghost', fallbackOnBody: true,
+                        onEnd: () => this.$nextTick(() => this.syncFromDom()),
                     });
-                    const data = await response.json();
-                    if (response.ok && data.success) this.showMessage(data.message || 'Menu berhasil disimpan.', 'success');
-                    else this.showMessage(data.message || 'Gagal menyimpan menu.', 'error');
-                } catch (error) {
-                    this.showMessage('Terjadi kesalahan saat menyimpan menu.', 'error');
                 }
-                this.saving = false;
-            },
+            });
+        },
 
-            showMessage(text, type) {
-                this.message = text;
-                this.messageType = type;
-                setTimeout(() => { this.message = ''; }, 4000);
+        syncFromDom() {
+            const flat = {};
+            const flatAll = arr => arr.forEach(i => { flat[i._id] = i; flatAll(i.children || []); });
+            flatAll(this.items);
+            const buildFromDom = container => {
+                const result = [];
+                container.querySelectorAll(':scope > [data-id]').forEach(el => {
+                    const item = flat[el.dataset.id];
+                    if (!item) return;
+                    const nested = el.querySelector('.nested-container');
+                    item.children = nested ? buildFromDom(nested) : [];
+                    result.push(item);
+                });
+                return result;
+            };
+            this.items = buildFromDom(document.getElementById('menu-root'));
+            this.$nextTick(() => this.refreshSortable());
+        },
+
+        // ── Save to server ──
+        prepareItems(arr) {
+            return arr.map(item => ({
+                label: item.label, type: item.type, url: item.url,
+                target: item.target || '_self',
+                page_id: item.page_id || null,
+                category_id: item.category_id || null,
+                children: this.prepareItems(item.children || []),
+            }));
+        },
+
+        async saveMenu() {
+            this.saving = true;
+            this.message = '';
+            try {
+                const res = await fetch(SAVE_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+                    body: JSON.stringify({ items: this.prepareItems(this.items) }),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) this.showMsg(data.message || 'Menu berhasil disimpan.', 'success');
+                else this.showMsg(data.message || 'Gagal menyimpan menu.', 'error');
+            } catch (e) {
+                this.showMsg('Terjadi kesalahan koneksi.', 'error');
             }
-        };
-    }
+            this.saving = false;
+        },
+
+        showMsg(text, type = 'success') {
+            this.message = text; this.messageType = type;
+            setTimeout(() => { this.message = ''; }, 4000);
+        },
+    };
+}
 </script>
 @endsection

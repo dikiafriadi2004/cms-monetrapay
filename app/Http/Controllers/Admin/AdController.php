@@ -16,7 +16,8 @@ class AdController extends Controller
     {
         $ads = Ad::with('user')
             ->orderByDesc('created_at')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.ads.index', compact('ads'));
     }

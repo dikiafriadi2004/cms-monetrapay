@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') - MonetraPay CMS</title>
+    <title>@yield('title', 'Admin') - {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="/assets/images/favico.png" type="image/png">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $adminFavicon = \App\Models\Setting::get('favicon', 'general');
+        // Always look for resized variants in favicon/ directory
+        $adminFav32   = 'favicon/favicon-32.png';
+        $adminFavFile = Storage::disk('public')->exists($adminFav32) ? $adminFav32 : $adminFavicon;
+    @endphp
+    @if($adminFavicon)
+        @php
+            $adminFavPath = Storage::disk('public')->path($adminFavFile ?? $adminFavicon);
+            $adminFavCacheBust = '?v=' . (file_exists($adminFavPath) ? filemtime($adminFavPath) : time());
+            $adminFavUrl = Storage::url($adminFavFile ?? $adminFavicon);
+        @endphp
+        <link rel="icon" href="{{ $adminFavUrl . $adminFavCacheBust }}" type="image/png">
+        <link rel="shortcut icon" href="{{ $adminFavUrl . $adminFavCacheBust }}">
+    @else
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @hasSection('uses-editor')
     <meta name="file-picker-url" content="{{ route('admin.files.picker') }}">
@@ -230,13 +246,12 @@
         <a href="{{ route('admin.dashboard') }}" class="flex items-center min-w-0">
             @php
                 $adminLogo = \App\Models\Setting::get('logo', 'general');
+                $adminSiteName = \App\Models\Setting::get('site_name', 'general') ?? config('app.name');
             @endphp
             @if($adminLogo)
-                <img src="{{ Storage::url($adminLogo) }}" alt="MonetraPay" class="h-12 w-auto max-w-[180px] object-contain">
-            @elseif(file_exists(public_path('assets/images/logo.png')))
-                <img src="/assets/images/logo.png" alt="MonetraPay" class="h-12 w-auto max-w-[180px] object-contain">
+                <img src="{{ Storage::url($adminLogo) }}" alt="{{ $adminSiteName }}" class="h-12 w-auto max-w-[180px] object-contain">
             @else
-                <span class="text-lg font-extrabold"><span class="text-primary">Monetra</span><span class="text-secondary">Pay</span></span>
+                <span class="text-lg font-extrabold">{{ $adminSiteName }}</span>
             @endif
         </a>
         <button @click="sidebarOpen = false" class="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-colors">
@@ -269,14 +284,11 @@
         @endcan
 
         @can('blog.view')
-        @php
-            $pendingComments = \Illuminate\Support\Facades\Cache::remember('comments.pending.count', 60, fn() => \App\Models\Comment::where('status','pending')->count());
-        @endphp
         <a href="{{ route('admin.comments.index') }}" class="{{ $navItem(request()->routeIs('admin.comments.*')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
             <span class="flex-1">Komentar</span>
-            @if($pendingComments > 0)
-                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-amber-500 rounded-full">{{ $pendingComments > 99 ? '99+' : $pendingComments }}</span>
+            @if(isset($notifications) && $notifications['pending_comments'] > 0)
+                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-amber-500 rounded-full" data-notification-badge="pending_comments">{{ $notifications['pending_comments'] > 99 ? '99+' : $notifications['pending_comments'] }}</span>
             @endif
         </a>
         @endcan
@@ -327,29 +339,24 @@
         </a>
         @endcan
 
-        @can('setting.view')
-        @php
-            $unreadContacts = \Illuminate\Support\Facades\Cache::remember('contacts.unread.count', 60, function () {
-                return \App\Models\ContactSubmission::where('is_read', false)->count();
-            });
-        @endphp
+        @can('contact.view')
         <a href="{{ route('admin.contacts.index') }}" class="{{ $navItem(request()->routeIs('admin.contacts.*')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             <span class="flex-1">Kontak</span>
-            @if($unreadContacts > 0)
-                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-secondary rounded-full">{{ $unreadContacts > 99 ? '99+' : $unreadContacts }}</span>
+            @if(isset($notifications) && $notifications['unread_contacts'] > 0)
+                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-secondary rounded-full" data-notification-badge="unread_contacts">{{ $notifications['unread_contacts'] > 99 ? '99+' : $notifications['unread_contacts'] }}</span>
             @endif
         </a>
+        @endcan
 
-        <a href="{{ route('admin.newsletter.index') }}" class="{{ $navItem(request()->routeIs('admin.newsletter.index') || request()->routeIs('admin.newsletter.destroy')) }}">
+        @can('newsletter.view')
+        <a href="{{ route('admin.newsletter.index') }}" class="{{ $navItem(request()->routeIs('admin.newsletter.index') || request()->routeIs('admin.newsletter.destroy') || request()->routeIs('admin.newsletter.export')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
             Newsletter
         </a>
-        <a href="{{ route('admin.newsletter.campaigns.index') }}" class="{{ request()->routeIs('admin.newsletter.campaigns.*')
-            ? 'flex items-center gap-2.5 pl-8 pr-3 py-1.5 rounded-lg text-xs font-semibold text-primary bg-primary/10'
-            : 'flex items-center gap-2.5 pl-8 pr-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors' }}">
-            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-            Kirim Blast
+        <a href="{{ route('admin.newsletter.campaigns.index') }}" class="{{ $navItem(request()->routeIs('admin.newsletter.campaigns.*')) }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Email Campaign
         </a>
         @endcan
 
@@ -360,20 +367,31 @@
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             Settings
         </a>
+        @endcan
 
+        @can('user.view')
         <a href="{{ route('admin.users.index') }}" class="{{ $navItem(request()->routeIs('admin.users.*')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
             Users
         </a>
+        @endcan
 
+        @can('role.view')
         <a href="{{ route('admin.roles.index') }}" class="{{ $navItem(request()->routeIs('admin.roles.*')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             Roles
         </a>
+        @endcan
 
+        @can('setting.view')
         <a href="{{ route('admin.audit-logs.index') }}" class="{{ $navItem(request()->routeIs('admin.audit-logs.*')) }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
             Audit Log
+        </a>
+
+        <a href="{{ route('admin.tools.export-import') }}" class="{{ $navItem(request()->routeIs('admin.tools.*')) }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+            Export/Import
         </a>
         @endcan
     </nav>
@@ -421,41 +439,36 @@
         </div>
         <div class="flex items-center gap-2">
             {{-- Notification bell --}}
-            @php
-                $pendingCommentCount = \Illuminate\Support\Facades\Cache::remember('comments.pending.count', 60, fn() => \App\Models\Comment::where('status','pending')->count());
-                $unreadContactCount = \Illuminate\Support\Facades\Cache::remember('contacts.unread.count', 60, fn() => \App\Models\ContactSubmission::where('is_read', false)->count());
-                $totalNotif = $pendingCommentCount + $unreadContactCount;
-            @endphp
-            @if($totalNotif > 0)
+            @if(isset($notifications) && $notifications['total'] > 0)
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open" @click.outside="open = false"
                         class="relative p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full flex items-center justify-center">{{ $totalNotif > 9 ? '9+' : $totalNotif }}</span>
+                    <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full flex items-center justify-center" data-notification-badge="total">{{ $notifications['total'] > 9 ? '9+' : $notifications['total'] }}</span>
                 </button>
                 <div x-show="open" x-cloak x-transition
                      class="absolute right-0 top-10 w-64 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-slate-100 bg-slate-50">
                         <p class="text-xs font-bold text-slate-700 uppercase tracking-wide">Notifikasi</p>
                     </div>
-                    @if($pendingCommentCount > 0)
+                    @if(isset($notifications) && $notifications['pending_comments'] > 0)
                     <a href="{{ route('admin.comments.index', ['status' => 'pending']) }}" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
                         <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
                             <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-slate-700">{{ $pendingCommentCount }} komentar pending</p>
+                            <p class="text-xs font-semibold text-slate-700">{{ $notifications['pending_comments'] }} komentar pending</p>
                             <p class="text-[11px] text-slate-400">Menunggu moderasi</p>
                         </div>
                     </a>
                     @endif
-                    @if($unreadContactCount > 0)
+                    @if(isset($notifications) && $notifications['unread_contacts'] > 0)
                     <a href="{{ route('admin.contacts.index', ['filter' => 'unread']) }}" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
                         <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
                             <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-slate-700">{{ $unreadContactCount }} pesan belum dibaca</p>
+                            <p class="text-xs font-semibold text-slate-700">{{ $notifications['unread_contacts'] }} pesan belum dibaca</p>
                             <p class="text-[11px] text-slate-400">Dari form kontak</p>
                         </div>
                     </a>
@@ -544,7 +557,31 @@
 @yield('scripts')
 <script src="{{ asset('js/seo-counter.js') }}"></script>
 @hasSection('uses-editor')
-<script src="{{ asset('js/editor.js') }}"></script>
+@php
+    // Pre-load media files for TinyMCE file picker (avoids AJAX auth issues)
+    try {
+        $editorMediaFiles = \App\Models\Media::where('mime_type', 'like', 'image/%')
+            ->orderByDesc('created_at')
+            ->limit(100)
+            ->get()
+            ->map(fn($m) => [
+                'id'            => $m->id,
+                'url'           => \Illuminate\Support\Facades\Storage::url($m->path),
+                'thumbnail_url' => $m->thumbnail_path ? \Illuminate\Support\Facades\Storage::url($m->thumbnail_path) : \Illuminate\Support\Facades\Storage::url($m->path),
+                'original_name' => $m->original_name,
+                'mime_type'     => $m->mime_type,
+            ])
+            ->values();
+    } catch (\Throwable $e) {
+        $editorMediaFiles = collect();
+    }
+@endphp
+<script>
+window.__editorMediaFiles = {!! json_encode($editorMediaFiles->toArray()) !!};
+window.__editorUploadUrl = '{{ route("admin.files.upload") }}';
+window.__editorSearchUrl = '{{ route("admin.files.search") }}';
+</script>
+<script src="{{ asset('js/editor.js') }}?v={{ filemtime(public_path('js/editor.js')) }}"></script>
 @endif
 
 {{-- Session timeout warning --}}

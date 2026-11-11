@@ -1,4 +1,4 @@
-@extends('frontend.layouts.app')
+﻿@extends('frontend.layouts.app')
 @section('title', 'Subscription Confirmed')
 @section('seo')
 <meta name="robots" content="noindex,nofollow">

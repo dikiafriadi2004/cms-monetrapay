@@ -71,17 +71,34 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <form method="POST" action="{{ route('admin.ads.toggle', $ad) }}" class="inline">
+                                <form method="POST" action="{{ route('admin.ads.toggle', $ad) }}">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center gap-1.5 text-sm font-medium {{ $ad->is_active ? 'text-green-700' : 'text-slate-500' }} hover:opacity-75 transition-opacity">
-                                        @if($ad->is_active)
-                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                            Aktif
-                                        @else
-                                            <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
-                                            Nonaktif
-                                        @endif
+                                            title="{{ $ad->is_active ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' }}"
+                                            class="flex items-center gap-2.5 group focus:outline-none">
+                                        {{-- Toggle switch --}}
+                                        <div style="
+                                            position:relative;
+                                            width:44px;height:24px;
+                                            border-radius:12px;
+                                            background:{{ $ad->is_active ? '#0D9488' : '#cbd5e1' }};
+                                            transition:background .2s;
+                                            flex-shrink:0;
+                                        ">
+                                            <div style="
+                                                position:absolute;
+                                                top:3px;
+                                                left:{{ $ad->is_active ? '23px' : '3px' }};
+                                                width:18px;height:18px;
+                                                background:#fff;
+                                                border-radius:50%;
+                                                box-shadow:0 1px 3px rgba(0,0,0,.2);
+                                                transition:left .2s;
+                                            "></div>
+                                        </div>
+                                        <span class="text-xs font-semibold {{ $ad->is_active ? 'text-primary' : 'text-slate-400' }}">
+                                            {{ $ad->is_active ? 'Aktif' : 'Nonaktif' }}
+                                        </span>
                                     </button>
                                 </form>
                             </td>
@@ -128,8 +145,8 @@
 
         {{-- Pagination --}}
         @if($ads->hasPages())
-            <div class="px-6 py-4 border-t border-slate-200">
-                {{ $ads->links() }}
+            <div class="px-6 border-t border-slate-200">
+                <x-admin.pagination :paginator="$ads" />
             </div>
         @endif
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\MailConfigService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,6 +29,8 @@ class PasswordResetController extends Controller
         $request->validate([
             'email' => ['required', 'email'],
         ]);
+
+        app(MailConfigService::class)->apply();
 
         $status = Password::sendResetLink($request->only('email'));
 
