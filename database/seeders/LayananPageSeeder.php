@@ -147,7 +147,7 @@ class LayananPageSeeder extends Seeder
 <section style="padding:80px 20px;background:#f8fafc;">
   <div style="max-width:1100px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:48px;">
-      <h2 style="font-size:clamp(22px,4vw,36px);font-weight:800;color:#1e293b;margin:0 0 12px;">Keunggulan MonetraPay</h2>
+      <h2 style="font-size:clamp(22px,4vw,36px);font-weight:800;color:#1e293b;margin:0 0 12px;">Keunggulan Platform Kami</h2>
       <p style="color:#64748b;font-size:16px;">Platform terpercaya yang sudah dipercaya jutaan transaksi</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;">
@@ -179,7 +179,7 @@ class LayananPageSeeder extends Seeder
 <section style="padding:80px 20px;background:#3D9E7A;">
   <div style="max-width:700px;margin:0 auto;text-align:center;">
     <h2 style="font-size:clamp(24px,4vw,38px);font-weight:800;color:#fff;margin:0 0 16px;">Siap Mulai Bisnis Digital?</h2>
-    <p style="color:rgba(255,255,255,.85);font-size:17px;margin:0 0 32px;">Bergabung bersama 500.000+ agen yang sudah sukses bersama MonetraPay</p>
+    <p style="color:rgba(255,255,255,.85);font-size:17px;margin:0 0 32px;">Bergabung bersama 500.000+ agen yang sudah sukses bersama platform kami</p>
     <a href="/kontak" style="display:inline-block;background:#fff;color:#3D9E7A;padding:16px 40px;border-radius:12px;font-size:17px;font-weight:800;text-decoration:none;">Daftar Jadi Agen Sekarang</a>
   </div>
 </section>

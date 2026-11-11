@@ -22,25 +22,25 @@ class LegalPageSeeder extends Seeder
             'status'           => 'published',
             'use_page_builder' => false,
             'order'            => 10,
-            'meta_title'       => 'FAQ - Pertanyaan yang Sering Diajukan | MonetraPay',
-            'meta_description' => 'Temukan jawaban atas pertanyaan umum seputar layanan MonetraPay, platform pembayaran dan PPOB terpercaya.',
+            'meta_title'       => 'FAQ - Pertanyaan yang Sering Diajukan | [Nama Perusahaan]',
+            'meta_description' => 'Temukan jawaban atas pertanyaan umum seputar layanan [Nama Perusahaan], platform pembayaran dan PPOB terpercaya.',
             'content'          => <<<'HTML'
 <div class="faq-container">
   <h2>Pertanyaan yang Sering Diajukan</h2>
 
   <div class="faq-item">
-    <h3>1. Apa itu MonetraPay?</h3>
-    <p>MonetraPay adalah platform layanan pembayaran digital dan PPOB (Payment Point Online Bank) yang memungkinkan agen untuk melayani berbagai kebutuhan transaksi masyarakat, seperti pembayaran tagihan listrik, air, pulsa, internet, dan berbagai produk digital lainnya secara mudah dan cepat.</p>
+    <h3>1. Apa itu [Nama Perusahaan]?</h3>
+    <p>[Nama Perusahaan] adalah platform layanan pembayaran digital dan PPOB (Payment Point Online Bank) yang memungkinkan agen untuk melayani berbagai kebutuhan transaksi masyarakat, seperti pembayaran tagihan listrik, air, pulsa, internet, dan berbagai produk digital lainnya secara mudah dan cepat.</p>
   </div>
 
   <div class="faq-item">
-    <h3>2. Bagaimana cara daftar menjadi agen MonetraPay?</h3>
-    <p>Untuk menjadi agen MonetraPay, Anda dapat mendaftarkan diri melalui website resmi kami atau menghubungi tim kami. Syarat pendaftaran meliputi: KTP yang masih berlaku, nomor telepon aktif, dan rekening bank atas nama sendiri. Setelah verifikasi data, akun Anda akan aktif dalam 1x24 jam kerja.</p>
+    <h3>2. Bagaimana cara daftar menjadi agen [Nama Perusahaan]?</h3>
+    <p>Untuk menjadi agen [Nama Perusahaan], Anda dapat mendaftarkan diri melalui website resmi kami atau menghubungi tim kami. Syarat pendaftaran meliputi: KTP yang masih berlaku, nomor telepon aktif, dan rekening bank atas nama sendiri. Setelah verifikasi data, akun Anda akan aktif dalam 1x24 jam kerja.</p>
   </div>
 
   <div class="faq-item">
-    <h3>3. Produk apa saja yang tersedia di MonetraPay?</h3>
-    <p>MonetraPay menyediakan berbagai produk dan layanan, antara lain:</p>
+    <h3>3. Produk apa saja yang tersedia di [Nama Perusahaan]?</h3>
+    <p>[Nama Perusahaan] menyediakan berbagai produk dan layanan, antara lain:</p>
     <ul>
       <li>Pulsa dan Paket Data (semua operator)</li>
       <li>Token dan Tagihan Listrik PLN</li>
@@ -56,7 +56,7 @@ class LegalPageSeeder extends Seeder
 
   <div class="faq-item">
     <h3>4. Bagaimana cara melakukan transaksi?</h3>
-    <p>Transaksi di MonetraPay sangat mudah. Login ke akun Anda, pilih kategori produk yang diinginkan, masukkan nomor tujuan atau ID pelanggan, pilih nominal, lalu konfirmasi transaksi. Pastikan saldo Anda mencukupi sebelum melakukan transaksi. Struk transaksi akan otomatis tersimpan di riwayat akun Anda.</p>
+    <p>Transaksi di [Nama Perusahaan] sangat mudah. Login ke akun Anda, pilih kategori produk yang diinginkan, masukkan nomor tujuan atau ID pelanggan, pilih nominal, lalu konfirmasi transaksi. Pastikan saldo Anda mencukupi sebelum melakukan transaksi. Struk transaksi akan otomatis tersimpan di riwayat akun Anda.</p>
   </div>
 
   <div class="faq-item">
@@ -66,7 +66,7 @@ class LegalPageSeeder extends Seeder
 
   <div class="faq-item">
     <h3>6. Apakah ada biaya pendaftaran menjadi agen?</h3>
-    <p>Pendaftaran sebagai agen MonetraPay tidak dikenakan biaya pendaftaran. Namun, Anda diwajibkan melakukan deposit awal minimal sesuai ketentuan yang berlaku untuk dapat mulai bertransaksi. Informasi lebih lanjut mengenai syarat deposit awal dapat ditanyakan kepada tim kami.</p>
+    <p>Pendaftaran sebagai agen [Nama Perusahaan] tidak dikenakan biaya pendaftaran. Namun, Anda diwajibkan melakukan deposit awal minimal sesuai ketentuan yang berlaku untuk dapat mulai bertransaksi. Informasi lebih lanjut mengenai syarat deposit awal dapat ditanyakan kepada tim kami.</p>
   </div>
 
   <div class="faq-item">
@@ -75,19 +75,19 @@ class LegalPageSeeder extends Seeder
   </div>
 
   <div class="faq-item">
-    <h3>8. Bagaimana cara menghubungi customer service MonetraPay?</h3>
-    <p>Anda dapat menghubungi customer service MonetraPay melalui beberapa saluran:</p>
+    <h3>8. Bagaimana cara menghubungi customer service [Nama Perusahaan]?</h3>
+    <p>Anda dapat menghubungi customer service [Nama Perusahaan] melalui beberapa saluran:</p>
     <ul>
       <li><strong>WhatsApp:</strong> Tersedia di halaman Kontak kami</li>
-      <li><strong>Email:</strong> support@monetrapay.com</li>
+      <li><strong>Email:</strong> support@yourdomain.com</li>
       <li><strong>Live Chat:</strong> Melalui aplikasi atau website (jam operasional 08.00 - 22.00 WIB)</li>
     </ul>
     <p>Tim kami siap membantu Anda setiap hari.</p>
   </div>
 
   <div class="faq-item">
-    <h3>9. Apakah data saya aman di MonetraPay?</h3>
-    <p>Keamanan data pengguna adalah prioritas utama kami. MonetraPay menggunakan enkripsi SSL/TLS untuk melindungi setiap transaksi dan data pribadi Anda. Kami tidak pernah membagikan data pribadi Anda kepada pihak ketiga tanpa izin Anda, kecuali yang diwajibkan oleh hukum. Untuk detail lebih lanjut, silakan baca <a href="/kebijakan-privasi">Kebijakan Privasi</a> kami.</p>
+    <h3>9. Apakah data saya aman di [Nama Perusahaan]?</h3>
+    <p>Keamanan data pengguna adalah prioritas utama kami. [Nama Perusahaan] menggunakan enkripsi SSL/TLS untuk melindungi setiap transaksi dan data pribadi Anda. Kami tidak pernah membagikan data pribadi Anda kepada pihak ketiga tanpa izin Anda, kecuali yang diwajibkan oleh hukum. Untuk detail lebih lanjut, silakan baca <a href="/kebijakan-privasi">Kebijakan Privasi</a> kami.</p>
   </div>
 
   <div class="faq-item">
@@ -108,15 +108,15 @@ HTML,
             'status'           => 'published',
             'use_page_builder' => false,
             'order'            => 11,
-            'meta_title'       => 'Kebijakan Privasi | MonetraPay',
-            'meta_description' => 'Baca kebijakan privasi MonetraPay tentang pengumpulan dan penggunaan data pribadi Anda dalam layanan kami.',
+            'meta_title'       => 'Kebijakan Privasi | [Nama Perusahaan]',
+            'meta_description' => 'Baca kebijakan privasi [Nama Perusahaan] tentang pengumpulan dan penggunaan data pribadi Anda dalam layanan kami.',
             'content'          => <<<'HTML'
 <div class="privacy-policy-container">
   <p><em>Terakhir diperbarui: Januari 2025</em></p>
 
   <h2>1. Pendahuluan</h2>
-  <p>MonetraPay (&ldquo;kami&rdquo;, &ldquo;kita&rdquo;, atau &ldquo;Perusahaan&rdquo;) berkomitmen untuk melindungi privasi pengguna dan agen kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, mengungkapkan, dan melindungi informasi Anda ketika Anda menggunakan layanan, platform, atau aplikasi kami.</p>
-  <p>Dengan menggunakan layanan MonetraPay, Anda menyetujui praktik yang dijelaskan dalam Kebijakan Privasi ini. Jika Anda tidak setuju dengan kebijakan ini, mohon untuk tidak menggunakan layanan kami.</p>
+  <p>[Nama Perusahaan] (&ldquo;kami&rdquo;, &ldquo;kita&rdquo;, atau &ldquo;Perusahaan&rdquo;) berkomitmen untuk melindungi privasi pengguna dan agen kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, mengungkapkan, dan melindungi informasi Anda ketika Anda menggunakan layanan, platform, atau aplikasi kami.</p>
+  <p>Dengan menggunakan layanan [Nama Perusahaan], Anda menyetujui praktik yang dijelaskan dalam Kebijakan Privasi ini. Jika Anda tidak setuju dengan kebijakan ini, mohon untuk tidak menggunakan layanan kami.</p>
 
   <h2>2. Informasi yang Kami Kumpulkan</h2>
 
@@ -169,7 +169,7 @@ HTML,
   <ul>
     <li><strong>Mitra Bisnis:</strong> Penyedia layanan pembayaran, bank, dan mitra teknis yang membantu kami mengoperasikan platform.</li>
     <li><strong>Kewajiban Hukum:</strong> Ketika diwajibkan oleh peraturan perundang-undangan, perintah pengadilan, atau otoritas pemerintah yang berwenang.</li>
-    <li><strong>Keamanan:</strong> Untuk melindungi hak, properti, atau keselamatan MonetraPay, pengguna kami, atau masyarakat umum.</li>
+    <li><strong>Keamanan:</strong> Untuk melindungi hak, properti, atau keselamatan [Nama Perusahaan], pengguna kami, atau masyarakat umum.</li>
   </ul>
 
   <h2>5. Keamanan Data</h2>
@@ -210,7 +210,7 @@ HTML,
   <h2>9. Kontak Kami</h2>
   <p>Jika Anda memiliki pertanyaan, kekhawatiran, atau ingin menggunakan hak-hak Anda terkait Kebijakan Privasi ini, silakan hubungi kami:</p>
   <ul>
-    <li><strong>Email:</strong> privacy@monetrapay.com</li>
+    <li><strong>Email:</strong> privacy@yourdomain.com</li>
     <li><strong>Alamat:</strong> Sesuai alamat resmi yang tercantum di halaman Tentang Kami</li>
     <li><strong>Halaman Kontak:</strong> <a href="/kontak">Hubungi Kami</a></li>
   </ul>
@@ -228,8 +228,8 @@ HTML,
             'status'           => 'published',
             'use_page_builder' => false,
             'order'            => 12,
-            'meta_title'       => 'Syarat & Ketentuan | MonetraPay',
-            'meta_description' => 'Baca syarat dan ketentuan penggunaan layanan MonetraPay sebelum mendaftar dan menggunakan platform kami.',
+            'meta_title'       => 'Syarat & Ketentuan | [Nama Perusahaan]',
+            'meta_description' => 'Baca syarat dan ketentuan penggunaan layanan [Nama Perusahaan] sebelum mendaftar dan menggunakan platform kami.',
             'content'          => <<<'HTML'
 <div class="terms-container">
   <p><em>Terakhir diperbarui: Januari 2025</em></p>
@@ -237,16 +237,16 @@ HTML,
   <h2>1. Definisi dan Ketentuan Umum</h2>
   <p>Dalam Syarat &amp; Ketentuan ini, yang dimaksud dengan:</p>
   <ul>
-    <li><strong>"MonetraPay"</strong> adalah platform layanan pembayaran digital dan PPOB yang dioperasikan oleh Perusahaan.</li>
-    <li><strong>"Agen"</strong> adalah individu atau badan usaha yang telah terdaftar dan disetujui untuk menggunakan layanan MonetraPay.</li>
-    <li><strong>"Layanan"</strong> mencakup seluruh fitur, produk, dan fasilitas yang tersedia di platform MonetraPay.</li>
-    <li><strong>"Transaksi"</strong> adalah setiap aktivitas keuangan yang dilakukan melalui platform MonetraPay.</li>
-    <li><strong>"Saldo"</strong> adalah nilai uang elektronik yang tersimpan di akun MonetraPay milik Agen.</li>
+    <li><strong>"[Nama Perusahaan]"</strong> adalah platform layanan pembayaran digital dan PPOB yang dioperasikan oleh Perusahaan.</li>
+    <li><strong>"Agen"</strong> adalah individu atau badan usaha yang telah terdaftar dan disetujui untuk menggunakan layanan [Nama Perusahaan].</li>
+    <li><strong>"Layanan"</strong> mencakup seluruh fitur, produk, dan fasilitas yang tersedia di platform [Nama Perusahaan].</li>
+    <li><strong>"Transaksi"</strong> adalah setiap aktivitas keuangan yang dilakukan melalui platform [Nama Perusahaan].</li>
+    <li><strong>"Saldo"</strong> adalah nilai uang elektronik yang tersimpan di akun [Nama Perusahaan] milik Agen.</li>
   </ul>
-  <p>Dengan mendaftar dan menggunakan layanan MonetraPay, Anda menyatakan bahwa Anda telah membaca, memahami, dan menyetujui seluruh Syarat &amp; Ketentuan ini.</p>
+  <p>Dengan mendaftar dan menggunakan layanan [Nama Perusahaan], Anda menyatakan bahwa Anda telah membaca, memahami, dan menyetujui seluruh Syarat &amp; Ketentuan ini.</p>
 
   <h2>2. Persyaratan Pendaftaran Agen</h2>
-  <p>Untuk mendaftar sebagai Agen MonetraPay, Anda harus memenuhi persyaratan berikut:</p>
+  <p>Untuk mendaftar sebagai Agen [Nama Perusahaan], Anda harus memenuhi persyaratan berikut:</p>
   <ul>
     <li>Warga Negara Indonesia (WNI) yang berusia minimal 17 tahun</li>
     <li>Memiliki KTP yang masih berlaku</li>
@@ -255,7 +255,7 @@ HTML,
     <li>Memberikan informasi yang akurat, lengkap, dan terkini</li>
     <li>Menyetujui proses verifikasi identitas yang diperlukan</li>
   </ul>
-  <p>MonetraPay berhak menolak pendaftaran atau menangguhkan akun jika ditemukan informasi yang tidak valid atau mencurigakan.</p>
+  <p>[Nama Perusahaan] berhak menolak pendaftaran atau menangguhkan akun jika ditemukan informasi yang tidak valid atau mencurigakan.</p>
 
   <h2>3. Hak dan Kewajiban Pengguna</h2>
   <h3>3.1 Hak Pengguna</h3>
@@ -269,21 +269,21 @@ HTML,
   <ul>
     <li>Menjaga kerahasiaan username, password, dan PIN akun</li>
     <li>Bertanggung jawab atas setiap aktivitas yang terjadi di akun Anda</li>
-    <li>Segera melaporkan kepada MonetraPay jika terjadi akses tidak sah pada akun</li>
+    <li>Segera melaporkan kepada [Nama Perusahaan] jika terjadi akses tidak sah pada akun</li>
     <li>Menggunakan layanan hanya untuk keperluan yang sah dan legal</li>
     <li>Tidak menggunakan layanan untuk tujuan penipuan, pencucian uang, atau kegiatan ilegal lainnya</li>
     <li>Memastikan kecukupan saldo sebelum melakukan transaksi</li>
   </ul>
 
-  <h2>4. Hak dan Kewajiban MonetraPay</h2>
-  <h3>4.1 Hak MonetraPay</h3>
+  <h2>4. Hak dan Kewajiban [Nama Perusahaan]</h2>
+  <h3>4.1 Hak [Nama Perusahaan]</h3>
   <ul>
     <li>Mengubah, memperbarui, atau menghentikan layanan sewaktu-waktu dengan pemberitahuan yang wajar</li>
     <li>Menangguhkan atau menutup akun yang melanggar syarat dan ketentuan</li>
     <li>Melakukan verifikasi identitas dan aktivitas pengguna untuk tujuan keamanan</li>
     <li>Mengubah tarif dan biaya layanan dengan pemberitahuan terlebih dahulu</li>
   </ul>
-  <h3>4.2 Kewajiban MonetraPay</h3>
+  <h3>4.2 Kewajiban [Nama Perusahaan]</h3>
   <ul>
     <li>Menyediakan layanan yang handal dan dapat diandalkan</li>
     <li>Memberikan informasi yang akurat mengenai produk dan layanan</li>
@@ -294,10 +294,10 @@ HTML,
 
   <h2>5. Transaksi dan Pembayaran</h2>
   <ul>
-    <li>Setiap transaksi yang telah berhasil diproses bersifat final dan tidak dapat dibatalkan, kecuali dalam kondisi khusus yang diatur oleh MonetraPay.</li>
+    <li>Setiap transaksi yang telah berhasil diproses bersifat final dan tidak dapat dibatalkan, kecuali dalam kondisi khusus yang diatur oleh [Nama Perusahaan].</li>
     <li>Harga dan tarif produk dapat berubah sewaktu-waktu tanpa pemberitahuan sebelumnya.</li>
     <li>Komisi dan keuntungan Agen akan dikreditkan ke saldo akun sesuai ketentuan yang berlaku.</li>
-    <li>MonetraPay tidak bertanggung jawab atas kerugian yang timbul akibat kesalahan input data oleh Agen (misalnya: salah nomor tujuan).</li>
+    <li>[Nama Perusahaan] tidak bertanggung jawab atas kerugian yang timbul akibat kesalahan input data oleh Agen (misalnya: salah nomor tujuan).</li>
   </ul>
 
   <h2>6. Kebijakan Deposit dan Withdraw</h2>
@@ -312,7 +312,7 @@ HTML,
     <li>Penarikan saldo hanya dapat dilakukan ke rekening bank yang terdaftar atas nama Agen.</li>
     <li>Proses withdraw memerlukan waktu maksimal 1x24 jam kerja.</li>
     <li>Terdapat batas minimum dan maksimum penarikan yang berlaku.</li>
-    <li>MonetraPay berhak menahan proses withdraw jika terdapat indikasi aktivitas mencurigakan.</li>
+    <li>[Nama Perusahaan] berhak menahan proses withdraw jika terdapat indikasi aktivitas mencurigakan.</li>
   </ul>
 
   <h2>7. Larangan Penggunaan</h2>
@@ -320,15 +320,15 @@ HTML,
   <ul>
     <li>Melakukan transaksi palsu atau manipulasi data transaksi</li>
     <li>Menggunakan akun untuk kegiatan penipuan, phishing, atau kejahatan siber</li>
-    <li>Mencoba meretas, memanipulasi, atau mengganggu sistem MonetraPay</li>
+    <li>Mencoba meretas, memanipulasi, atau mengganggu sistem [Nama Perusahaan]</li>
     <li>Mendaftarkan lebih dari satu akun untuk satu identitas</li>
-    <li>Memperjualbelikan akun MonetraPay kepada pihak lain</li>
+    <li>Memperjualbelikan akun [Nama Perusahaan] kepada pihak lain</li>
     <li>Melakukan transaksi yang berkaitan dengan pencucian uang atau pendanaan terorisme</li>
-    <li>Menggunakan bot atau otomatisasi tanpa izin tertulis dari MonetraPay</li>
+    <li>Menggunakan bot atau otomatisasi tanpa izin tertulis dari [Nama Perusahaan]</li>
   </ul>
 
   <h2>8. Penghentian Akun</h2>
-  <p>MonetraPay berhak menangguhkan atau menutup akun Agen secara permanen dalam kondisi berikut:</p>
+  <p>[Nama Perusahaan] berhak menangguhkan atau menutup akun Agen secara permanen dalam kondisi berikut:</p>
   <ul>
     <li>Pelanggaran terhadap Syarat &amp; Ketentuan ini</li>
     <li>Aktivitas yang terindikasi penipuan atau ilegal</li>
@@ -339,7 +339,7 @@ HTML,
   <p>Dalam hal penutupan akun, saldo yang tersisa akan dikembalikan setelah melewati proses verifikasi, kecuali jika saldo tersebut berkaitan dengan aktivitas yang melanggar ketentuan.</p>
 
   <h2>9. Batasan Tanggung Jawab</h2>
-  <p>MonetraPay tidak bertanggung jawab atas:</p>
+  <p>[Nama Perusahaan] tidak bertanggung jawab atas:</p>
   <ul>
     <li>Kerugian yang timbul akibat gangguan jaringan, server, atau sistem di luar kendali kami</li>
     <li>Kerugian tidak langsung, insidental, atau konsekuensial</li>
@@ -349,7 +349,7 @@ HTML,
   </ul>
 
   <h2>10. Perubahan Syarat &amp; Ketentuan</h2>
-  <p>MonetraPay berhak mengubah Syarat &amp; Ketentuan ini kapan saja. Perubahan signifikan akan diberitahukan melalui email atau notifikasi di platform minimal 14 hari sebelum berlaku. Penggunaan layanan yang berkelanjutan setelah perubahan berlaku dianggap sebagai penerimaan terhadap syarat yang diperbarui.</p>
+  <p>[Nama Perusahaan] berhak mengubah Syarat &amp; Ketentuan ini kapan saja. Perubahan signifikan akan diberitahukan melalui email atau notifikasi di platform minimal 14 hari sebelum berlaku. Penggunaan layanan yang berkelanjutan setelah perubahan berlaku dianggap sebagai penerimaan terhadap syarat yang diperbarui.</p>
 
   <h2>11. Hukum yang Berlaku</h2>
   <p>Syarat &amp; Ketentuan ini diatur dan ditafsirkan sesuai dengan hukum Republik Indonesia. Setiap sengketa yang timbul akan diselesaikan melalui musyawarah mufakat. Apabila tidak tercapai kesepakatan, sengketa akan diselesaikan melalui Badan Arbitrase Nasional Indonesia (BANI) atau pengadilan yang berwenang di Indonesia.</p>
@@ -357,7 +357,7 @@ HTML,
   <h2>12. Kontak</h2>
   <p>Untuk pertanyaan mengenai Syarat &amp; Ketentuan ini, silakan hubungi kami:</p>
   <ul>
-    <li><strong>Email:</strong> legal@monetrapay.com</li>
+    <li><strong>Email:</strong> legal@yourdomain.com</li>
     <li><strong>Halaman Kontak:</strong> <a href="/kontak">Hubungi Kami</a></li>
   </ul>
 </div>
