@@ -1,184 +1,133 @@
-# Deployment Guide — MonetraPay CMS
+# Deploy ke VPS dengan Docker
 
-## Linux Server Setup
+## Yang Dibutuhkan
+- VPS Linux (Ubuntu 22.04+ direkomendasikan)
+- Docker + Docker Compose terinstall di VPS
+- Domain yang sudah pointing ke IP VPS (via Cloudflare direkomendasikan)
 
-### 1. Requirements
-- PHP 8.2+
-- MySQL 8.0+
-- Composer
-- Node.js 18+ & npm
-- Web server: Nginx or Apache
+---
 
-### 2. Clone & Install
+## Setup Domain (Wajib Dilakukan Dulu)
+
+### Gunakan Cloudflare (Rekomendasi)
+Cloudflare gratis dan otomatis handle SSL/HTTPS.
+
+1. Daftar di [cloudflare.com](https://cloudflare.com)
+2. Tambah domain kamu
+3. Di menu **DNS** → tambah record:
+   ```
+   Type: A | Name: @   | Content: IP-VPS | Proxy: ON
+   Type: A | Name: www | Content: IP-VPS | Proxy: ON
+   ```
+4. Ganti nameserver domain ke nameserver Cloudflare
+5. Selesai — SSL otomatis aktif dalam beberapa menit
+
+---
+
+## Install di VPS
+
+### Step 1: Install Docker
+```bash
+curl -fsSL https://get.docker.com | sh
+apt install docker-compose-plugin -y
+```
+
+### Step 2: Clone Project
+```bash
+git clone <repo-url> /var/www/cms
+cd /var/www/cms
+```
+
+### Step 3: Setup Environment
+```bash
+cp .env.docker .env
+nano .env
+```
+
+**Yang WAJIB diisi di `.env`:**
+```
+APP_URL=https://yourdomain.com    ← DOMAIN kamu di sini
+APP_KEY=                          ← generate di step berikutnya
+
+DB_DATABASE=cms_db
+DB_USERNAME=cms_user
+DB_PASSWORD=GantiPasswordKuat!
+DB_ROOT_PASSWORD=GantiRootPassword!
+
+MAIL_USERNAME=email@gmail.com
+MAIL_PASSWORD=apppassword16char
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
+```
+
+> **Ganti domain?** Cukup ubah `APP_URL` di `.env` lalu restart:
+> ```bash
+> docker compose restart app
+> ```
+
+### Step 4: Generate App Key
+```bash
+docker run --rm -v $(pwd):/app -w /app php:8.2-cli php artisan key:generate --show
+# Copy hasilnya ke APP_KEY= di .env
+```
+
+### Step 5: Build dan Start
+```bash
+docker compose up -d --build
+
+# Pantau progress
+docker compose logs -f app
+# Tunggu sampai muncul: "CMS is ready!"
+```
+
+### Step 6: Install Admin (Satu Kali)
+```bash
+docker compose exec app php artisan cms:install \
+  --admin-name="Super Admin" \
+  --admin-email="admin@yourdomain.com" \
+  --admin-password="Admin@2024!"
+```
+
+Selesai! Akses `https://yourdomain.com/admin`
+
+---
+
+## Update Project
 
 ```bash
-git clone <repo-url> /var/www/cms-monetrapay
-cd /var/www/cms-monetrapay
-
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build
-
-cp .env.example .env
-php artisan key:generate
-```
-
-### 3. Environment
-
-Edit `.env`:
-```
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_DATABASE=cms_monetrapay
-DB_USERNAME=your_db_user
-DB_PASSWORD=your_db_password
-
-# Mail — configured via Admin Panel (Settings → Email)
-# Leave blank, mail config is stored in DB
-
-SENTRY_LARAVEL_DSN=  # optional
-```
-
-### 4. Database
-
-```bash
-php artisan migrate --force
-php artisan db:seed --force
-php artisan storage:link
-```
-
-### 5. Permissions
-
-```bash
-sudo chown -R www-data:www-data /var/www/cms-monetrapay
-sudo chmod -R 755 /var/www/cms-monetrapay
-sudo chmod -R 775 /var/www/cms-monetrapay/storage
-sudo chmod -R 775 /var/www/cms-monetrapay/bootstrap/cache
-```
-
-### 6. Laravel Scheduler (Cron) — REQUIRED
-
-The scheduler handles:
-- `blogs:publish-scheduled` — every minute (auto-publish scheduled articles)
-- `ads:deactivate-expired` — daily
-- `trash:cleanup` — daily
-- `cache:warm` — hourly
-
-**Add to crontab** (`sudo crontab -e -u www-data`):
-
-```cron
-* * * * * cd /var/www/cms-monetrapay && php artisan schedule:run >> /dev/null 2>&1
-```
-
-Verify it's working:
-```bash
-php artisan schedule:list
-```
-
-### 7. Nginx Config
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-    root /var/www/cms-monetrapay/public;
-
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-Content-Type-Options "nosniff";
-
-    index index.php;
-
-    charset utf-8;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-
-    error_page 404 /index.php;
-
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    location ~ /\.(?!well-known).* {
-        deny all;
-    }
-
-    # Block storage direct access (except public symlink)
-    location ~* ^/storage/app/ {
-        deny all;
-    }
-}
-```
-
-### 8. Optimize for Production
-
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
-```
-
-### 9. Queue Worker (optional, for background jobs)
-
-If you want to run queue jobs in background:
-
-```bash
-# Install supervisor
-sudo apt install supervisor
-
-# Create config: /etc/supervisor/conf.d/monetrapay-worker.conf
-```
-
-```ini
-[program:monetrapay-worker]
-process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/cms-monetrapay/artisan queue:work --sleep=3 --tries=3 --max-time=3600
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-user=www-data
-numprocs=2
-redirect_stderr=true
-stdout_logfile=/var/www/cms-monetrapay/storage/logs/worker.log
-stopwaitsecs=3600
-```
-
-```bash
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start monetrapay-worker:*
-```
-
-### 10. SSL (Let's Encrypt)
-
-```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d yourdomain.com
+git pull
+docker compose up -d --build
 ```
 
 ---
 
-## Quick Deploy Checklist
+## Perintah Berguna
 
-- [ ] `composer install --no-dev`
-- [ ] `npm run build`
-- [ ] `.env` configured (APP_ENV=production, DB credentials)
-- [ ] `php artisan migrate --force`
-- [ ] `php artisan storage:link`
-- [ ] Cron configured (`* * * * * php artisan schedule:run`)
-- [ ] `php artisan config:cache && route:cache && view:cache`
-- [ ] Storage permissions set (`775` for storage/ and bootstrap/cache/)
-- [ ] Nginx virtual host active
-- [ ] SSL certificate installed
-- [ ] Mail settings configured via Admin Panel → Settings → Email
+```bash
+# Cek status
+docker compose ps
+
+# Lihat log
+docker compose logs -f app
+
+# Restart
+docker compose restart app
+
+# Masuk ke container
+docker compose exec app sh
+
+# Backup database
+docker compose exec db mysqldump \
+  -u root -p${DB_ROOT_PASSWORD} ${DB_DATABASE} > backup_$(date +%Y%m%d).sql
+```
+
+---
+
+## Troubleshooting
+
+| Masalah | Solusi |
+|---------|--------|
+| Site tidak bisa diakses | Cek firewall VPS: port 80 harus terbuka |
+| Database error | Pastikan `DB_PASSWORD` di `.env` sama dengan `MYSQL_PASSWORD` |
+| Storage tidak bisa write | `docker compose exec app chmod -R 775 storage` |
+| Email tidak terkirim | Admin → Settings → Email → isi SMTP → Test |
+| Ganti domain | Edit `APP_URL` di `.env` → `docker compose restart app` |
