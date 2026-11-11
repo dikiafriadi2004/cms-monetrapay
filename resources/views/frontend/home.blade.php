@@ -127,20 +127,20 @@
                 {{-- Stats --}}
                 <div class="flex flex-wrap items-center gap-0 pt-6 border-t border-slate-200">
                     <div class="pr-6 mr-6 border-r border-slate-200">
-                        <p class="text-2xl font-extrabold text-slate-800">100K<span class="text-primary">+</span></p>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Pengguna Aktif</p>
+                        <p class="text-2xl font-extrabold text-slate-800">{{ $homepage['stat_1_value'] ?? '100K+' }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ $homepage['stat_1_label'] ?? 'Pengguna Aktif' }}</p>
                     </div>
                     <div class="pr-6 mr-6 border-r border-slate-200">
-                        <p class="text-2xl font-extrabold text-slate-800">500<span class="text-primary">+</span></p>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Produk Digital</p>
+                        <p class="text-2xl font-extrabold text-slate-800">{{ $homepage['stat_2_value'] ?? '500+' }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ $homepage['stat_2_label'] ?? 'Produk Digital' }}</p>
                     </div>
                     <div class="pr-6 mr-6 border-r border-slate-200">
-                        <p class="text-2xl font-extrabold text-slate-800">99.9<span class="text-primary">%</span></p>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Uptime Server</p>
+                        <p class="text-2xl font-extrabold text-slate-800">{{ $homepage['stat_3_value'] ?? '99.9%' }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ $homepage['stat_3_label'] ?? 'Uptime Server' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl font-extrabold text-slate-800">24<span class="text-secondary">/7</span></p>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">Support</p>
+                        <p class="text-2xl font-extrabold text-slate-800">{{ $homepage['stat_4_value'] ?? '24/7' }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ $homepage['stat_4_label'] ?? 'Support' }}</p>
                     </div>
                 </div>
             </div>
@@ -384,20 +384,20 @@
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
             <div class="text-center animate-on-scroll">
-                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-2" data-count="100000">100.000</p>
-                <p class="text-sm text-slate-400 font-medium">Pengguna Aktif</p>
+                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-2">{{ $homepage['statsbar_1_value'] ?? '100.000' }}</p>
+                <p class="text-sm text-slate-400 font-medium">{{ $homepage['statsbar_1_label'] ?? 'Pengguna Aktif' }}</p>
             </div>
             <div class="text-center animate-on-scroll delay-100">
-                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-2" data-count="500">500</p>
-                <p class="text-sm text-slate-400 font-medium">Produk Digital</p>
+                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-2">{{ $homepage['statsbar_2_value'] ?? '500' }}</p>
+                <p class="text-sm text-slate-400 font-medium">{{ $homepage['statsbar_2_label'] ?? 'Produk Digital' }}</p>
             </div>
             <div class="text-center animate-on-scroll delay-200">
-                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary mb-2">99.9%</p>
-                <p class="text-sm text-slate-400 font-medium">Uptime Server</p>
+                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary mb-2">{{ $homepage['statsbar_3_value'] ?? '99.9%' }}</p>
+                <p class="text-sm text-slate-400 font-medium">{{ $homepage['statsbar_3_label'] ?? 'Uptime Server' }}</p>
             </div>
             <div class="text-center animate-on-scroll delay-300">
-                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-2">24/7</p>
-                <p class="text-sm text-slate-400 font-medium">Customer Support</p>
+                <p class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-secondary mb-2">{{ $homepage['statsbar_4_value'] ?? '24/7' }}</p>
+                <p class="text-sm text-slate-400 font-medium">{{ $homepage['statsbar_4_label'] ?? 'Customer Support' }}</p>
             </div>
         </div>
     </div>
@@ -458,12 +458,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk. Omzet konter saya naik signifikan dalam 2 bulan!"</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"{{ $homepage['testimonial_1_text'] ?? 'MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk.' }}"</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">{{ strtoupper(substr($homepage['testimonial_1_name'] ?? 'A', 0, 1)) }}</div>
                     <div>
-                        <p class="text-sm font-semibold text-slate-800">Ahmad Fauzi</p>
-                        <p class="text-xs text-slate-500">Agen Pulsa, Surabaya</p>
+                        <p class="text-sm font-semibold text-slate-800">{{ $homepage['testimonial_1_name'] ?? 'Ahmad Fauzi' }}</p>
+                        <p class="text-xs text-slate-500">{{ $homepage['testimonial_1_role'] ?? 'Agen Pulsa, Surabaya' }}</p>
                     </div>
                 </div>
             </div>
@@ -473,12 +473,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Margin yang diberikan MonetraPay sangat kompetitif dibanding provider lain. Pelanggan saya senang karena harga jual saya tetap bisa bersaing. Proses deposit juga sangat cepat!"</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"{{ $homepage['testimonial_2_text'] ?? 'Margin yang diberikan sangat kompetitif. Pelanggan saya senang karena harga jual tetap bisa bersaing. Proses deposit juga sangat cepat!' }}"</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm">S</div>
+                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm">{{ strtoupper(substr($homepage['testimonial_2_name'] ?? 'S', 0, 1)) }}</div>
                     <div>
-                        <p class="text-sm font-semibold text-slate-800">Siti Rahayu</p>
-                        <p class="text-xs text-slate-500">Reseller PPOB, Bandung</p>
+                        <p class="text-sm font-semibold text-slate-800">{{ $homepage['testimonial_2_name'] ?? 'Siti Rahayu' }}</p>
+                        <p class="text-xs text-slate-500">{{ $homepage['testimonial_2_role'] ?? 'Reseller PPOB, Bandung' }}</p>
                     </div>
                 </div>
             </div>
@@ -488,12 +488,12 @@
                 <div class="absolute top-6 right-6 text-primary/20">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z"/></svg>
                 </div>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">"Support 24/7 membuat saya merasa aman berjualan. Kalau ada kendala transaksi, tim MonetraPay langsung respons dan selesaikan masalah dengan cepat. Sangat profesional!"</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">"{{ $homepage['testimonial_3_text'] ?? 'Support 24/7 membuat saya merasa aman berjualan. Tim selalu respons cepat dan selesaikan masalah dengan profesional.' }}"</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm">B</div>
+                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm">{{ strtoupper(substr($homepage['testimonial_3_name'] ?? 'B', 0, 1)) }}</div>
                     <div>
-                        <p class="text-sm font-semibold text-slate-800">Budi Santoso</p>
-                        <p class="text-xs text-slate-500">Agen PPOB, Medan</p>
+                        <p class="text-sm font-semibold text-slate-800">{{ $homepage['testimonial_3_name'] ?? 'Budi Santoso' }}</p>
+                        <p class="text-xs text-slate-500">{{ $homepage['testimonial_3_role'] ?? 'Agen PPOB, Medan' }}</p>
                     </div>
                 </div>
             </div>

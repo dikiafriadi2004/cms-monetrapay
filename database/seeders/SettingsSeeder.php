@@ -71,6 +71,37 @@ class SettingsSeeder extends Seeder
             ['group' => 'homepage', 'key' => 'hero_cta_url',       'value' => '/kontak'],
             ['group' => 'homepage', 'key' => 'hero_image',         'value' => null],
 
+            // ── HOMEPAGE STATS (Hero) ─────────────────────────────────
+            ['group' => 'homepage', 'key' => 'stat_1_value',       'value' => '100K+'],
+            ['group' => 'homepage', 'key' => 'stat_1_label',       'value' => 'Pengguna Aktif'],
+            ['group' => 'homepage', 'key' => 'stat_2_value',       'value' => '500+'],
+            ['group' => 'homepage', 'key' => 'stat_2_label',       'value' => 'Produk Digital'],
+            ['group' => 'homepage', 'key' => 'stat_3_value',       'value' => '99.9%'],
+            ['group' => 'homepage', 'key' => 'stat_3_label',       'value' => 'Uptime Server'],
+            ['group' => 'homepage', 'key' => 'stat_4_value',       'value' => '24/7'],
+            ['group' => 'homepage', 'key' => 'stat_4_label',       'value' => 'Support'],
+
+            // ── HOMEPAGE STATS BAR ────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'statsbar_1_value',   'value' => '500K+'],
+            ['group' => 'homepage', 'key' => 'statsbar_1_label',   'value' => 'Agen Aktif'],
+            ['group' => 'homepage', 'key' => 'statsbar_2_value',   'value' => 'Rp 2T+'],
+            ['group' => 'homepage', 'key' => 'statsbar_2_label',   'value' => 'Total Transaksi'],
+            ['group' => 'homepage', 'key' => 'statsbar_3_value',   'value' => '99.9%'],
+            ['group' => 'homepage', 'key' => 'statsbar_3_label',   'value' => 'Uptime'],
+            ['group' => 'homepage', 'key' => 'statsbar_4_value',   'value' => '24/7'],
+            ['group' => 'homepage', 'key' => 'statsbar_4_label',   'value' => 'Dukungan'],
+
+            // ── TESTIMONIALS ──────────────────────────────────────────
+            ['group' => 'homepage', 'key' => 'testimonial_1_name', 'value' => 'Ahmad Fauzi'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_role', 'value' => 'Agen Pulsa, Surabaya'],
+            ['group' => 'homepage', 'key' => 'testimonial_1_text', 'value' => 'MonetraPay sangat membantu bisnis saya. Transaksi pulsa dan PPOB lancar 24 jam, margin kompetitif, dan saldo top-up langsung masuk.'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_name', 'value' => 'Siti Rahayu'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_role', 'value' => 'Reseller PPOB, Bandung'],
+            ['group' => 'homepage', 'key' => 'testimonial_2_text', 'value' => 'Margin yang diberikan sangat kompetitif. Pelanggan saya senang karena harga jual tetap bisa bersaing. Proses deposit juga sangat cepat!'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_name', 'value' => 'Budi Santoso'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_role', 'value' => 'Agen PPOB, Medan'],
+            ['group' => 'homepage', 'key' => 'testimonial_3_text', 'value' => 'Support 24/7 membuat saya merasa aman berjualan. Tim selalu respons cepat dan selesaikan masalah dengan profesional.'],
+
             // ── HOMEPAGE SERVICES ─────────────────────────────────────
             ['group' => 'homepage', 'key' => 'service_1_title',    'value' => 'Pulsa All Operator'],
             ['group' => 'homepage', 'key' => 'service_1_description', 'value' => 'Jual pulsa semua operator (Telkomsel, Indosat, XL, Tri, Smartfren) dengan harga kompetitif dan margin menguntungkan.'],
