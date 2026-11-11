@@ -80,13 +80,7 @@ MonetraPay CMS adalah platform manajemen konten berbasis Laravel yang dirancang 
 </tr>
 </table>
 
----
 
-## 🖼️ Screenshot
-
-> *Upload screenshot setelah setup*
-
----
 
 ## 🛠️ Tech Stack
 
