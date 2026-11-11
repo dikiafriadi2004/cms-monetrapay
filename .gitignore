@@ -49,3 +49,6 @@ public/check_*.php
 
 # Docker local override (tidak di-commit, tiap developer beda)
 docker-compose.override.yml
+
+# Kiro AI workspace files
+/.kiro/
