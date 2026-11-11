@@ -1,127 +1,252 @@
-# Laravel CMS
+<div align="center">
 
-CMS (Content Management System) berbasis Laravel yang siap digunakan untuk berbagai jenis bisnis digital. Dilengkapi visual editor, manajemen konten lengkap, sistem email, dan siap deploy ke VPS dengan Docker.
+# 🌐 MonetraPay CMS
+
+**Content Management System berbasis Laravel untuk bisnis payment digital**
+
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
+[Demo](#) · [Dokumentasi](#dokumentasi) · [Lapor Bug](issues)
+
+</div>
 
 ---
 
-## Fitur Unggulan
+## 📋 Tentang Project
 
-### Content Management
-- **Blog** — CRUD, publish/draft/schedule, soft delete, bulk action, autosave
-- **Pages** — dengan GrapesJS visual editor drag & drop
-- **Media Manager** — upload, folder, crop, WebP otomatis
-- **Menu Builder** — multi-level dengan drag & drop
-- **Categories & Tags**
+MonetraPay CMS adalah platform manajemen konten berbasis Laravel yang dirancang khusus untuk bisnis **pulsa, PPOB, top-up game, dan e-money**. Dilengkapi visual editor drag & drop, sistem email terintegrasi, manajemen role & permission granular, dan siap deploy ke VPS dengan Docker.
 
-### Visual Editor
-- **GrapesJS** — desain halaman visual pixel-perfect
-- **15+ komponen siap pakai** — hero, features, FAQ, testimonial, pricing, gallery, dll
-- **Responsive preview** — desktop, tablet, mobile
+---
 
-### Email System
-- **5 template email branded** — konfirmasi kontak, notifikasi admin, reply, newsletter, reset password
-- **Reply langsung dari CMS** — tanpa perlu buka email client
-- **Newsletter blast** — ke semua subscriber dengan template
-- **SMTP dikonfigurasi dari Admin Panel** — tidak perlu edit `.env`
+## ✨ Fitur
 
-### SEO
+<table>
+<tr>
+<td width="50%">
+
+### 📝 Manajemen Konten
+- **Blog** — CRUD, publish/draft/schedule, soft delete, bulk action
+- **Halaman** — GrapesJS visual editor drag & drop
+- **Media Manager** — upload, folder, crop, auto WebP
+- **Menu Builder** — multi-level drag & drop
+- **Kategori & Tag**
+
+### 🎨 Visual Editor (GrapesJS)
+- Desain halaman pixel-perfect
+- 15+ komponen siap pakai (Hero, Features, FAQ, Pricing, dll)
+- Preview responsive — Desktop / Tablet / Mobile
+- Simpan langsung ke database
+
+### 📧 Email System
+- 5 template email branded
+- **Reply langsung dari CMS** tanpa buka email client
+- Newsletter blast ke subscriber
+- SMTP dikonfigurasi dari Admin Panel
+- Auto-reply konfirmasi kontak
+
+</td>
+<td width="50%">
+
+### 🔍 SEO
 - Meta tags, Open Graph, Twitter Cards per halaman
-- Sitemap XML otomatis
-- Robots.txt dapat diedit dari admin
-- Schema.org JSON-LD
+- Sitemap XML auto-generate
+- Schema.org JSON-LD structured data
 - RSS Feed otomatis
-- Google Analytics GA4 integration
+- Google Analytics GA4 terintegrasi
+- Robots.txt dapat diedit dari admin
 
-### Keamanan
-- RBAC dengan 44 permission granular (4 role: Super Admin, Admin, Editor, Author)
-- Two-Factor Authentication (2FA) per user
+### 🔐 Keamanan
+- RBAC 44 permission granular (Super Admin, Admin, Editor, Author)
+- Two-Factor Authentication (2FA) TOTP
 - Audit log semua perubahan
-- CSP, HSTS, security headers otomatis
-- Honeypot + rate limiting di semua form publik
-- Enkripsi password SMTP at rest
+- CSP, HSTS, X-Frame-Options otomatis
+- Honeypot + rate limiting semua form
+- Password SMTP dienkripsi di database
 
-### Lainnya
+### ⚙️ Lainnya
 - Contact form + reply dari CMS
-- Newsletter dengan subscriber management
+- Newsletter subscriber management
 - Ads/banner management
-- Maintenance mode
-- Analytics dashboard
-- Export/Import konten
+- Maintenance mode toggle
+- Analytics dashboard (lokal + GA4)
+- Export/Import konten JSON
+
+</td>
+</tr>
+</table>
 
 ---
 
-## Requirements
+## 🖼️ Screenshot
 
-- PHP 8.2+
-- MySQL 8.0+ / MariaDB 10.6+
-- Node.js 20+
-- Composer 2+
-- Extension PHP: `pdo_mysql`, `gd`, `intl`, `zip`, `bcmath`, `mbstring`
+> *Upload screenshot setelah setup*
 
 ---
 
-## Install (Local)
+## 🛠️ Tech Stack
+
+| Layer | Teknologi |
+|-------|-----------|
+| Backend | Laravel 12, PHP 8.2 |
+| Frontend | Tailwind CSS v4, Alpine.js, Vite |
+| Database | MySQL 8.0 |
+| Cache/Queue | Redis (production), File (development) |
+| Visual Editor | GrapesJS 0.21 |
+| Rich Text Editor | TinyMCE 6 |
+| Auth & RBAC | Spatie Laravel Permission |
+| 2FA | pragmarx/google2fa-laravel |
+| Image Processing | Intervention Image v3 |
+| Container | Docker + Nginx Proxy Manager |
+
+---
+
+## 📦 Requirements
+
+| Kebutuhan | Versi Minimum |
+|-----------|--------------|
+| PHP | 8.2+ |
+| MySQL / MariaDB | 8.0+ / 10.6+ |
+| Node.js | 20+ |
+| Composer | 2+ |
+| PHP Extensions | `pdo_mysql`, `gd`, `intl`, `zip`, `bcmath`, `mbstring` |
+
+---
+
+## 🚀 Quick Start
+
+### Local Development
 
 ```bash
-# 1. Clone
-git clone <repo> cms
-cd cms
+# 1. Clone repository
+git clone https://github.com/username/cms-monetrapay.git
+cd cms-monetrapay
 
 # 2. Install dependencies
 composer install
-npm install
-npm run build
+npm install && npm run build
 
 # 3. Setup environment
 cp .env.example .env
-# Edit .env: isi DB_*, APP_URL
+# Edit .env — isi DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD, APP_URL
 
 # 4. Generate app key
 php artisan key:generate
 
-# 5. Install CMS (interaktif)
+# 5. Install (interaktif — tanya nama/email/password admin)
 php artisan cms:install
-# Akan tanya nama, email, password admin
 
 # 6. Jalankan server
 php artisan serve
 ```
 
+Akses: `http://localhost:8000` | Admin: `http://localhost:8000/admin`
+
 ---
 
-## Install (VPS dengan Docker)
-
-Lihat **[DEPLOY.md](DEPLOY.md)** untuk panduan lengkap.
+### VPS dengan Docker
 
 ```bash
-# Quick start
-cp .env.docker .env
-# Edit .env: isi APP_URL, DB_PASSWORD, MAIL_*
+# 1. Clone di VPS
+git clone https://github.com/username/cms-monetrapay.git /var/www/cms
+cd /var/www/cms
 
+# 2. Setup environment
+cp .env.docker .env
+nano .env  # Isi APP_URL, DB_PASSWORD, MAIL_*
+
+# 3. Generate app key
+docker run --rm -v $(pwd):/app -w /app php:8.2-cli php artisan key:generate --show
+# Paste hasilnya ke APP_KEY= di .env
+
+# 4. Build dan start
 docker compose up -d --build
 
-# Install admin (satu kali)
+# 5. Install admin (satu kali)
 docker compose exec app php artisan cms:install \
   --admin-name="Super Admin" \
-  --admin-email="admin@domain.com" \
+  --admin-email="admin@monetrapay.co.id" \
   --admin-password="Admin@2024!"
+```
+
+Akses: `https://yourdomain.com` | Admin: `https://yourdomain.com/admin`
+
+> 📖 Lihat [DEPLOY.md](DEPLOY.md) untuk panduan lengkap termasuk SSL dan multi-app setup.
+
+---
+
+## 👤 Role & Permission
+
+| Role | Akses |
+|------|-------|
+| **Super Admin** | Semua fitur (44 permission) |
+| **Admin** | Semua kecuali Settings sistem & Role management |
+| **Editor** | Blog, Halaman, Kategori, File, Newsletter (view) |
+| **Author** | Blog (view & create) |
+
+---
+
+## 📁 Struktur Project
+
+```
+cms-monetrapay/
+├── app/
+│   ├── Console/Commands/     # cms:install, PublishScheduledBlogs, dll
+│   ├── Http/Controllers/
+│   │   ├── Admin/            # 20 controller admin
+│   │   └── Frontend/         # Controller halaman publik
+│   ├── Models/               # Eloquent models
+│   └── Services/             # MailConfigService, AnalyticsService, dll
+├── database/
+│   ├── migrations/           # 40+ migration
+│   └── seeders/              # RolePermission, Settings, Pages, dll
+├── docker/                   # Nginx, PHP, MySQL, Supervisor config
+├── resources/
+│   ├── views/
+│   │   ├── admin/            # Admin panel views
+│   │   ├── emails/           # 5 template email
+│   │   └── frontend/         # Halaman publik
+│   └── js/ css/              # Assets
+├── routes/web.php
+├── Dockerfile
+├── docker-compose.yml
+├── INSTALL.md
+└── DEPLOY.md
 ```
 
 ---
 
-## Dokumentasi
+## 📚 Dokumentasi
 
-- [INSTALL.md](INSTALL.md) — panduan install lengkap
-- [DEPLOY.md](DEPLOY.md) — panduan deploy ke VPS
+| File | Isi |
+|------|-----|
+| [INSTALL.md](INSTALL.md) | Panduan install lengkap (local) |
+| [DEPLOY.md](DEPLOY.md) | Panduan deploy ke VPS dengan Docker |
 
 ---
 
-## Tech Stack
+## 🤝 Kontribusi
 
-- **Backend:** Laravel 12, PHP 8.2
-- **Frontend:** Tailwind CSS v4, Alpine.js, Vite
-- **Database:** MySQL 8
-- **Cache/Queue:** Redis (production) / File (development)
-- **Visual Editor:** GrapesJS
-- **Rich Text Editor:** TinyMCE
-- **Auth:** Spatie Laravel Permission, pragmarx/google2fa
+1. Fork repository
+2. Buat branch fitur: `git checkout -b feature/nama-fitur`
+3. Commit: `git commit -m 'feat: tambah fitur X'`
+4. Push: `git push origin feature/nama-fitur`
+5. Buat Pull Request
+
+---
+
+## 📄 Lisensi
+
+Project ini dilisensikan di bawah [MIT License](LICENSE).
+
+---
+
+<div align="center">
+
+**Dibuat dengan ❤️ menggunakan Laravel**
+
+</div>
