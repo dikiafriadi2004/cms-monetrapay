@@ -1,0 +1,45 @@
+version: '3.8'
+
+# ============================================================
+# SSL dengan Let's Encrypt (tanpa Cloudflare)
+#
+# Gunakan file ini HANYA jika tidak pakai Cloudflare.
+#
+# Cara pakai:
+#   1. Pastikan domain sudah pointing ke IP VPS
+#   2. Edit DOMAIN di .env: APP_URL=https://monetrapay.co.id
+#   3. Jalankan: docker compose -f docker-compose.yml -f docker-compose.ssl.yml up -d
+#   4. Generate SSL: docker compose exec certbot /init-ssl.sh monetrapay.co.id admin@monetrapay.co.id
+# ============================================================
+
+services:
+
+  app:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - storage_data:/var/www/html/storage/app/public
+      - logs_data:/var/www/html/storage/logs
+      - certbot_www:/var/www/certbot:ro
+      - certbot_certs:/etc/letsencrypt:ro
+      - ./docker/nginx/ssl.conf:/etc/nginx/http.d/ssl.conf:ro
+
+  certbot:
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_certs:/etc/letsencrypt
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet 2>/dev/null;
+               sleep 12h & wait $${!};
+             done"
+
+volumes:
+  certbot_www:
+    driver: local
+  certbot_certs:
+    driver: local
