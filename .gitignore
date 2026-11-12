@@ -52,3 +52,7 @@ docker-compose.override.yml
 
 # Kiro AI workspace files
 /.kiro/
+
+# Generated files — auto-created, don't commit
+/public/sitemap.xml
+/public/favicon.ico
