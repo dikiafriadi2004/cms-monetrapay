@@ -28,6 +28,9 @@ class SettingsSeeder extends Seeder
             ['group' => 'general', 'key' => 'whatsapp_float_enabled','value' => '1'],
             ['group' => 'general', 'key' => 'whatsapp_number',       'value' => ''],
             ['group' => 'general', 'key' => 'whatsapp_text',         'value' => 'Halo, saya ingin tahu lebih lanjut tentang layanan kami'],
+            // Brand Colors
+            ['group' => 'general', 'key' => 'primary_color',         'value' => '#3D9E7A'],
+            ['group' => 'general', 'key' => 'secondary_color',       'value' => '#F59E0B'],
 
             // ── SOCIAL MEDIA ──────────────────────────────────────────
             ['group' => 'social', 'key' => 'facebook_url',         'value' => ''],
@@ -72,19 +75,19 @@ class SettingsSeeder extends Seeder
             ['group' => 'homepage', 'key' => 'hero_image',         'value' => null],
 
             // ── HOMEPAGE STATS (Hero) ─────────────────────────────────
-            ['group' => 'homepage', 'key' => 'stat_1_value',       'value' => '100K+'],
+            ['group' => 'homepage', 'key' => 'stat_1_value',       'value' => '0+'],
             ['group' => 'homepage', 'key' => 'stat_1_label',       'value' => 'Pengguna Aktif'],
-            ['group' => 'homepage', 'key' => 'stat_2_value',       'value' => '500+'],
-            ['group' => 'homepage', 'key' => 'stat_2_label',       'value' => 'Produk Digital'],
+            ['group' => 'homepage', 'key' => 'stat_2_value',       'value' => '0+'],
+            ['group' => 'homepage', 'key' => 'stat_2_label',       'value' => 'Produk Tersedia'],
             ['group' => 'homepage', 'key' => 'stat_3_value',       'value' => '99.9%'],
-            ['group' => 'homepage', 'key' => 'stat_3_label',       'value' => 'Uptime Server'],
+            ['group' => 'homepage', 'key' => 'stat_3_label',       'value' => 'Uptime'],
             ['group' => 'homepage', 'key' => 'stat_4_value',       'value' => '24/7'],
-            ['group' => 'homepage', 'key' => 'stat_4_label',       'value' => 'Support'],
+            ['group' => 'homepage', 'key' => 'stat_4_label',       'value' => 'Dukungan'],
 
             // ── HOMEPAGE STATS BAR ────────────────────────────────────
-            ['group' => 'homepage', 'key' => 'statsbar_1_value',   'value' => '500K+'],
+            ['group' => 'homepage', 'key' => 'statsbar_1_value',   'value' => '0+'],
             ['group' => 'homepage', 'key' => 'statsbar_1_label',   'value' => 'Agen Aktif'],
-            ['group' => 'homepage', 'key' => 'statsbar_2_value',   'value' => 'Rp 2T+'],
+            ['group' => 'homepage', 'key' => 'statsbar_2_value',   'value' => '0+'],
             ['group' => 'homepage', 'key' => 'statsbar_2_label',   'value' => 'Total Transaksi'],
             ['group' => 'homepage', 'key' => 'statsbar_3_value',   'value' => '99.9%'],
             ['group' => 'homepage', 'key' => 'statsbar_3_label',   'value' => 'Uptime'],

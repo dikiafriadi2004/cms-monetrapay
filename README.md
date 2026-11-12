@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌐 MonetraPay CMS
+# 🌐 MonetraCMS
 
 **Content Management System berbasis Laravel untuk bisnis payment digital**
 
@@ -19,7 +19,7 @@
 
 ## 📋 Tentang Project
 
-MonetraPay CMS adalah platform manajemen konten berbasis Laravel yang dirancang khusus untuk bisnis **pulsa, PPOB, top-up game, dan e-money**. Dilengkapi visual editor drag & drop, sistem email terintegrasi, manajemen role & permission granular, dan siap deploy ke VPS dengan Docker.
+MonetraCMS adalah platform manajemen konten berbasis Laravel yang dirancang khusus untuk bisnis **pulsa, PPOB, top-up game, dan e-money**. Dilengkapi visual editor drag & drop, sistem email terintegrasi, manajemen role & permission granular, dan siap deploy ke VPS dengan Docker.
 
 ---
 

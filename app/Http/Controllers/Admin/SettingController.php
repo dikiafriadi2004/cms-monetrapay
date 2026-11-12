@@ -177,6 +177,8 @@ class SettingController extends Controller
                 'maps_lng'               => ['nullable', 'max:20'],
                 'maps_zoom'              => ['nullable', 'integer', 'min:1', 'max:20'],
                 'office_address'         => ['nullable', 'max:255'],
+                'primary_color'          => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+                'secondary_color'        => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             ],
             'homepage' => [
                 'hero_title' => ['nullable', 'max:255'],

@@ -24,11 +24,11 @@ class SentryTest extends Command
         $this->info('Environment: '.config('sentry.environment', config('app.env')));
 
         if ($this->option('info')) {
-            \Sentry\captureMessage('Sentry test message from MonetraPay CMS at '.now()->toIso8601String());
+            \Sentry\captureMessage('Sentry test message from MonetraCMS at '.now()->toIso8601String());
             $this->info('✓ Test message sent.');
         } else {
             try {
-                throw new \Exception('Sentry test exception from MonetraPay CMS at '.now()->toIso8601String());
+                throw new \Exception('Sentry test exception from MonetraCMS at '.now()->toIso8601String());
             } catch (\Throwable $e) {
                 \Sentry\captureException($e);
                 $this->info('✓ Test exception sent.');

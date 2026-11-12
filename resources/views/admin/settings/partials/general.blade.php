@@ -90,6 +90,96 @@
         }
         </script>
 
+    {{-- ═══ BRAND COLORS ═══ --}}
+    <div class="pt-5 border-t border-slate-100">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Warna Brand</h3>
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <div class="px-5 py-3 bg-slate-50 border-b border-slate-100">
+                <p class="text-sm font-bold text-slate-800">Warna Brand</p>
+                <p class="text-xs text-slate-500 mt-0.5">Warna utama dan aksen yang digunakan di seluruh website</p>
+            </div>
+            <div class="p-5 space-y-4">
+                <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    ⚠ Setelah simpan, refresh browser (Ctrl+Shift+R) untuk melihat perubahan warna.
+                </p>
+
+                {{-- Primary Color --}}
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Warna Utama (Primary)</label>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        @php
+                        $primaryPresets = [
+                            ['name' => 'Emerald',       'hex' => '#3D9E7A'],
+                            ['name' => 'Ocean Blue',    'hex' => '#2563EB'],
+                            ['name' => 'Royal Purple',  'hex' => '#7C3AED'],
+                            ['name' => 'Sunset Orange', 'hex' => '#EA580C'],
+                            ['name' => 'Rose Red',      'hex' => '#E11D48'],
+                            ['name' => 'Slate Blue',    'hex' => '#0F4C81'],
+                            ['name' => 'Forest Green',  'hex' => '#166534'],
+                            ['name' => 'Golden',        'hex' => '#D97706'],
+                        ];
+                        $currentPrimary = old('primary_color', $settings['primary_color'] ?? '#3D9E7A');
+                        @endphp
+                        @foreach($primaryPresets as $preset)
+                        <button type="button"
+                            onclick="document.getElementById('primary_color').value='{{$preset['hex']}}'; document.getElementById('primary_preview').style.backgroundColor='{{$preset['hex']}}';"
+                            title="{{$preset['name']}}"
+                            class="w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 {{$currentPrimary === $preset['hex'] ? 'border-slate-800 scale-110' : 'border-transparent'}}"
+                            style="background-color: {{$preset['hex']}};">
+                        </button>
+                        @endforeach
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div id="primary_preview" class="w-10 h-10 rounded-lg border border-slate-200 shrink-0" style="background-color: {{$currentPrimary}};"></div>
+                        <input type="text" name="primary_color" id="primary_color"
+                               value="{{$currentPrimary}}"
+                               placeholder="#3D9E7A"
+                               maxlength="7"
+                               oninput="document.getElementById('primary_preview').style.backgroundColor=this.value"
+                               class="w-32 font-mono text-sm">
+                        <span class="text-xs text-slate-500">Format: #RRGGBB</span>
+                    </div>
+                </div>
+
+                {{-- Secondary Color --}}
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Warna Aksen (Secondary)</label>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        @php
+                        $secondaryPresets = [
+                            ['name' => 'Amber',       'hex' => '#F59E0B'],
+                            ['name' => 'Sky Blue',    'hex' => '#0EA5E9'],
+                            ['name' => 'Lime Green',  'hex' => '#65A30D'],
+                            ['name' => 'Pink',        'hex' => '#EC4899'],
+                            ['name' => 'Cyan',        'hex' => '#06B6D4'],
+                            ['name' => 'Indigo',      'hex' => '#4F46E5'],
+                        ];
+                        $currentSecondary = old('secondary_color', $settings['secondary_color'] ?? '#F59E0B');
+                        @endphp
+                        @foreach($secondaryPresets as $preset)
+                        <button type="button"
+                            onclick="document.getElementById('secondary_color').value='{{$preset['hex']}}'; document.getElementById('secondary_preview').style.backgroundColor='{{$preset['hex']}}';"
+                            title="{{$preset['name']}}"
+                            class="w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 {{$currentSecondary === $preset['hex'] ? 'border-slate-800 scale-110' : 'border-transparent'}}"
+                            style="background-color: {{$preset['hex']}};">
+                        </button>
+                        @endforeach
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div id="secondary_preview" class="w-10 h-10 rounded-lg border border-slate-200 shrink-0" style="background-color: {{$currentSecondary}};"></div>
+                        <input type="text" name="secondary_color" id="secondary_color"
+                               value="{{$currentSecondary}}"
+                               placeholder="#F59E0B"
+                               maxlength="7"
+                               oninput="document.getElementById('secondary_preview').style.backgroundColor=this.value"
+                               class="w-32 font-mono text-sm">
+                        <span class="text-xs text-slate-500">Format: #RRGGBB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Section: Contact --}}
     <div class="pt-5 border-t border-slate-100">
         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Kontak</h3>
