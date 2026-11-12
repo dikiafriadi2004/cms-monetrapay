@@ -27,6 +27,20 @@
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'])
+
+    {{-- Dynamic brand colors from settings --}}
+    @php
+        $primaryColor   = \App\Models\Setting::get('primary_color', 'general') ?? '#3D9E7A';
+        $secondaryColor = \App\Models\Setting::get('secondary_color', 'general') ?? '#F59E0B';
+        if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $primaryColor))   $primaryColor   = '#3D9E7A';
+        if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $secondaryColor)) $secondaryColor = '#F59E0B';
+    @endphp
+    <style>
+    :root {
+        --color-primary:   {{$primaryColor}};
+        --color-secondary: {{$secondaryColor}};
+    }
+    </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @hasSection('uses-editor')
     <meta name="file-picker-url" content="{{ route('admin.files.picker') }}">
