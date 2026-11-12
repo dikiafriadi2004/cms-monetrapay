@@ -23,7 +23,7 @@ class CmsInstall extends Command
         {--admin-name=   : Nama super admin}
         {--admin-email=  : Email super admin}
         {--admin-password= : Password super admin (min 8 karakter)}
-        {--no-interaction  : Skip semua pertanyaan, gunakan nilai dari --option atau default}';
+        {--force         : Skip semua pertanyaan, gunakan nilai dari --option atau default}';
 
     protected $description = 'Install CMS: setup admin credentials, migrate, seed, dan optimize.';
 
@@ -37,7 +37,7 @@ class CmsInstall extends Command
 
         // ── Resolve credentials ───────────────────────────────────
         // Priority: --option argument > .env > ask interactively
-        $nonInteractive = $this->option('no-interaction') || ! $this->input->isInteractive();
+        $nonInteractive = $this->option('force') || ! $this->input->isInteractive();
 
         $adminName = $this->resolveOption(
             optionKey: 'admin-name',

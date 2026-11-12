@@ -47,7 +47,7 @@ if [ "$USER_COUNT" = "0" ] || [ -z "$USER_COUNT" ]; then
         --admin-name="${ADMIN_NAME:-Super Admin}" \
         --admin-email="${ADMIN_EMAIL}" \
         --admin-password="${ADMIN_PASSWORD}" \
-        --no-interaction
+        --force
     echo "  Install complete!"
 else
     echo "  Existing install detected ($USER_COUNT users) - skipping."
