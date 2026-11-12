@@ -23,7 +23,7 @@ class CmsInstall extends Command
         {--admin-name=   : Nama super admin}
         {--admin-email=  : Email super admin}
         {--admin-password= : Password super admin (min 8 karakter)}
-        {--no-interaction  : Skip semua pertanyaan, gunakan nilai dari --option atau default}';
+        {--force         : Skip semua pertanyaan, gunakan nilai dari --option atau default}';
 
     protected $description = 'Install CMS: setup admin credentials, migrate, seed, dan optimize.';
 
@@ -36,12 +36,13 @@ class CmsInstall extends Command
         $this->info('');
 
         // ── Resolve credentials ───────────────────────────────────
-        // Priority: --option argument > .env > ask interactively
-        $nonInteractive = $this->option('no-interaction') || ! $this->input->isInteractive();
+        // Priority: --option argument > ask interactively (IGNORE .env values)
+        // .env values are WRITTEN after user confirms, not read as defaults
+        $nonInteractive = $this->option('force') || ! $this->input->isInteractive();
 
         $adminName = $this->resolveOption(
             optionKey: 'admin-name',
-            envKey: 'ADMIN_NAME',
+            envKey: null, // Don't read from .env — user must input
             default: 'Super Admin',
             prompt: 'Nama admin?',
             nonInteractive: $nonInteractive
@@ -51,10 +52,26 @@ class CmsInstall extends Command
 
         $adminPassword = $this->resolvePassword($nonInteractive);
 
-        // ── Write to .env ─────────────────────────────────────────
+        // ── Write to .env BEFORE seeding ─────────────────────────
+        // Must clear config cache after writing so seeder reads new values
         $this->setEnvValue('ADMIN_NAME', $adminName);
         $this->setEnvValue('ADMIN_EMAIL', $adminEmail);
         $this->setEnvValue('ADMIN_PASSWORD', $adminPassword);
+
+        // Reload config so env() returns new values in this same process
+        // This ensures RolePermissionSeeder reads the values just written
+        $app = app();
+        $app['config']->set('app.admin_email',    $adminEmail);
+        $app['config']->set('app.admin_name',     $adminName);
+        $app['config']->set('app.admin_password', $adminPassword);
+
+        // Also force-reload the env values in memory
+        putenv("ADMIN_EMAIL={$adminEmail}");
+        putenv("ADMIN_NAME={$adminName}");
+        putenv("ADMIN_PASSWORD={$adminPassword}");
+        $_ENV['ADMIN_EMAIL']    = $adminEmail;
+        $_ENV['ADMIN_NAME']     = $adminName;
+        $_ENV['ADMIN_PASSWORD'] = $adminPassword;
 
         // ── Run install steps ─────────────────────────────────────
         $this->info('');
@@ -92,17 +109,17 @@ class CmsInstall extends Command
 
     private function resolveOption(
         string $optionKey,
-        string $envKey,
+        ?string $envKey,
         string $default,
         string $prompt,
         bool $nonInteractive
     ): string {
-        // 1. From --option argument
+        // 1. From --option argument (highest priority)
         if ($val = $this->option($optionKey)) {
             return $val;
         }
-        // 2. From .env
-        if ($val = env($envKey)) {
+        // 2. From .env only if envKey specified
+        if ($envKey && $val = env($envKey)) {
             return $val;
         }
         // 3. Ask interactively or use default
@@ -122,15 +139,11 @@ class CmsInstall extends Command
             }
             return $email;
         }
-        // 2. From .env
-        if ($email = env('ADMIN_EMAIL')) {
-            return $email;
-        }
-        // 3. Non-interactive default
+        // 2. Non-interactive default (don't read from .env)
         if ($nonInteractive) {
             return 'admin@example.com';
         }
-        // 4. Interactive
+        // 3. Interactive
         do {
             $email = $this->ask('Email admin?');
             $valid = filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -152,17 +165,13 @@ class CmsInstall extends Command
             }
             return $pass;
         }
-        // 2. From .env
-        if ($pass = env('ADMIN_PASSWORD')) {
-            return $pass;
-        }
-        // 3. Non-interactive — generate random
+        // 2. Non-interactive — generate random (don't read from .env)
         if ($nonInteractive) {
             $pass = \Illuminate\Support\Str::password(16);
             $this->warn("Password tidak disediakan — generated: {$pass}");
             return $pass;
         }
-        // 4. Interactive
+        // 3. Interactive
         do {
             $pass = $this->secret('Password admin? (min 8 karakter)');
             if (strlen($pass) < 8) {
