@@ -1,4 +1,4 @@
-# 🚀 Panduan Instalasi CMS MonetraPay
+# 🚀 Panduan Instalasi MonetraCMS
 
 ## Prasyarat Server (VPS/Hosting)
 

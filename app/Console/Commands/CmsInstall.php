@@ -31,7 +31,7 @@ class CmsInstall extends Command
     {
         $this->info('');
         $this->info('╔══════════════════════════════════════════╗');
-        $this->info('║            CMS Installer                 ║');
+        $this->info('║         MonetraCMS Installer             ║');
         $this->info('╚══════════════════════════════════════════╝');
         $this->info('');
 

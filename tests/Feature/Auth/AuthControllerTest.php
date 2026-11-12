@@ -10,7 +10,7 @@ describe('Login Page', function () {
         $response = $this->get(route('login'));
 
         $response->assertStatus(200);
-        $response->assertSee('MonetraPay CMS');
+        $response->assertSee('MonetraCMS');
         $response->assertSee('Email');
         $response->assertSee('Password');
     });
