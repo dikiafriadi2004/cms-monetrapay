@@ -41,7 +41,7 @@ class SecurityHeaders
         // browser-sync, and any dev-only tools are never blocked.
         // In staging/production: apply strict CSP.
         if (! app()->isLocal()) {
-            $csp = [
+            $adminCsp = [
                 "default-src 'self'",
                 "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tiny.cloud https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com",
                 // style-src-elem is the directive browsers actually check for <link> and @import.
@@ -58,6 +58,19 @@ class SecurityHeaders
                 "form-action 'self'",
                 "object-src 'none'",
             ];
+
+            if ($request->is('admin') || $request->is('admin/*')) {
+                $csp = $adminCsp;
+            } else {
+                // Frontend/public: same as admin but without 'unsafe-eval' in script-src
+                $csp = $adminCsp;
+                foreach ($csp as $i => $directive) {
+                    if (str_starts_with($directive, 'script-src ')) {
+                        $csp[$i] = str_replace(" 'unsafe-eval'", '', $directive);
+                    }
+                }
+            }
+
             $response->headers->set('Content-Security-Policy', implode('; ', $csp));
         }
 

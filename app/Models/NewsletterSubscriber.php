@@ -47,6 +47,17 @@ class NewsletterSubscriber extends Model
         return Str::random(48);
     }
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($subscriber) {
+            if (empty($subscriber->confirmation_token)) {
+                $subscriber->confirmation_token = Str::random(64);
+            }
+        });
+    }
+
     public function scopeActive($query)
     {
         return $query->whereNotNull('confirmed_at')->whereNull('unsubscribed_at');

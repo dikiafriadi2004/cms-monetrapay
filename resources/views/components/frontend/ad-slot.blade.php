@@ -28,6 +28,7 @@
         @foreach ($ads as $ad)
             <div class="ad-slot" data-ad-id="{{ $ad->id }}">
                 @if (!empty($ad->code))
+                    {{-- Raw output digunakan karena ad code berisi script HTML dari provider iklan (AdSense, dll.). Akses untuk menyimpan/mengubah kode iklan sudah dibatasi hanya untuk Super Admin di AdController. --}}
                     {!! $ad->code !!}
                 @elseif (!empty($ad->image))
                     <img src="{{ Storage::url($ad->image) }}" alt="{{ $ad->name }}" loading="lazy">

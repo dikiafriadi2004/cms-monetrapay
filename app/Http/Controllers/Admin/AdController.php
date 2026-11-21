@@ -37,6 +37,13 @@ class AdController extends Controller
     {
         $validated = $request->validated();
 
+        // Ad code may only be saved by Super Admin or users with 'manage_ads' permission
+        if (! empty($validated['code']) && ! auth()->user()->hasRole('Super Admin') && ! auth()->user()->hasPermissionTo('manage_ads')) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Hanya Super Admin yang diizinkan menyimpan kode iklan.');
+        }
+
         // Handle image upload for manual type
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -83,6 +90,13 @@ class AdController extends Controller
     public function update(AdRequest $request, Ad $ad)
     {
         $validated = $request->validated();
+
+        // Ad code may only be saved by Super Admin or users with 'manage_ads' permission
+        if (! empty($validated['code']) && ! auth()->user()->hasRole('Super Admin') && ! auth()->user()->hasPermissionTo('manage_ads')) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Hanya Super Admin yang diizinkan menyimpan kode iklan.');
+        }
 
         // Handle image upload for manual type
         $imagePath = $ad->image;

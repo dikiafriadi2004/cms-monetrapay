@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendNewsletterToSubscriber;
 use App\Models\AuditLog;
 use App\Models\NewsletterCampaign;
 use App\Models\NewsletterSubscriber;
@@ -10,7 +11,6 @@ use App\Models\Setting;
 use App\Services\MailConfigService;
 use App\Traits\RespondsWithError;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class NewsletterCampaignController extends Controller
 {
@@ -82,44 +82,23 @@ class NewsletterCampaignController extends Controller
         ]);
 
         $siteName = Setting::get('site_name', 'general') ?? config('app.name');
-        $sentCount = 0;
-        $failed = 0;
 
         foreach ($subscribers as $subscriber) {
-            try {
-                Mail::send(
-                    'emails.newsletter-blast',
-                    ['campaign' => $campaign, 'subscriber' => $subscriber, 'siteName' => $siteName],
-                    function ($mail) use ($subscriber, $campaign, $siteName) {
-                        $unsubUrl = url(route('newsletter.unsubscribe', $subscriber->confirmation_token ?? $subscriber->id, false));
-                        $mail->to($subscriber->email, $subscriber->name ?? '')
-                            ->subject($campaign->subject)
-                            ->from(
-                                config('mail.from.address'),
-                                $siteName
-                            );
-                    }
-                );
-                $sentCount++;
-            } catch (\Throwable $e) {
-                $failed++;
-                report($e);
-            }
+            SendNewsletterToSubscriber::dispatch($subscriber, $campaign, $siteName);
         }
 
         $campaign->update([
-            'status' => $failed > 0 && $sentCount === 0 ? 'failed' : 'sent',
-            'sent_count' => $sentCount,
+            'status' => 'sent',
+            'sent_count' => $subscribers->count(),
             'sent_at' => now(),
         ]);
 
         AuditLog::record('newsletter.sent', [
             'campaign_id' => $campaign->id,
-            'sent' => $sentCount,
-            'failed' => $failed,
+            'dispatched' => $subscribers->count(),
         ]);
 
-        return back()->with('success', "Newsletter berhasil dikirim ke {$sentCount} subscriber.".($failed > 0 ? " {$failed} gagal." : ''));
+        return back()->with('success', "Newsletter sedang dikirim ke {$subscribers->count()} subscriber melalui queue.");
     }
 
     public function destroy(NewsletterCampaign $campaign)
