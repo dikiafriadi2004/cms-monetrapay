@@ -48,8 +48,12 @@ class AppServiceProvider extends ServiceProvider
             // ignore — happens before migrations run (e.g. fresh install)
         }
 
-        // Force HTTPS scheme in production (e.g. behind a reverse proxy)
-        if ($this->app->environment('production')) {
+        // Force HTTPS scheme only when APP_URL itself uses https://.
+        // This prevents asset URLs from being generated as https:// on servers
+        // that haven't set up SSL yet (new VPS installs, local dev, etc.).
+        // Using APP_ENV=production alone is NOT reliable — a fresh VPS install
+        // is production but may not have SSL configured yet.
+        if (str_starts_with(config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 
