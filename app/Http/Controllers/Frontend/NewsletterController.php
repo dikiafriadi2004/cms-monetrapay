@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class NewsletterController extends Controller
 {
@@ -64,7 +65,7 @@ class NewsletterController extends Controller
         if (! $subscriber->isConfirmed()) {
             $subscriber->update([
                 'confirmed_at' => now(),
-                'confirmation_token' => null,
+                'confirmation_token' => Str::random(64),
             ]);
         }
 

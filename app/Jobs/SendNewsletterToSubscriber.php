@@ -23,11 +23,17 @@ class SendNewsletterToSubscriber implements ShouldQueue
 
     public function handle(): void
     {
+        $unsubUrl = url(route('newsletter.unsubscribe', $this->subscriber->confirmation_token, false));
+
         Mail::send(
             'emails.newsletter-blast',
-            ['campaign' => $this->campaign, 'subscriber' => $this->subscriber, 'siteName' => $this->siteName],
+            [
+                'campaign'        => $this->campaign,
+                'subscriber'      => $this->subscriber,
+                'siteName'        => $this->siteName,
+                'unsubscribeUrl'  => $unsubUrl,
+            ],
             function ($mail) {
-                $unsubUrl = url(route('newsletter.unsubscribe', $this->subscriber->confirmation_token, false));
                 $mail->to($this->subscriber->email, $this->subscriber->name ?? '')
                     ->subject($this->campaign->subject)
                     ->from(
