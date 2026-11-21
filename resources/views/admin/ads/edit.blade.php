@@ -60,6 +60,7 @@
                           class="w-full rounded-lg border-slate-300 text-sm font-mono focus:border-blue-500 focus:ring-blue-500 @error('code') border-red-500 @enderror"
                           maxlength="5000">{{ old('code', $ad->code) }}</textarea>
                 <p class="mt-1 text-xs text-slate-500">Maksimal 5.000 karakter</p>
+                <p class="mt-1 text-sm text-yellow-700 font-medium"><i class="fas fa-exclamation-triangle mr-1"></i> Peringatan: Field ini hanya untuk script dari provider iklan terpercaya (Google AdSense, dll.). Hanya Super Admin yang diizinkan menyimpan kode iklan.</p>
                 @error('code')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -73,6 +74,7 @@
                           class="w-full rounded-lg border-slate-300 text-sm font-mono focus:border-blue-500 focus:ring-blue-500"
                           maxlength="5000">{{ old('code', $ad->code) }}</textarea>
                 <p class="mt-1 text-xs text-slate-500">Isi kode HTML atau upload gambar di bawah</p>
+                <p class="mt-1 text-sm text-yellow-700 font-medium"><i class="fas fa-exclamation-triangle mr-1"></i> Peringatan: Field ini hanya untuk script dari provider iklan terpercaya (Google AdSense, dll.). Hanya Super Admin yang diizinkan menyimpan kode iklan.</p>
             </div>
 
             {{-- Image (for manual type) --}}

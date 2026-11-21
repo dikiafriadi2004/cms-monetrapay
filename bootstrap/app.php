@@ -31,8 +31,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo('/login');
 
-        // Trust proxies (for HTTPS detection behind load balancers)
-        $middleware->trustProxies(at: '*');
+        // Trust proxies for HTTPS detection behind load balancers / Cloudflare / Nginx.
+        // '*' means trust all IPs — safe when APP_URL drives forceScheme (see AppServiceProvider).
+        // On a bare VPS without a reverse proxy, forceScheme won't fire anyway because
+        // APP_URL won't start with https:// until the admin explicitly sets it after SSL is ready.
+        $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB);
 
         $middleware->web(append: [
             CheckMaintenanceMode::class,

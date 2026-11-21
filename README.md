@@ -120,18 +120,18 @@ MonetraCMS adalah platform manajemen konten berbasis Laravel yang dirancang khus
 git clone https://github.com/username/cms-monetrapay.git
 cd cms-monetrapay
 
-# 2. Install dependencies
+# 2. Install PHP dependencies
 composer install
-npm install && npm run build
 
 # 3. Setup environment
 cp .env.example .env
-# Edit .env — isi DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD, APP_URL
+# Edit .env — isi DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+# APP_URL sudah default ke http://localhost:8000, tidak perlu diubah untuk lokal
 
 # 4. Generate app key
 php artisan key:generate
 
-# 5. Install (interaktif — tanya nama/email/password admin)
+# 5. Install (interaktif — tanya nama/email/password admin + build asset otomatis)
 php artisan cms:install
 
 # 6. Jalankan server
@@ -139,6 +139,12 @@ php artisan serve
 ```
 
 Akses: `http://localhost:8000` | Admin: `http://localhost:8000/admin`
+
+> **Sudah punya npm tapi mau build manual?**
+> ```bash
+> npm install && npm run build
+> php artisan cms:install --skip-assets
+> ```
 
 ---
 

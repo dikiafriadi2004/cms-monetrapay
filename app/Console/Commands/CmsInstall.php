@@ -23,6 +23,7 @@ class CmsInstall extends Command
         {--admin-name=   : Nama super admin}
         {--admin-email=  : Email super admin}
         {--admin-password= : Password super admin (min 8 karakter)}
+        {--skip-assets   : Lewati npm install dan npm run build (jika sudah build manual)}
         {--force         : Skip semua pertanyaan, gunakan nilai dari --option atau default}';
 
     protected $description = 'Install CMS: setup admin credentials, migrate, seed, dan optimize.';
@@ -34,6 +35,9 @@ class CmsInstall extends Command
         $this->info('║         MonetraCMS Installer             ║');
         $this->info('╚══════════════════════════════════════════╝');
         $this->info('');
+
+        // ── Validate APP_URL ──────────────────────────────────────
+        $this->validateAppUrl();
 
         // ── Resolve credentials ───────────────────────────────────
         // Priority: --option argument > ask interactively (IGNORE .env values)
@@ -73,6 +77,14 @@ class CmsInstall extends Command
         $_ENV['ADMIN_NAME']     = $adminName;
         $_ENV['ADMIN_PASSWORD'] = $adminPassword;
 
+        // ── Build frontend assets ─────────────────────────────────
+        $this->info('');
+        if (! $this->option('skip-assets')) {
+            $this->buildAssets();
+        } else {
+            $this->line('  <comment>--skip-assets diberikan, melewati build frontend.</comment>');
+        }
+
         // ── Run install steps ─────────────────────────────────────
         $this->info('');
         $steps = [
@@ -106,6 +118,87 @@ class CmsInstall extends Command
     }
 
     // ── Helpers ───────────────────────────────────────────────────
+
+    /**
+     * Validate APP_URL and warn if it looks wrong.
+     * The most common cause of "broken CSS" on new installs is APP_URL mismatch.
+     */
+    private function validateAppUrl(): void
+    {
+        $appUrl = env('APP_URL', '');
+
+        // Warn if still at placeholder default
+        if (empty($appUrl) || in_array($appUrl, ['https://yourdomain.com', 'http://yourdomain.com', 'https://domainanda.com'])) {
+            $this->warn('⚠  APP_URL di .env masih berupa placeholder!');
+            $this->warn('   Ubah APP_URL ke URL yang sesuai sebelum lanjut.');
+            $this->warn('   Contoh: APP_URL=http://localhost:8000  atau  APP_URL=https://domainmu.com');
+            $this->info('');
+        }
+
+        // Warn if APP_URL uses https:// but SSL might not be ready
+        if (str_starts_with($appUrl, 'https://')) {
+            $this->warn('⚠  APP_URL menggunakan https://');
+            $this->warn('   Pastikan SSL/HTTPS sudah aktif di server ini.');
+            $this->warn('   Jika belum, tampilan akan hancur karena CSS/JS diblokir browser.');
+            $this->warn('   Gunakan http:// dulu, ganti ke https:// setelah SSL siap.');
+            $this->info('');
+        }
+
+        // Info about current URL
+        $this->line("  <comment>APP_URL saat ini: {$appUrl}</comment>");
+        $this->info('');
+    }
+
+
+    /**
+     * Build frontend assets (npm install + npm run build).
+     * Gracefully skips if Node/npm is not installed.
+     */
+    private function buildAssets(): void
+    {
+        // Check if npm is available
+        exec('npm --version 2>&1', $npmOut, $npmCode);
+        if ($npmCode !== 0) {
+            $this->warn('⚠  npm tidak ditemukan — melewati build asset.');
+            $this->warn('   Jika tampilan terlihat rusak, jalankan: npm install && npm run build');
+            return;
+        }
+
+        // Check if node_modules already exists (skip install if so)
+        $nodeModulesExists = is_dir(base_path('node_modules'));
+
+        if (! $nodeModulesExists) {
+            $this->info('📦 Menginstall dependensi frontend (npm install)...');
+            passthru('npm install --prefer-offline 2>&1', $installCode);
+            if ($installCode !== 0) {
+                $this->warn('⚠  npm install gagal — melewati build asset.');
+                $this->warn('   Coba jalankan manual: npm install && npm run build');
+                return;
+            }
+        } else {
+            $this->line('  <info>node_modules sudah ada, melewati npm install.</info>');
+        }
+
+        // Check if public/build/manifest.json already exists and is recent
+        $manifestPath = public_path('build/manifest.json');
+        $manifestExists = file_exists($manifestPath);
+
+        if ($manifestExists) {
+            $this->line('  <info>Asset sudah ter-build sebelumnya, menjalankan ulang build...</info>');
+        }
+
+        $this->info('🔨 Membangun asset frontend (npm run build)...');
+        passthru('npm run build 2>&1', $buildCode);
+
+        if ($buildCode !== 0) {
+            $this->error('✗  npm run build gagal!');
+            $this->warn('   Coba jalankan manual: npm run build');
+            $this->warn('   Atau gunakan --skip-assets jika sudah build sebelumnya.');
+        } else {
+            $this->info('✓  Asset frontend berhasil dibangun.');
+        }
+    }
+
 
     private function resolveOption(
         string $optionKey,
